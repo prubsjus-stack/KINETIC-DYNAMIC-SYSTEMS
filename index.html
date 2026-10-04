@@ -6,6 +6,8 @@
 <title>KINETIX DYNAMIC SYSTEMS · v36</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- favicon en linea: una concha estilizada. Evita el 404 de /favicon.ico -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b1526'/%3E%3Cpath d='M12 44c0-16 10-26 20-26s20 10 20 26z' fill='none' stroke='%235aaaff' stroke-width='4'/%3E%3Cpath d='M20 48h24' stroke='%239ff0b0' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -929,27 +931,89 @@
   }
   #viewer.grabbing { cursor: grabbing; }
   #viewer canvas { display: block; width: 100% !important; height: 100% !important; }
-  #roofBtn, #rainBtn {
-    margin-top: 14px;
-    padding: 14px 28px;
-    border: 1px solid rgba(90, 170, 255, 0.65);
-    border-radius: 6px;
-    background: linear-gradient(120deg, rgba(90, 170, 255, 0.16), rgba(90, 170, 255, 0.04));
-    color: #9fd0ff;
-    font: 700 13px Montserrat, sans-serif;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background 0.25s, color 0.25s, box-shadow 0.25s;
-  }
-  #roofBtn:hover:not(:disabled), #rainBtn:hover:not(:disabled) {
-    background: linear-gradient(120deg, rgba(90, 170, 255, 0.34), rgba(90, 170, 255, 0.12));
-    color: #fff;
-    box-shadow: 0 0 26px rgba(90, 170, 255, 0.5);
-  }
-  #roofBtn.deployed { border-color: rgba(159, 240, 176, 0.6); color: #9ff0b0; }
-  #rainBtn.rain-on { border-color: rgba(159, 210, 255, 0.75); color: #bfe9ff; box-shadow: 0 0 26px rgba(90, 170, 255, 0.45); }
-  #roofBtn:disabled, #rainBtn:disabled { opacity: 0.5; cursor: default; }
+#roofBtn {
+      margin-top: 14px;
+      padding: 14px 28px;
+      border: 1px solid rgba(90, 170, 255, 0.65);
+      border-radius: 6px;
+      background: linear-gradient(120deg, rgba(90, 170, 255, 0.16), rgba(90, 170, 255, 0.04));
+      color: #9fd0ff;
+      font: 700 13px Montserrat, sans-serif;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+    }
+    #rainBtn {
+      margin-top: 14px;
+      padding: 14px 28px;
+      border: 1px solid rgba(90, 170, 255, 0.65);
+      border-radius: 6px;
+      background: linear-gradient(120deg, rgba(90, 170, 255, 0.16), rgba(90, 170, 255, 0.04));
+      color: #9fd0ff;
+      font: 700 13px Montserrat, sans-serif;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+    }
+    #roofBtn:hover:not(:disabled), #rainBtn:hover:not(:disabled) {
+      background: linear-gradient(120deg, rgba(90, 170, 255, 0.34), rgba(90, 170, 255, 0.12));
+      color: #fff;
+      box-shadow: 0 0 26px rgba(90, 170, 255, 0.5);
+    }
+    #roofBtn.deployed { border-color: rgba(159, 240, 176, 0.6); color: #9ff0b0; }
+    #rainBtn.rain-on { border-color: rgba(159, 210, 255, 0.75); color: #bfe9ff; box-shadow: 0 0 26px rgba(90, 170, 255, 0.45); }
+    #roofBtn:disabled, #rainBtn:disabled { opacity: 0.5; cursor: default; }
+    .wx-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .wx-row .wx {
+      padding: 8px 14px;
+      border: 1px solid rgba(90, 170, 255, 0.38);
+      border-radius: 4px;
+      background: rgba(10, 22, 42, 0.5);
+      color: #8fb8e0;
+      font: 700 10px Montserrat, sans-serif;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .wx-row .wx:hover { color: #fff; border-color: rgba(90, 170, 255, 0.8); }
+    .wx-row .wx.on {
+      background: linear-gradient(120deg, rgba(90, 170, 255, 0.34), rgba(90, 170, 255, 0.1));
+      border-color: rgba(140, 205, 255, 0.9);
+      color: #eaf6ff;
+      box-shadow: 0 0 18px rgba(90, 170, 255, 0.35);
+    }
+    .wx-row .wx.auto.on { border-color: rgba(159, 240, 176, 0.7); color: #b6f2c6;
+      box-shadow: 0 0 18px rgba(120, 220, 160, 0.28); }
+    /* fila de la hora: el sol se recorre a mano o en ciclo automatico */
+    .wx-hour { align-items: center; }
+    .wx-hlabel, .wx-hval {
+      font: 700 10px Montserrat, sans-serif;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      color: #6f95b8;
+    }
+    .wx-hval { color: #cfe6ff; min-width: 52px; text-align: right; }
+    .wx-hour input[type="range"] {
+      -webkit-appearance: none; appearance: none;
+      width: 190px; height: 3px; border-radius: 2px;
+      background: linear-gradient(90deg, #101a2c 0%, #d97a3c 22%, #bfe0ff 50%, #d97a3c 78%, #101a2c 100%);
+      outline: none; cursor: pointer;
+    }
+    .wx-hour input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 13px; height: 13px; border-radius: 50%;
+      background: #eaf6ff; border: 1px solid rgba(140, 205, 255, 0.9);
+      box-shadow: 0 0 12px rgba(160, 210, 255, 0.7);
+    }
+    .wx-hour input[type="range"]::-moz-range-thumb {
+      width: 13px; height: 13px; border-radius: 50%;
+      background: #eaf6ff; border: 1px solid rgba(140, 205, 255, 0.9);
+    }
+    .wx-hour input[type="range"]:focus-visible { box-shadow: 0 0 0 2px rgba(140, 205, 255, 0.5); }
+
   @media (max-width: 760px) {
     .slide.model3d .slide-inner { padding: 20px 16px; }
     #viewer { height: 50vh; margin: 12px auto; }
@@ -1165,9 +1229,15 @@
           <span>Membrana de PET reciclado</span>
         </div>
         <div id="viewer" aria-label="Modelo 3D de la concha acústica"></div>
+        <div class="wx-row wx-hour" id="wxHourRow">
+          <span class="wx-hlabel">Hora</span>
+          <input id="wxHour" type="range" min="0" max="24" step="0.25" value="10"
+                 aria-label="Hora del dia" aria-valuetext="10:00">
+          <span class="wx-hval" id="wxHourVal">10:00</span>
+          <button class="wx auto" type="button" id="wxSunAuto">Ciclo</button>
+        </div>
         <button id="roofBtn" type="button" disabled>Cargando modelo 3D…</button>
         <button id="rainBtn" type="button" disabled>Cargando modelo 3D…</button>
-        <p class="motto"><b>Objetivo:</b> mantener la concha acústica funcional ante condiciones climáticas adversas.</p>
       </div>
     </section>
 
@@ -2926,17 +2996,49 @@ if (current === 4 && typeof viewer3d !== 'undefined' && viewer3d.isReady()) {
     let dragOn = false, dragMode = 0, dragX = 0, dragY = 0;
         let lastHX = null, lastHY = null;
         let fbLastX = null, fbLastY = null;
-    let roofBtn = null, host = null;
-    let rainBtn = null, rainSys = null, rainOn = false;
+let roofBtn = null, rainBtn = null, host = null;
+      let rainSys = null, rainOn = false;
     let rainGeo = null, rainPosArr = null, rainSpdArr = null;
-    let rainSt = null, rainT = null, rainCl = null;
-    let moonL = null, fogL = null, starSys = null;
+let rainSt = null, rainT = null;
+let moonL = null, fogL = null, starSys = null, hemiL = null, sunL = null;
+let groundMesh = null, gndMat = null, skyMesh = null, skyMat = null;
+let pbrMats = [], decoLights = [];
+let cloudSys = null, clouds = [], boltMesh = null, splashes = [], wxBtn = null;
+const SPL_N = 72;
+
+// ---------- SISTEMA DE CLIMA ----------
+// Cada estado define el "objetivo" de cada parametro; el estado real se acerca a
+// estos valores de forma continua, asi que los cambios de clima nunca son un
+// salto: se ven como una transicion (luz, niebla, nubes y lluvia a la vez).
+const WX = {
+  despejado: { rain: 0.00, cover: 0.16, cloud: 0x33445e, cloudD: 0x1b2537, skyT: 0x08111f, skyB: 0x24405f, fog: 0x0d1a2c, fogN: 145, fogF: 385, hemi: 0.50, key: 1.60, wind: 0.5, wet: 0.00, exp: 1.22 },
+  nublado:   { rain: 0.00, cover: 0.74, cloud: 0x4d5b72, cloudD: 0x2b3547, skyT: 0x151f2f, skyB: 0x36435a, fog: 0x1c2532, fogN: 92,  fogF: 275, hemi: 0.68, key: 0.55, wind: 1.7, wet: 0.14, exp: 1.10 },
+  lluvia:    { rain: 0.74, cover: 0.95, cloud: 0x333c4b, cloudD: 0x1b222c, skyT: 0x0c1118, skyB: 0x1f2935, fog: 0x121a24, fogN: 50,  fogF: 180, hemi: 0.52, key: 0.28, wind: 2.5, wet: 1.00, exp: 1.00 },
+  tormenta:  { rain: 1.00, cover: 1.00, cloud: 0x212733, cloudD: 0x0d1117, skyT: 0x05080d, skyB: 0x131922, fog: 0x0b1017, fogN: 32,  fogF: 130, hemi: 0.46, key: 0.16, wind: 3.9, wet: 1.00, exp: 0.92 },
+  niebla:    { rain: 0.00, cover: 0.52, cloud: 0x7c8b98, cloudD: 0x5b6a77, skyT: 0x2b343d, skyB: 0x424d58, fog: 0x3d4750, fogN: 14,  fogF: 92,  hemi: 0.55, key: 0.26, wind: 0.3, wet: 0.30, exp: 1.00 }
+};
+const WX_NUM = ['rain', 'cover', 'fogN', 'fogF', 'hemi', 'key', 'wind', 'wet', 'exp'];
+const WX_COL = ['cloud', 'cloudD', 'skyT', 'skyB', 'fog'];
+const WX_SEQ = ['despejado', 'nublado', 'lluvia', 'tormenta', 'niebla'];
+const WX_LABEL = { despejado: 'DESPEJADO', nublado: 'NUBLADO', lluvia: 'LLUVIA', tormenta: 'TORMENTA', niebla: 'NIEBLA' };
+let wxName = 'despejado', wxAuto = true, wxClock = 0, wxNext = 16;
+const wxCur = { rain: 0, cover: 0.16, fogN: 145, fogF: 385, hemi: 0.5, key: 1.6, wind: 0.5, wet: 0, exp: 1.22,
+                cloud: 0x33445e, cloudD: 0x1b2537, skyT: 0x08111f, skyB: 0x24405f, fog: 0x0d1a2c };
+let wxFlash = 0, wxFlashNext = 5, wxSound = false;
+
+// ---------- CICLO DIA / ATARDECER / NOCHE ----------
+// El sol gira de verdad: una sola variable (sunEl) recorre el dia y de ella
+// salen el color del cielo, el de la luz, la intensidad y las estrellas.
+let sunEl = 0.55, sunAz = 2.1, sunDirV = null, sunDisc = null;
+let hourEl = null, hourVal = null;
+let sunCycle = true, sunPhase = 0.42;
     let memMat = null;
     let stageSpot = null;
     let trees = [];
     let amb = 0;
     let audioCtx = null, rainGain = null;
     let lastTs = 0;
+    let peopleTick = null;
     const RAIN_N = 1500;
     const PAN_LEN = 20;
     const HUB_Y = 14.8;
@@ -2961,19 +3063,22 @@ if (current === 4 && typeof viewer3d !== 'undefined' && viewer3d.isReady()) {
 
     function mat(o) { return new THREE.MeshStandardMaterial(Object.assign({ roughness: 0.86, metalness: 0.05 }, o)); }
 
+let T3 = null;
 function build() {
-      const T3 = window.THREE;
+      T3 = window.THREE;
       if (!host) { console.error('[3D] contenedor no encontrado'); return false; }
       scene = new T3.Scene();
       scene.background = null;
       scene.fog = new T3.Fog(0x02060f, 120, 340); fogL = scene.fog;
       camera = new T3.PerspectiveCamera(62, 1, 0.5, 800);
-      renderer = new T3.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer = new T3.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance', stencil: false, depth: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.5));
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = T3.PCFSoftShadowMap;
       renderer.toneMapping = T3.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 0.9;
+      renderer.toneMappingExposure = 1.0;
+      renderer.useLegacyLights = false;
+      renderer.outputColorSpace = T3.SRGBColorSpace;
       {
         const pmrem = new T3.PMREMGenerator(renderer);
         const es = new T3.Scene();
@@ -3008,55 +3113,108 @@ function build() {
         roofBtn.removeAttribute('disabled');
         roofBtn.textContent = foldTarget > 0.5 ? 'CERRAR TECHO' : 'ABRIR TECHO';
         roofBtn.addEventListener('click', () => {
-          foldTarget = foldTarget > 0.5 ? 0 : 1;
-          syncRoofBtn();
-        });
-      }
+foldTarget = foldTarget > 0.5 ? 0 : 1;
+        syncRoofBtn();
+      });
+    }
 
-rainBtn = document.getElementById('rainBtn');
+      rainBtn = document.getElementById('rainBtn');
       if (rainBtn) {
         rainBtn.removeAttribute('disabled');
-        rainBtn.textContent = rainOn ? 'DETENER LLUVIA' : 'SIMULAR LLUVIA';
-        rainBtn.classList.toggle('rain-on', rainOn);
-        rainBtn.addEventListener('click', () => {
-          rainOn = !rainOn;
-          if (rainSys) rainSys.visible = rainOn;
-          if (rainCl) rainCl.visible = rainOn;
-          if (rainOn) startRainSound(); else stopRainSound();
-          rainBtn.classList.toggle('rain-on', rainOn);
-          rainBtn.textContent = rainOn ? 'DETENER LLUVIA' : 'SIMULAR LLUVIA';
-        });
+        rainBtn.addEventListener('click', () => setWeather(wxName === 'lluvia' ? 'despejado' : 'lluvia'));
       }
 
-      // ---------- LUCES NOCTURNAS ----------
-      scene.add(new T3.HemisphereLight(0xbfe0ff, 0x0a1428, 0.42));
-      const moon = new T3.DirectionalLight(0xbfe6ff, 1.5);
+      // ---------- HORA DEL DIA ----------
+      // El slider mueve el sol de verdad: es la misma variable que usa el ciclo
+      // automatico, pero puesta a mano. Asi el atardecer se enseia al momento.
+      hourEl = document.getElementById('wxHour');
+      hourVal = document.getElementById('wxHourVal');
+      const sunAutoBtn = document.getElementById('wxSunAuto');
+      if (hourEl) {
+        sunPhase = (parseFloat(hourEl.value) || 0) / 24;
+        hourEl.addEventListener('input', () => {
+          sunCycle = false;
+          if (sunAutoBtn) sunAutoBtn.classList.remove('on');
+          setHour(parseFloat(hourEl.value) || 0);
+        });
+      }
+      if (sunAutoBtn) {
+        sunAutoBtn.classList.toggle('on', sunCycle);
+        sunAutoBtn.addEventListener('click', () => {
+          sunCycle = !sunCycle;
+          sunAutoBtn.classList.toggle('on', sunCycle);
+          applyWxNow();
+        });
+      }
+  
+        // ---------- LUCES PRINCIPALES (SOL / LUNA / CIELO) ----------
+      // Sol direccional principal con sombras de alta calidad
+      sunL = new T3.DirectionalLight(0xfff5e0, 2.8);
+      sunL.position.set(-80, 180, -100);
+      sunL.castShadow = true;
+      sunL.shadow.mapSize.set(4096, 4096);
+      sunL.shadow.radius = 4;
+      sunL.shadow.camera.near = 10;
+      sunL.shadow.camera.far = 600;
+      sunL.shadow.camera.left = -180;
+      sunL.shadow.camera.right = 180;
+      sunL.shadow.camera.top = 180;
+      sunL.shadow.camera.bottom = -180;
+      sunL.shadow.bias = -0.0003;
+      sunL.shadow.normalBias = 0.02;
+      scene.add(sunL);
+
+      // Hemisferio cielo/suelo - iluminación ambiente realista
+      hemiL = new T3.HemisphereLight(0xb8d4ff, 0x1a2a1a, 0.55);
+      scene.add(hemiL);
+
+      // Luna (direccional nocturna)
+      const moon = new T3.DirectionalLight(0xbfe6ff, 1.2);
       moon.position.set(-60, 130, -120);
       moon.castShadow = true;
       moon.shadow.mapSize.set(4096, 4096);
-      moon.shadow.radius = 6;
+      moon.shadow.radius = 4;
       moon.shadow.camera.near = 20;
       moon.shadow.camera.far = 520;
       moon.shadow.camera.left = -140;
       moon.shadow.camera.right = 140;
       moon.shadow.camera.top = 140;
       moon.shadow.camera.bottom = -140;
+      moon.shadow.bias = -0.0003;
+      moon.shadow.normalBias = 0.02;
       scene.add(moon);
       moonL = moon;
-      const back = new T3.PointLight(0x1e5bd0, 0.85, 320);
+
+      // Relleno ambiental suave (simula GI barato)
+      const fill = new T3.HemisphereLight(0xfff2d8, 0x1a1a1a, 0.18);
+      scene.add(fill);
+
+      // Luces arquitectónicas nocturnas
+      const back = new T3.PointLight(0x1e5bd0, 0.7, 320);
       back.position.set(0, 40, -150);
       scene.add(back);
-      const rim = new T3.PointLight(0x9fd0ff, 0.6, 160);
+      const rim = new T3.PointLight(0x9fd0ff, 0.5, 160);
       rim.position.set(0, 14, -45);
       scene.add(rim);
-      const warm = new T3.PointLight(0xffc280, 0.4, 220);
+      const warm = new T3.PointLight(0xffc280, 0.35, 220);
       warm.position.set(60, 18, 60);
       scene.add(warm);
-      stageSpot = new T3.SpotLight(0xfff2d8, 2.5, 95, 0.55, 0.45, 1.6);
+      stageSpot = new T3.SpotLight(0xfff2d8, 2.2, 95, 0.55, 0.45, 1.6);
       stageSpot.position.set(0, 16, -55);
       stageSpot.target.position.set(0, 0, -50);
+      stageSpot.castShadow = true;
+      stageSpot.shadow.mapSize.set(2048, 2048);
+      stageSpot.shadow.radius = 3;
+      stageSpot.shadow.bias = -0.0002;
       scene.add(stageSpot);
       scene.add(stageSpot.target);
+
+      decoLights = [
+        { l: back, base: back.intensity },
+        { l: rim, base: rim.intensity },
+        { l: warm, base: warm.intensity },
+        { l: stageSpot, base: stageSpot.intensity }
+      ];
 
       // ---------- TEXTURAS PROCEDURALES ----------
       function canvasTex(w, h, draw, rx, ry) {
@@ -3067,7 +3225,8 @@ rainBtn = document.getElementById('rainBtn');
         const t = new T3.CanvasTexture(c);
         t.wrapS = t.wrapT = T3.RepeatWrapping;
         t.repeat.set(rx, ry);
-        t.anisotropy = 4;
+        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        t.minFilter = t.magFilter = T3.LinearMipmapLinearFilter;
         return t;
       }
       const brickTex = canvasTex(256, 128, (g, w, h) => {
@@ -3086,6 +3245,42 @@ rainBtn = document.getElementById('rainBtn');
           for (let c2 = -1; c2 * 32 < w + 32; c2++) g.fillRect(c2 * 32 + (r % 2 ? 16 : 0), r * 8, 1, 8);
         }
       }, 11, 5);
+      // Madera clara con juntas de tabla y veta: para la tapa del escenario y
+      // el envés. Se dibuja en horizontal porque la cara +Y del BoxGeometry
+      // tiene la U en X y la V en Z, asi las tablas quedan paralelas a X.
+      const woodTex = canvasTex(512, 512, (g, w, h) => {
+        const rows = 16, ph = h / rows;
+        for (let r = 0; r < rows; r++) {
+          const sh = 0.87 + Math.random() * 0.26;
+          g.fillStyle = 'rgb(' + Math.round(201 * sh) + ',' + Math.round(168 * sh) + ',' + Math.round(122 * sh) + ')';
+          g.fillRect(0, r * ph, w, ph);
+          g.strokeStyle = 'rgba(122,90,54,0.16)';
+          g.lineWidth = 1;
+          for (let v = 0; v < 5; v++) {
+            const yy = r * ph + 3 + Math.random() * (ph - 6);
+            g.beginPath();
+            g.moveTo(0, yy);
+            g.bezierCurveTo(w * 0.3, yy + (Math.random() - 0.5) * 3, w * 0.7, yy + (Math.random() - 0.5) * 3, w, yy);
+            g.stroke();
+          }
+          g.fillStyle = 'rgba(96,70,42,0.5)';
+          g.fillRect(0, r * ph + ph - 2, w, 2);
+          if (r % 3 === 0) {
+            g.fillStyle = 'rgba(96,70,42,0.32)';
+            g.fillRect(Math.random() * w, r * ph, 1.5, ph - 2);
+          }
+        }
+      }, 6, 4);
+      const woodDarkTex = canvasTex(512, 512, (g, w, h) => {
+        const rows = 12, ph = h / rows;
+        for (let r = 0; r < rows; r++) {
+          const sh = 0.8 + Math.random() * 0.2;
+          g.fillStyle = 'rgb(' + Math.round(140 * sh) + ',' + Math.round(110 * sh) + ',' + Math.round(76 * sh) + ')';
+          g.fillRect(0, r * ph, w, ph);
+          g.fillStyle = 'rgba(62,44,26,0.55)';
+          g.fillRect(0, r * ph + ph - 2, w, 2);
+        }
+      }, 8, 1);
       const brickFloorTex = canvasTex(512, 256, (g, w, h) => {
         g.fillStyle = '#9c4a28';
         g.fillRect(0, 0, w, h);
@@ -3170,10 +3365,11 @@ const grassTex = canvasTex(512, 512, (g, w, h) => {
         }
       }, 6, 4);
 
-      const concW = mat({ color: 0xeef0f3, roughness: 0.9 });
-      const concG = mat({ color: 0xcfd3d8, roughness: 0.9 });
-      const concD = mat({ color: 0xaab0b8, roughness: 0.9 });
-      const seatG = mat({ color: 0x0da94f, roughness: 0.75 });
+      // Paleta especificada: verdes y grises desaturados, sin blanco puro.
+      const concW = mat({ color: 0xd9d6cf, roughness: 0.92 });
+      const concG = mat({ color: 0xc2bfb8, roughness: 0.93 });
+      const concD = mat({ color: 0x9b9993, roughness: 0.93 });
+      const seatG = mat({ color: 0x4e7d5a, roughness: 0.8 });
       const roofMat = mat({ color: 0x1661c6, roughness: 0.55, metalness: 0.08 });
       const beamMat = mat({ color: 0xdfe3e8, roughness: 0.75 });
       const whiteW = mat({ color: 0xeceae4, roughness: 0.85 });
@@ -3186,6 +3382,8 @@ const grassTex = canvasTex(512, 512, (g, w, h) => {
 
       // ---------- SUELO: CESPA -------------
       const ground = new T3.Mesh(new T3.CircleGeometry(180, 72), new T3.MeshStandardMaterial({ map: grassTex, roughness: 1 }));
+      groundMesh = ground;
+      gndMat = ground.material;
       ground.rotation.x = -Math.PI / 2;
       ground.position.y = -0.04;
       ground.receiveShadow = true;
@@ -3200,7 +3398,17 @@ const grassTex = canvasTex(512, 512, (g, w, h) => {
       const DR = (R1 - R0) / (ROWS - 1);
       const YK = (k) => 0.5 + k * DH;
       const crownY = YK(ROWS - 1);
-const blkL = [-75, -65, -55, -45, -35, -25, -15, -5, 5, 15, 25, 35, 45, 55, 65, 75];
+      // La planta es un ABANICO, no un circulo: 150 grados en total, y los
+      // bloques crecen hacia los laterales para que las filas de al lado sean
+      // mas largas que las del centro. Antes eran 15 blocos iguales de 10
+      // grados, que se leian como un anillo generico.
+      //   bloques:  15 grados junto al pasillo central, 17 en el medio,
+      //             31 en el lateral  (suma 63 por lado)
+      //   pasillos: 4 estrechos (4 grados) + el central (8), que es el doble
+      // Total 126 + 24 = 150 grados, el mismo ancho que antes.
+      const SEC_L = [[-75, -44], [-40, -23], [-19, -4], [4, 19], [23, 40], [44, 75]];
+      const AISLE_L = [[-44, -40], [-23, -19], [-4, 4], [19, 23], [40, 44]];
+      const blkL = [-75, -44, -40, -23, -19, -4, 4, 19, 23, 40, 44, 75];
       const blkR = [];
       const D2R = Math.PI / 180;
 
@@ -3215,16 +3423,44 @@ const blkL = [-75, -65, -55, -45, -35, -25, -15, -5, 5, 15, 25, 35, 45, 55, 65, 
       plaza.position.y = 0.28;
       plaza.receiveShadow = true;
       scene.add(plaza);
-// plataformas laterales de concreto (pasillos exteriores)
-      [-1, 1].forEach((s) => {
-        const plat = new T3.Mesh(new T3.BoxGeometry(10, 0.2, 84), concG);
-        plat.position.set(60 * s, 0.12, -52);
-        plat.receiveShadow = true;
-        scene.add(plat);
-      });
+      // ---------- BORDE EXTERIOR Y CESPED (puntos 11 y 12 de la planta) ----------
+      // Antes eran dos losas rectas de 10 x 84 m en x = +-60, que no seguian la
+      // curva y dejaban todo el exterior en pavimento. Ahora el borde y el
+      // cesped son arcos concentricos con la graderia.
+      // Ojo con el angulo: RingGeometry va en el plano XY, y al tumbarlo con
+      // rotation.x = -PI/2 el punto (cos t, sin t) cae en (cos t, 0, -sin t).
+      // Para que coincida con la convencion (sin a, cos a) de las gradas hace
+      // falta t = a - PI/2, de ahi el -Math.PI/2 en thetaStart.
+      {
+        const a0 = -104 * D2R, a1 = 104 * D2R;
+        const span = a1 - a0;
+        const CR = R1 + 5.4;              // 65.4: justo fuera del pasillo alto
+        const t0 = a0 - Math.PI / 2;
+        // paseo exterior de concreto, curvo, siguiendo el borde
+        const walk = new T3.Mesh(new T3.RingGeometry(CR, CR + 4.4, 64, 1, t0, span), concG);
+        walk.rotation.x = -Math.PI / 2;
+        walk.position.set(FX, 0.1, FZ);
+        walk.receiveShadow = true;
+        scene.add(walk);
+        // bordillo: la separacion clara entre cesped, borde y graderia
+        const kerb = new T3.Mesh(new T3.TorusGeometry(CR, 0.16, 6, 64, span),
+          mat({ color: 0xb0aca4, roughness: 0.9 }));
+        kerb.rotation.set(-Math.PI / 2, 0, t0);
+        kerb.position.set(FX, 0.16, FZ);
+        kerb.receiveShadow = true;
+        scene.add(kerb);
+        const kerb2 = new T3.Mesh(new T3.TorusGeometry(CR + 4.4, 0.14, 6, 64, span),
+          mat({ color: 0xb0aca4, roughness: 0.9 }));
+        kerb2.rotation.set(-Math.PI / 2, 0, t0);
+        kerb2.position.set(FX, 0.14, FZ);
+        kerb2.receiveShadow = true;
+        scene.add(kerb2);
+      }
 
-      // ---------- GRADERIAS: UN SOLO BLOQUE EN MEDIA LUNA ----------
-      // filas curvas con centro de orientacion en el escenario (FX,FZ)
+      // ---------- GRADERIAS EN ABANICO ----------
+      // Filas curvas con centro de orientacion en el escenario (FX,FZ).
+      // sectorPts dibuja un par (a0,a1) en grados: la contrahuella (gre=false)
+      // y el peldaño (gre=true).
       function sectorPts(a0, a1, gre) {
         const pts = [];
         const norm = [];
@@ -3248,43 +3484,584 @@ const blkL = [-75, -65, -55, -45, -35, -25, -15, -5, 5, 15, 25, 35, 45, 55, 65, 
               norm.push(nx / nl, 0, nz / nl, nx / nl, 0, nz / nl, nx / nl, 0, nz / nl);
               norm.push(nx / nl, 0, nz / nl, nx / nl, 0, nz / nl, nx / nl, 0, nz / nl);
             }
-const rA = gre ? r + 0.35 : r;
+            const rA = gre ? r + 0.35 : r;
             const rB = gre ? r + DR - 0.4 : r + DR;
             const yTop = gre ? yT + 0.035 : yT;
+            // gre dibuja solo el peldaño de concreto donde se apoya la banca.
+            // El asiento verde ya no es continuo: son bancas independientes.
             pts.push(FX + rA * s0, yTop, FZ + rA * c0, FX + rB * s0, yTop, FZ + rB * c0, FX + rB * s1, yTop, FZ + rB * c1);
             pts.push(FX + rA * s0, yTop, FZ + rA * c0, FX + rB * s1, yTop, FZ + rB * c1, FX + rA * s1, yTop, FZ + rA * c1);
             norm.push(0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0);
-            if (gre) {
-              const rF = r + DR - 0.2;
-              const rBk = yTop + 0.55;
-              const bx = Math.sin((t0 + t1) * 0.5), bz = Math.cos((t0 + t1) * 0.5);
-              pts.push(FX + rF * s0, yTop, FZ + rF * c0, FX + rF * s1, yTop, FZ + rF * c1, FX + rF * s1, rBk, FZ + rF * c1);
-              pts.push(FX + rF * s0, yTop, FZ + rF * c0, FX + rF * s1, rBk, FZ + rF * c1, FX + rF * s0, rBk, FZ + rF * c0);
-              norm.push(bx, 0, bz, bx, 0, bz, bx, 0, bz, bx, 0, bz, bx, 0, bz, bx, 0, bz);
-            }
           }
         }
         const g = new T3.BufferGeometry();
         g.setAttribute('position', new T3.Float32BufferAttribute(pts, 3));
         g.setAttribute('normal', new T3.Float32BufferAttribute(norm, 3));
-        const m = new T3.Mesh(g, gre ? seatG : concW);
+        const m = new T3.Mesh(g, gre ? concG : concW);
         m.material.side = T3.DoubleSide;
         m.receiveShadow = true;
         scene.add(m);
         return g;
       }
-      function blockSectors(blk) {
-        for (let b = 0; b < blk.length - 1; b++) {
-          const a0 = blk[b] * D2R, a1 = blk[b + 1] * D2R;
+      function blockSectors(secs) {
+        for (let b = 0; b < secs.length; b++) {
+          const a0 = secs[b][0] * D2R, a1 = secs[b][1] * D2R;
           sectorPts(a0, a1, false);
           sectorPts(a0, a1, true);
         }
       }
-blockSectors(blkL);
+      blockSectors(SEC_L);
+
+      // ---------- MURETES DE PASILLO ----------
+      // Antes los pasillos eran huecos entre bloques: se leian como falta de
+      // geometria. Estos muretes los cierran y ordenan la circulacion.
+      // Se acumulan en una sola BufferGeometry para no generar cientos de mallas.
+      function pushBox(P, I, cx, cy, cz, sx, sy, sz, yaw) {
+        const c = Math.cos(yaw), s = Math.sin(yaw);
+        const hx = sx / 2, hy = sy / 2, hz = sz / 2;
+        const b = P.length / 3;
+        const v = [[-hx, -hy, -hz], [hx, -hy, -hz], [hx, hy, -hz], [-hx, hy, -hz],
+                   [-hx, -hy,  hz], [hx, -hy,  hz], [hx, hy,  hz], [-hx, hy,  hz]];
+        for (let q = 0; q < 8; q++) {
+          P.push(cx + v[q][0] * c + v[q][2] * s, cy + v[q][1], cz - v[q][0] * s + v[q][2] * c);
+        }
+        const f = [[0, 2, 1, 3], [4, 5, 6, 7], [0, 1, 5, 4], [1, 2, 6, 5], [2, 3, 7, 6], [3, 0, 4, 7]];
+        for (let q = 0; q < 6; q++) I.push(b + f[q][0], b + f[q][1], b + f[q][2], b + f[q][3]);
+      }
+      {
+        const P = [], I = [];
+        // Un murete por cada borde de pasillo, no por cada frontera de bloque:
+        // ahora los bloques tienen anchos distintos y asi queda igual de bien.
+        AISLE_L.forEach((al) => {
+          [al[0], al[1]].forEach((ad) => {
+            const a = ad * D2R;
+            const half = al[1] - al[0] > 6 ? 3.2 : 2.4;   // el central es mas ancho
+            for (let k = 0; k < ROWS; k++) {
+              const rr = R0 + k * DR + DR * 0.5;
+              // el murete va al borde del pasillo: distancia fija al eje, no un
+              // angulo fijo, porque el radio cambia mucho entre filas.
+              const aa = a + half / rr;
+              pushBox(P, I,
+                FX + Math.sin(aa) * rr, YK(k) + DH * 0.5, FZ + Math.cos(aa) * rr,
+                0.5, DH + 0.2, DR + 0.06, aa);
+            }
+          });
+        });
+        const gg = new T3.BufferGeometry();
+        gg.setAttribute('position', new T3.Float32BufferAttribute(P, 3));
+        gg.setIndex(I);
+        gg.computeVertexNormals();
+        const wall = new T3.Mesh(gg, concW);
+        wall.material.side = T3.DoubleSide;
+        wall.castShadow = true; wall.receiveShadow = true;
+        scene.add(wall);
+      }
+
+      // ---------- BANCAS VERDES DE ASIENTO ----------
+      // Cada fila se compone de VARIAS bancas alargadas e independientes, no de
+      // butacas con respaldo y no de una barra continua. Las bancas van muy
+      // juntas: la junta es pequena (decimas de metro) para que de lejos la
+      // fila parezca continua pero cada pieza se distinga al closer.
+      // Solo se usa la anchura de la fila: el pasillo lo queda el murete.
+      // Puestos de banca disponibles para poder sentar gente encima mas
+      // adelante: (angulo, radio, cota de la base de la banca).
+      const SEAT_SPOTS = [];
+      function buildSeats(blk) {
+        const BL = 2.4;     // largo de cada banca
+        const GAP = 0.22;   // junta entre bancas: pequena a escala, pero por
+                            // encima del pixel para que se distingan de lejos
+        const SD = 0.55;    // fondo (lado corto): hace la banca alargada y hace
+                            // que la junta se vea tambien desde el frente
+        const put = [];
+        for (let b = 0; b < blk.length; b++) {
+          const a0 = blk[b][0] * D2R, a1 = blk[b][1] * D2R;
+          for (let k = 0; k < ROWS; k++) {
+            const rr = R0 + k * DR + DR * 0.5;
+            const arc = rr * (a1 - a0);
+            const n = Math.max(1, Math.floor((arc + GAP) / (BL + GAP)));
+            const st = arc / n;          // celda de cada banca
+            for (let j = 0; j < n; j++) {
+              const sa = a0 + st * (j + 0.5) / rr;
+              put.push(sa, rr, YK(k) + 0.035, st - GAP);
+              SEAT_SPOTS.push(sa, rr, YK(k) + 0.035);
+            }
+          }
+        }
+
+        const NB = put.length / 4;
+        const seat = new T3.InstancedMesh(new T3.BoxGeometry(1, SD, 0.44), seatG, NB);
+        const mtx = new T3.Matrix4();
+        const q = new T3.Quaternion();
+        const eu = new T3.Euler();
+        const pos = new T3.Vector3();
+        const scl = new T3.Vector3();
+        const col = new T3.Color();
+        for (let i = 0; i < NB; i++) {
+          const a = put[i * 4], rr = put[i * 4 + 1], y = put[i * 4 + 2], len = put[i * 4 + 3];
+          q.setFromEuler(eu.set(0, a, 0, 'YXZ'));
+          pos.set(FX + Math.sin(a) * rr, y + 0.21, FZ + Math.cos(a) * rr);
+          scl.set(len, 1, 1);
+          mtx.compose(pos, q, scl);
+          seat.setMatrixAt(i, mtx);
+          // variacion sutil de tono entre bancas, para que la fila no sea plana
+          col.setHSL(0.29 + (i % 7) * 0.004, 0.20 + (i % 5) * 0.012, 0.34 + (i % 11) * 0.011);
+          seat.setColorAt(i, col);
+        }
+        seat.instanceMatrix.needsUpdate = true;
+        if (seat.instanceColor) seat.instanceColor.needsUpdate = true;
+        seat.castShadow = true; seat.receiveShadow = true;
+        scene.add(seat);
+        return NB;
+      }
+      buildSeats(SEC_L);
+
+      // ---------- PERSONAS ----------
+      // Figuras humanas low-poly hechas solo con primitivas: no hay assets ni
+      // texturas. Dos familias porque necesitan cosas distintas:
+      //  - PUBLICO: instanciado, una figura = 1 indice por malla. Solo se animan
+      //    las partes con pivote (cabeza en el cuello, brazos en el hombro);
+      //    torso y piernas son geometrias centradas y se escriben una sola vez.
+      //    Hablar = girar la cabeza. Aplaudir = oscilar los brazos.
+      //  - ARTISTAS y PASEANTES: grupos articulados, porque rotan miembros cada
+      //    frame y son pocos. La pierna es grupo(cadera) -> muslo -> grupo
+      //    (rodilla) -> pierna, para flexionar la rodilla al caminar y para que
+      //    el baterista pueda sentarse de verdad.
+      let pSeed = 20261003;
+      function pRnd() { pSeed = (pSeed * 1664525 + 1013904223) >>> 0; return pSeed / 4294967296; }
+      function pRnd2(a, b) { return a + pRnd() * (b - a); }
+
+      const SKIN = [0xf0c9a4, 0xe0aa80, 0xc98d63, 0xa56a45, 0x7d4b2e, 0x5c3a24];
+      const SHIRT = [0x3b4a63, 0x5a3f42, 0x2f4740, 0x6b6255, 0x44536b, 0x7a4a52, 0x365a52, 0x8a8378, 0x2d3a4a, 0x6d5b45];
+      const PANTS = [0x2b2f36, 0x3a3f47, 0x24303a, 0x4a4239, 0x2f3a34];
+      const HAIR = [0x1d1712, 0x2e2119, 0x4a3323, 0x6b5340, 0x8d8d8d, 0x241a14];
+
+      const pMtx = new T3.Matrix4(), pQ = new T3.Quaternion(), pEu = new T3.Euler(),
+            pV = new T3.Vector3(), pS = new T3.Vector3(), pC = new T3.Color();
+      let pPrev = 0;
+      // handles de la tira LED. Se declaran aqui (no en su bloque) para que
+      // updatePeople pueda consultarlos aunque se lean antes de crearse.
+      const LED = { strip: null, halo: null };
+
+      // yaw sobre Y, despues pitch sobre X local, despues roll sobre Z local
+      function pSet(im, i, x, y, z, yaw, pitch, roll, s) {
+        pEu.set(pitch, yaw, roll, 'YXZ');
+        pQ.setFromEuler(pEu);
+        pV.set(x, y, z);
+        pS.set(s, s, s);
+        pMtx.compose(pV, pQ, pS);
+        im.setMatrixAt(i, pMtx);
+      }
+
+      // ================= PUBLICO SENTADO =================
+      // geometrias con el pivote YA en la articulacion, para poder rotarlas
+      const gPHead = new T3.SphereGeometry(0.115, 10, 8).translate(0, 0.115, 0);
+      const gPArm = new T3.CylinderGeometry(0.048, 0.042, 0.50, 6).translate(0, -0.25, 0);
+      const gPTorso = new T3.CylinderGeometry(0.155, 0.185, 0.56, 8);
+      const gPThigh = new T3.CylinderGeometry(0.078, 0.070, 0.44, 6).rotateX(Math.PI / 2);
+      const gPShin = new T3.CylinderGeometry(0.062, 0.052, 0.50, 6);
+
+      const PUBLICO = [];
+      const nSp = SEAT_SPOTS.length / 3;
+      for (let i = 0; i < nSp; i++) {
+        if (pRnd() > 0.32) continue;
+        const a = SEAT_SPOTS[i * 3], rr = SEAT_SPOTS[i * 3 + 1], yb = SEAT_SPOTS[i * 3 + 2];
+        const back = 0.10;   // cadera al fondo del asiento, piernas por delante
+        PUBLICO.push({
+          x: FX + Math.sin(a) * (rr + back),
+          y: yb + 0.485,     // cara superior de la banca
+          z: FZ + Math.cos(a) * (rr + back),
+          yaw: a + Math.PI,  // mirando al escenario
+          s: pRnd2(0.93, 1.07),
+          ph: pRnd() * 6.2832,
+          talk: pRnd() < 0.30 ? pRnd2(0.22, 0.55) : 0,
+          clap: pRnd() < 0.24 ? pRnd2(0.55, 1.0) : 0,
+          sk: SKIN[(pRnd() * SKIN.length) | 0],
+          sh: SHIRT[(pRnd() * SHIRT.length) | 0],
+          pa: PANTS[(pRnd() * PANTS.length) | 0]
+        });
+      }
+      const NP = PUBLICO.length;
+      const mSkin = new T3.MeshStandardMaterial({ roughness: 0.85 });
+      const mShirt = new T3.MeshStandardMaterial({ roughness: 0.90 });
+      const mPant = new T3.MeshStandardMaterial({ roughness: 0.92 });
+      const imHead = new T3.InstancedMesh(gPHead, mSkin, NP);
+      const imArmL = new T3.InstancedMesh(gPArm, mSkin, NP);
+      const imArmR = new T3.InstancedMesh(gPArm, mSkin, NP);
+      const imTorso = new T3.InstancedMesh(gPTorso, mShirt, NP);
+      const imThL = new T3.InstancedMesh(gPThigh, mPant, NP);
+      const imThR = new T3.InstancedMesh(gPThigh, mPant, NP);
+      const imShL = new T3.InstancedMesh(gPShin, mPant, NP);
+      const imShR = new T3.InstancedMesh(gPShin, mPant, NP);
+      const audAnim = [imHead, imArmL, imArmR];
+      const audTodos = audAnim.concat([imTorso, imThL, imThR, imShL, imShR]);
+
+      for (let i = 0; i < NP; i++) {
+        const f = PUBLICO[i];
+        const c = Math.cos(f.yaw), s = Math.sin(f.yaw);
+        // desplazamiento local (lx,ly,lz) -> mundo, rotando solo en XZ
+        const W = (lx, ly, lz) => [f.x + lx * c + lz * s, f.y + ly, f.z - lx * s + lz * c];
+        let o = W(0, 0.30, 0);
+        pSet(imTorso, i, o[0], o[1], o[2], f.yaw, 0, 0, f.s);
+        o = W(-0.095, 0.045, 0.22); pSet(imThL, i, o[0], o[1], o[2], f.yaw, 0, 0, f.s);
+        o = W(0.095, 0.045, 0.22); pSet(imThR, i, o[0], o[1], o[2], f.yaw, 0, 0, f.s);
+        o = W(-0.095, -0.24, 0.44); pSet(imShL, i, o[0], o[1], o[2], f.yaw, 0, 0, f.s);
+        o = W(0.095, -0.24, 0.44); pSet(imShR, i, o[0], o[1], o[2], f.yaw, 0, 0, f.s);
+        pC.setHex(f.sk); imHead.setColorAt(i, pC); imArmL.setColorAt(i, pC); imArmR.setColorAt(i, pC);
+        pC.setHex(f.sh); imTorso.setColorAt(i, pC);
+        pC.setHex(f.pa);
+        imThL.setColorAt(i, pC); imThR.setColorAt(i, pC); imShL.setColorAt(i, pC); imShR.setColorAt(i, pC);
+      }
+      audTodos.forEach((m) => {
+        m.instanceMatrix.needsUpdate = true;
+        if (m.instanceColor) m.instanceColor.needsUpdate = true;
+        m.castShadow = true;
+        scene.add(m);
+      });
+
+      function updateAudience(t) {
+        for (let i = 0; i < NP; i++) {
+          const f = PUBLICO[i];
+          const c = Math.cos(f.yaw), s = Math.sin(f.yaw);
+          // cabeza: pivote en el cuello, offset local (0, 0.585, 0.02)
+          const hyaw = f.talk ? Math.sin(t * 1.05 + f.ph) * f.talk : Math.sin(t * 0.33 + f.ph) * 0.10;
+          const hpit = Math.sin(t * (f.talk ? 1.9 : 0.7) + f.ph * 1.7) * (f.talk ? 0.07 : 0.05);
+          pSet(imHead, i, f.x + 0.02 * s, f.y + 0.585, f.z + 0.02 * c, f.yaw + hyaw, hpit, 0, f.s);
+          // brazos: pivote en el hombro, offset local (+-0.215, 0.52, 0.07)
+          const sw = f.clap ? Math.sin(t * 6.6 + f.ph) * (0.80 * f.clap) : Math.sin(t * 0.8 + f.ph) * 0.05;
+          const rl = f.clap ? 0.55 * f.clap : 0;
+          pSet(imArmL, i, f.x - 0.215 * c + 0.07 * s, f.y + 0.52, f.z + 0.215 * s + 0.07 * c,
+                f.yaw, sw, rl, f.s);
+          pSet(imArmR, i, f.x + 0.215 * c + 0.07 * s, f.y + 0.52, f.z - 0.215 * s + 0.07 * c,
+                f.yaw, sw, -rl, f.s);
+        }
+        for (let i = 0; i < audAnim.length; i++) audAnim[i].instanceMatrix.needsUpdate = true;
+      }
+
+      // ================= FIGURA ARTICULADA =================
+      // root a los pies, mirando a su +Z local
+      function makeFigure(sk, sh, pa, s) {
+        const root = new T3.Group();
+        const mS = new T3.MeshStandardMaterial({ color: sk, roughness: 0.85 });
+        const mH = new T3.MeshStandardMaterial({ color: sh, roughness: 0.90 });
+        const mP = new T3.MeshStandardMaterial({ color: pa, roughness: 0.92 });
+        const mHair = new T3.MeshStandardMaterial({ color: HAIR[(pRnd() * HAIR.length) | 0], roughness: 0.95 });
+        const body = new T3.Group();
+        root.add(body);
+
+        const tg = new T3.Mesh(new T3.CylinderGeometry(0.17, 0.20, 0.60, 8).translate(0, 1.16, 0), mH);
+        tg.castShadow = true; body.add(tg);
+
+        const neck = new T3.Group();
+        neck.position.set(0, 1.50, 0);
+        body.add(neck);
+        const hm = new T3.Mesh(new T3.SphereGeometry(0.12, 10, 8).translate(0, 0.12, 0), mS);
+        hm.castShadow = true; neck.add(hm);
+        const hr = new T3.Mesh(new T3.SphereGeometry(0.126, 10, 6, 0, 6.2832, 0, 1.05), mHair);
+        hr.position.y = 0.13; hr.castShadow = true; neck.add(hr);
+
+        const mkArm = (sx) => {
+          const g2 = new T3.Group();
+          g2.position.set(sx, 1.42, 0);
+          const m2 = new T3.Mesh(new T3.CylinderGeometry(0.05, 0.044, 0.58, 6).translate(0, -0.29, 0), mS);
+          m2.castShadow = true; g2.add(m2); body.add(g2);
+          return g2;
+        };
+        const armL = mkArm(-0.235), armR = mkArm(0.235);
+
+        const mkLeg = (sx) => {
+          const hip = new T3.Group();
+          hip.position.set(sx, 0.88, 0);
+          body.add(hip);
+          const th = new T3.Mesh(new T3.CylinderGeometry(0.082, 0.070, 0.44, 6).translate(0, -0.22, 0), mP);
+          th.castShadow = true; hip.add(th);
+          const knee = new T3.Group();
+          knee.position.set(0, -0.44, 0);
+          hip.add(knee);
+          const sh2 = new T3.Mesh(new T3.CylinderGeometry(0.062, 0.052, 0.44, 6).translate(0, -0.22, 0), mP);
+          sh2.castShadow = true; knee.add(sh2);
+          const ft = new T3.Mesh(new T3.BoxGeometry(0.09, 0.06, 0.20),
+            new T3.MeshStandardMaterial({ color: 0x1e1c1a, roughness: 0.9 }));
+          ft.position.set(0, -0.45, 0.04);
+          knee.add(ft);
+          return { hip, knee };
+        };
+        const LL = mkLeg(-0.095), RR = mkLeg(0.095);
+        root.scale.setScalar(s || 1);
+        return { root, body, neck, armL, armR, hipL: LL.hip, kneeL: LL.knee, hipR: RR.hip, kneeR: RR.knee };
+      }
+
+      // ================= INSTRUMENTOS =================
+      const MUS = {
+        wood: mat({ color: 0x8a5a32, roughness: 0.50 }),
+        dark: mat({ color: 0x241f1b, roughness: 0.60 }),
+        chrome: mat({ color: 0xb9bec4, roughness: 0.30, metalness: 0.75 }),
+        drum: mat({ color: 0xd8d4cc, roughness: 0.45 }),
+        black: mat({ color: 0x15130f, roughness: 0.70 })
+      };
+      function addM(gr, geo, mt, x, y, z, rx, ry, rz) {
+        const m = new T3.Mesh(geo, mt);
+        m.position.set(x || 0, y || 0, z || 0);
+        if (rx || ry || rz) m.rotation.set(rx || 0, ry || 0, rz || 0);
+        m.castShadow = true;
+        gr.add(m);
+        return m;
+      }
+      // guitarra (larga) o bajo (corto): cuerpo plano, mastil y cordalera
+      function makeGuitar(bass) {
+        const g = new T3.Group();
+        const br = bass ? 0.29 : 0.25, nl = bass ? 1.00 : 0.80;
+        const bd = addM(g, new T3.SphereGeometry(br, 14, 10), MUS.wood, 0, 0, 0);
+        bd.scale.set(1, 1.2, 0.24);
+        addM(g, new T3.BoxGeometry(0.08, nl, 0.045), MUS.dark, 0, br * 1.05 + nl / 2 - 0.04, 0.012);
+        addM(g, new T3.BoxGeometry(0.06, 0.20, 0.035), MUS.dark, 0, br * 1.05 + nl + 0.04, 0.012);
+        addM(g, new T3.CylinderGeometry(br * 0.26, br * 0.26, 0.03, 14), MUS.dark,
+              0, 0.02, br * 0.19, Math.PI / 2, 0, 0);
+        return g;
+      }
+      function makeKit() {
+        const g = new T3.Group();
+        addM(g, new T3.CylinderGeometry(0.30, 0.30, 0.38, 18), MUS.drum, 0, 0.32, 0.52, Math.PI / 2, 0, 0);
+        addM(g, new T3.TorusGeometry(0.30, 0.022, 6, 20), MUS.chrome, 0, 0.32, 0.71);
+        addM(g, new T3.CylinderGeometry(0.15, 0.15, 0.26, 14), MUS.drum, -0.22, 0.72, 0.30, 0.25, 0, 0);
+        addM(g, new T3.CylinderGeometry(0.15, 0.15, 0.26, 14), MUS.drum, 0.22, 0.72, 0.30, 0.25, 0, 0);
+        addM(g, new T3.CylinderGeometry(0.17, 0.17, 0.14, 14), MUS.drum, 0.36, 0.60, 0.16, 0, 0, 0.2);
+        [[-0.62, 1.02, 0.10], [0.62, 1.02, 0.10]].forEach(([x, y, z]) => {
+          addM(g, new T3.CylinderGeometry(0.018, 0.018, y, 6), MUS.chrome, x, y / 2, z);
+          const cy = addM(g, new T3.CylinderGeometry(0.30, 0.295, 0.014, 20), MUS.chrome, x, y, z);
+          cy.rotation.z = 0.14 * (x > 0 ? 1 : -1);
+        });
+        addM(g, new T3.CylinderGeometry(0.018, 0.018, 1.0, 6), MUS.chrome, -0.40, 0.5, 0.42);
+        addM(g, new T3.CylinderGeometry(0.20, 0.20, 0.012, 16), MUS.chrome, -0.40, 1.00, 0.42);
+        return g;
+      }
+      function makeKeyboard() {
+        const g = new T3.Group();
+        addM(g, new T3.BoxGeometry(1.40, 0.11, 0.36), MUS.dark, 0, 1.02, 0);
+        addM(g, new T3.BoxGeometry(1.32, 0.03, 0.28), MUS.drum, 0, 1.085, 0.01);
+        [-0.60, 0.60].forEach((dx) => {
+          addM(g, new T3.BoxGeometry(0.06, 1.0, 0.06), MUS.dark, dx, 0.5, 0);
+          addM(g, new T3.BoxGeometry(0.07, 0.07, 0.5), MUS.dark, dx, 0.03, 0);
+        });
+        addM(g, new T3.BoxGeometry(1.20, 0.10, 0.10), MUS.dark, 0, 0.42, 0.22);
+        return g;
+      }
+      function makeMicStand() {
+        const g = new T3.Group();
+        addM(g, new T3.CylinderGeometry(0.17, 0.19, 0.035, 16), MUS.dark, 0, 0.018, 0);
+        addM(g, new T3.CylinderGeometry(0.024, 0.024, 1.42, 8), MUS.chrome, 0, 0.71, 0);
+        addM(g, new T3.CylinderGeometry(0.018, 0.018, 0.46, 6), MUS.chrome, 0.10, 1.46, 0, 0, 0, -0.95);
+        addM(g, new T3.SphereGeometry(0.05, 10, 8), MUS.black, 0.33, 1.60, 0);
+        addM(g, new T3.CylinderGeometry(0.035, 0.035, 0.10, 8), MUS.black, 0.38, 1.585, 0);
+        return g;
+      }
+      function makeStool() {
+        const g = new T3.Group();
+        addM(g, new T3.CylinderGeometry(0.19, 0.19, 0.07, 14), MUS.dark, 0, 0.42, 0);
+        for (let k = 0; k < 3; k++) {
+          const a2 = k * 2.0944;
+          addM(g, new T3.CylinderGeometry(0.022, 0.022, 0.46, 6), MUS.chrome,
+                Math.cos(a2) * 0.13, 0.21, Math.sin(a2) * 0.13,
+                0.18 * Math.sin(a2), 0, -0.18 * Math.cos(a2));
+        }
+        return g;
+      }
+      // baqueta colgada de la mano, para que siga al brazo al tocar
+      function stickTo(arm) {
+        const st = new T3.Mesh(new T3.CylinderGeometry(0.014, 0.010, 0.40, 6), MUS.drum);
+        st.position.set(0.05, -0.62, 0.20);
+        st.rotation.set(1.15, 0, 0);
+        st.castShadow = true;
+        arm.add(st);
+      }
+
+      // ================= LOS 5 ARTISTAS =================
+      const ARTISTAS = [];
+      function addArtista(fig, x, z, yaw, tipo) {
+        fig.root.position.set(x, 1.80, z);   // deck de la tarima
+        fig.root.rotation.y = yaw;
+        scene.add(fig.root);
+        ARTISTAS.push({ fig: fig, tipo: tipo });
+        return fig;
+      }
+      // 1) vedette con microfono, centro y adelante
+      const vozFig = makeFigure(SKIN[0], 0x2d3a4a, PANTS[0], 1.02);
+      const micS = makeMicStand();
+      micS.position.set(0.2, 1.80, -48.3);
+      scene.add(micS);
+      addArtista(vozFig, 0.0, -49.4, 0.16, 'voz');
+      // 2) guitarra, izquierda
+      const gtrFig = makeFigure(SKIN[2], 0x5a3f42, 0x2b2f36, 1.0);
+      const gtr = makeGuitar(false);
+      gtr.position.set(0.10, 1.00, 0.14);
+      gtr.rotation.set(0.34, 0.22, -0.60);
+      gtrFig.body.add(gtr);
+      addArtista(gtrFig, -6.6, -50.6, 0.30, 'guitarra');
+      // 3) bajo, derecha
+      const bajoFig = makeFigure(SKIN[4], 0x365a52, 0x24303a, 1.0);
+      const bajo = makeGuitar(true);
+      bajo.position.set(-0.10, 0.92, 0.16);
+      bajo.rotation.set(0.40, -0.20, 0.62);
+      bajoFig.body.add(bajo);
+      addArtista(bajoFig, 6.6, -50.6, -0.28, 'bajo');
+      // 4) teclado, atras a la izquierda
+      const tecFig = makeFigure(SKIN[1], 0x6b6255, 0x3a3f47, 1.0);
+      const tec = makeKeyboard();
+      tec.position.set(0, 0, 0.62);
+      tecFig.root.add(tec);
+      addArtista(tecFig, -11.0, -54.6, 0.12, 'teclado');
+      // 5) bateria, atras al centro, sentado en un taburete
+      const batFig = makeFigure(SKIN[3], 0x8a8378, 0x2f3a34, 0.99);
+      const stool = makeStool();
+      stool.position.set(0, 1.80, -59.2);
+      scene.add(stool);
+      const kit = makeKit();
+      kit.position.set(0, 1.80, -58.3);
+      scene.add(kit);
+      addArtista(batFig, 0, -59.2, 0, 'bateria');
+      // sentado: cadera adelante y rodilla flexionada, para que los pies toquen
+      batFig.hipL.rotation.x = -1.45; batFig.hipR.rotation.x = -1.45;
+      batFig.kneeL.rotation.x = 1.45; batFig.kneeR.rotation.x = 1.45;
+      stickTo(batFig.armL); stickTo(batFig.armR);
+
+      function anotaVoz(t, f) {
+        const b = Math.sin(t * 1.7);
+        f.body.rotation.y = b * 0.09;
+        f.body.position.y = Math.abs(Math.sin(t * 3.4)) * 0.025;
+        f.neck.rotation.x = -0.10 + Math.sin(t * 3.4) * 0.13;
+        f.armL.rotation.set(0.15, 0, 0.22);
+        f.armR.rotation.set(-0.55 + b * 0.30, 0, -0.30 - b * 0.10);
+      }
+      function anotaGuitarra(t, f) {
+        f.body.rotation.z = Math.sin(t * 2.6) * 0.035;
+        f.body.rotation.y = Math.sin(t * 1.3) * 0.07;
+        f.neck.rotation.x = Math.sin(t * 2.6) * 0.10;
+        f.neck.rotation.y = Math.sin(t * 0.9) * 0.22;
+        f.armR.rotation.set(-0.95 + Math.sin(t * 5.2) * 0.38, 0.25, -0.42);
+        f.armL.rotation.set(-0.85 + Math.sin(t * 5.2 + 1.2) * 0.10, -0.30, 0.62);
+      }
+      function anotaBajo(t, f) {
+        f.body.rotation.z = Math.sin(t * 1.7) * 0.03;
+        f.body.rotation.y = Math.sin(t * 0.9) * 0.06;
+        f.neck.rotation.x = Math.sin(t * 1.7) * 0.08;
+        f.neck.rotation.y = Math.sin(t * 0.7) * 0.18;
+        f.armR.rotation.set(-0.85 + Math.sin(t * 3.1) * 0.22, -0.22, -0.46);
+        f.armL.rotation.set(-0.75 + Math.sin(t * 3.1 + 1.4) * 0.07, 0.28, 0.58);
+      }
+      function anotaBateria(t, f) {
+        const b1 = Math.sin(t * 6.4), b2 = Math.sin(t * 6.4 + Math.PI);
+        f.armL.rotation.set(-0.95 + b1 * 0.55, 0.15, 0.30);
+        f.armR.rotation.set(-0.95 + b2 * 0.55, -0.15, -0.30);
+        f.neck.rotation.x = Math.sin(t * 6.4) * 0.08;
+        f.body.position.y = Math.abs(Math.sin(t * 6.4)) * 0.02;
+      }
+      function anotaTeclado(t, f) {
+        f.armL.rotation.set(-1.05 + Math.sin(t * 4.2) * 0.13, 0.12, 0.16);
+        f.armR.rotation.set(-1.05 + Math.sin(t * 4.2 + 1.6) * 0.13, -0.12, -0.16);
+        f.neck.rotation.x = -0.06 + Math.sin(t * 2.1) * 0.09;
+        f.body.rotation.y = Math.sin(t * 1.1) * 0.05;
+      }
+      const ANOTA = { voz: anotaVoz, guitarra: anotaGuitarra, bajo: anotaBajo, bateria: anotaBateria, teclado: anotaTeclado };
+
+      // ================= PASEANTES =================
+      const CAMINANTES = [];
+      function addCaminante() {
+        const f = makeFigure(SKIN[(pRnd() * SKIN.length) | 0], SHIRT[(pRnd() * SHIRT.length) | 0],
+                             PANTS[(pRnd() * PANTS.length) | 0], pRnd2(0.94, 1.06));
+        scene.add(f.root);
+        CAMINANTES.push({ f: f, ph: pRnd() * 6.2832 });
+        return CAMINANTES[CAMINANTES.length - 1];
+      }
+      // por el paseo curvo de la corona (plano, ancho y sin obstaculos)
+      const CR_R = R1 + 1.8 + 1.5, CR_Y = crownY + 0.4;
+      for (let i = 0; i < 6; i++) {
+        const c2 = addCaminante();
+        c2.circ = { a: (-68 + i * 22) * D2R, d: i % 2 ? 1 : -1, v: pRnd2(0.95, 1.30) };
+      }
+      // y algunos por el pasillo central, bajando y subiendo
+      for (let i = 0; i < 4; i++) {
+        const c2 = addCaminante();
+        c2.rad = { a: pRnd2(-1.1, 1.1) * D2R, rr: R0 + 2 + i * 8, d: i % 2 ? 1 : -1, v: pRnd2(0.85, 1.15) };
+      }
+
+      // ================= TIRA LED DEL FONDO =================
+      // cambios de color lentos: paleta de 5 tonos, 5 s cada uno y 1.4 s de
+      // mezcla suave entre uno y otro. Va declarada aqui y se rellena mas
+      // abajo, junto a la pared del fondo.
+      const LED_COLS = [0x2ad4ff, 0x7b5cff, 0xff4d9d, 0xffb03a, 0x54ff9f];
+      function updateLeds(t) {
+        if (!LED.strip || !LED.halo) return;
+        const SLOT = 8000, FADE = 3000;
+        const x = (t % (LED_COLS.length * SLOT)) / SLOT;
+        const i0 = Math.floor(x) % LED_COLS.length;
+        const i1 = (i0 + 1) % LED_COLS.length;
+        const fr = (x % 1) * SLOT;
+        let k = 0;
+        if (fr > SLOT - FADE) {
+          const u = (fr - (SLOT - FADE)) / FADE;
+          k = u * u * u * (u * (u * 6 - 15) + 10);
+        }
+        const a = LED_COLS[i0], b = LED_COLS[i1];
+        const r = Math.round((((a >> 16) & 255) * (1 - k)) + (((b >> 16) & 255) * k));
+        const g2 = Math.round((((a >> 8) & 255) * (1 - k)) + (((b >> 8) & 255) * k));
+        const bl = Math.round(((a & 255) * (1 - k)) + ((b & 255) * k));
+        const cr = r / 255, cg = g2 / 255, cbv = bl / 255;
+        if (LED.mat) LED.mat.emissive.setRGB(cr, cg, cbv);
+        if (LED.hmat) LED.hmat.color.setRGB(cr, cg, cbv);
+        if (LED.strip) LED.strip.material.color.setRGB(cr, cg, cbv);
+        if (LED.halo) LED.halo.material.color.setRGB(cr, cg, cbv);
+        if (LED.rets) LED.rets.forEach((m) => m.material.color.setRGB(cr, cg, cbv));
+        if (LED.retHalos) LED.retHalos.forEach((m) => m.material.color.setRGB(cr, cg, cbv));
+        if (LED.lights) LED.lights.forEach((pl) => {
+            pl.color.setRGB(cr, cg, cbv);
+            pl.intensity = pl.userData.baseInt * (0.85 + 0.15 * Math.sin(t * 0.0007));
+          });
+        if (LED.spots) LED.spots.forEach((sp) => {
+          sp.color.setRGB(cr, cg, cbv);
+          sp.intensity = 6.0 * (0.85 + 0.15 * Math.sin(t * 0.0007 + 0.5));
+        });
+      }
+
+      function updatePeople(ts) {
+        const dt = Math.min((ts - pPrev) / 1000, 0.05);
+        pPrev = ts;
+        updateAudience(ts);
+        for (let i = 0; i < ARTISTAS.length; i++) ANOTA[ARTISTAS[i].tipo](ts, ARTISTAS[i].fig);
+        for (let i = 0; i < CAMINANTES.length; i++) {
+          const c2 = CAMINANTES[i], f = c2.f;
+          if (c2.circ) {
+            const g3 = c2.circ;
+            g3.a += g3.d * (g3.v / CR_R) * dt;
+            if (g3.a > 1.32) g3.a = -1.32;
+            if (g3.a < -1.32) g3.a = 1.32;
+            f.root.position.set(FX + Math.sin(g3.a) * CR_R, CR_Y, FZ + Math.cos(g3.a) * CR_R);
+            // tangente en el sentido +a = (cos a, -sin a)
+            f.root.rotation.y = Math.atan2(Math.cos(g3.a), -Math.sin(g3.a)) + (g3.d < 0 ? Math.PI : 0);
+          } else if (c2.rad) {
+            const r2 = c2.rad;
+            r2.rr += r2.d * r2.v * dt;
+            if (r2.rr > R1 - 1) r2.rr = R0 + 1;
+            if (r2.rr < R0 + 1) r2.rr = R1 - 1;
+            const k = Math.max(0, Math.min(ROWS - 1, Math.round((r2.rr - R0) / DR)));
+            f.root.position.set(FX + Math.sin(r2.a) * r2.rr, YK(k), FZ + Math.cos(r2.a) * r2.rr);
+            f.root.rotation.y = r2.a + (r2.d < 0 ? Math.PI : 0);
+          }
+          const ph = c2.ph + ts * 0.0042;
+          f.hipL.rotation.x = Math.sin(ph) * 0.55;
+          f.hipR.rotation.x = Math.sin(ph + Math.PI) * 0.55;
+          f.kneeL.rotation.x = Math.max(0, -Math.sin(ph - 0.7)) * 0.95;
+          f.kneeR.rotation.x = Math.max(0, -Math.sin(ph + Math.PI - 0.7)) * 0.95;
+          f.armL.rotation.set(Math.sin(ph + Math.PI) * 0.42, 0, 0.10);
+          f.armR.rotation.set(Math.sin(ph) * 0.42, 0, -0.10);
+          f.body.position.y = Math.abs(Math.sin(ph)) * 0.03;
+          f.neck.rotation.y = Math.sin(ph * 0.5) * 0.10;
+        }
+        updateLeds(ts);
+      }
+      peopleTick = updatePeople;
 
       // muro de remate curvo (detras de cada bloque) + pasillo superior + baranda
-      function crownArc(blk) {
-        const a0 = blk[0] * D2R, a1 = blk[blk.length - 1] * D2R;
+      function crownArc(secs) {
+        const a0 = secs[0][0] * D2R, a1 = secs[secs.length - 1][1] * D2R;
         const span = a1 - a0;
         const cr2 = R1 + 1.8;
         const wallC = new T3.Mesh(new T3.CylinderGeometry(cr2, cr2, crownY + 1.1, 48, 1, true, a0, span), concW);
@@ -3298,52 +4075,86 @@ blockSectors(blkL);
         const crownCap = new T3.Mesh(new T3.CylinderGeometry(cr2 + 3.4, cr2 + 2.4, 0.5, 48, 1, true, a0, span), concW);
         crownCap.position.set(FX, crownY + 1.15, FZ);
         scene.add(crownCap);
-        const railPts = [];
-        const railSegs = 30;
+        // Baranda perimetral de verdad: dos tubos continuos y montantes.
+        // Antes era un LineSegments de un pixel, invisible a distancia.
         const rr2 = cr2 + 3.6;
-        for (let j = 0; j < railSegs; j++) {
-          const t0 = a0 + (j / railSegs) * span;
-          const t1 = a0 + ((j + 1) / railSegs) * span;
-          railPts.push(Math.sin(t0) * rr2, crownY + 1.35, FZ + Math.cos(t0) * rr2);
-          railPts.push(Math.sin(t1) * rr2, crownY + 1.35, FZ + Math.cos(t1) * rr2);
+        const railSteel = mat({ color: 0x8d949b, roughness: 0.5, metalness: 0.5 });
+        // theta = a - PI/2 hace que el arco del toro coincida con el criterio
+        // (sin a, cos a) que usa el resto de las gradas.
+        [[crownY + 1.45, 0.085], [crownY + 0.98, 0.055]].forEach((rg) => {
+          const tube = new T3.Mesh(new T3.TorusGeometry(rr2, rg[1], 8, 64, span), railSteel);
+          tube.rotation.set(-Math.PI / 2, 0, a0 - Math.PI / 2);
+          tube.position.set(FX, rg[0], FZ);
+          tube.castShadow = true;
+          scene.add(tube);
+        });
+        const PP = [], PI = [];
+        const nPost = 34;
+        for (let j = 0; j <= nPost; j++) {
+          const t0 = a0 + (j / nPost) * span;
+          pushBox(PP, PI,
+            FX + Math.sin(t0) * rr2, crownY + 0.92, FZ + Math.cos(t0) * rr2,
+            0.09, 1.15, 0.09, t0);
         }
-        const rail = new T3.LineSegments(new T3.BufferGeometry(), new T3.LineBasicMaterial({ color: 0xf0f2f5, transparent: true, opacity: 0.9 }));
-        rail.geometry.setAttribute('position', new T3.Float32BufferAttribute(railPts, 3));
-        scene.add(rail);
+        const pg = new T3.BufferGeometry();
+        pg.setAttribute('position', new T3.Float32BufferAttribute(PP, 3));
+        pg.setIndex(PI);
+        pg.computeVertexNormals();
+        const posts = new T3.Mesh(pg, railSteel);
+        posts.castShadow = true;
+        scene.add(posts);
       }
-crownArc(blkL);
+      crownArc(SEC_L);
 
-      // escaleras radiales en cada limite de sector (franjas grises anchas)
-      function stairs(blk) {
-        for (let si = 0; si < blk.length; si++) {
-          const a = blk[si] * D2R;
+      // ---------- ESCALERAS RADIALES ----------
+      // Ahora van por el EJE de cada pasillo, no por las fronteras de bloque.
+      // Asi el pasillo se lee como una franja gris que atraviesa las filas
+      // verdes, que es lo que pide la planta. El ancho sigue al del pasillo.
+      function stairs(aisles) {
+        for (let ai = 0; ai < aisles.length; ai++) {
+          const al = aisles[ai];
+          const a = (al[0] + al[1]) * 0.5 * D2R;
+          const wide = (al[1] - al[0]) > 6;
+          const sw = wide ? 7.2 : 4.4;
           const nSteps = 13;
           for (let i = 0; i < nSteps; i++) {
             const rr = 23.5 + i * 3.05;
             const yy = 0.7 + i * (crownY - 0.7) / (nSteps - 1);
-            const stp = new T3.Mesh(new T3.BoxGeometry(5, 0.34, 2.6), concG);
+            // rotation.y = a (no -a) para que el peldano quede perpendicular al
+            // pasillo. Con -a la escalerita quedaba girada 2a y se cruzaba con
+            // las gradas en los bloques laterales.
+            const stp = new T3.Mesh(new T3.BoxGeometry(sw, 0.34, 2.6), concG);
             stp.position.set(FX + Math.sin(a) * rr, yy + 0.17, FZ + Math.cos(a) * rr);
-            stp.rotation.y = -a;
+            stp.rotation.y = a;
             stp.receiveShadow = true;
             scene.add(stp);
           }
-          const hx = 2.6;
+          // pasamanos a los dos lados del pasillo, con offset en metros
+          const off = sw / 2 - 0.5;
           for (let s2 = -1; s2 <= 1; s2 += 2) {
-            const ra = a + s2 * 0.06;
-            const hand = [];
-            for (let i = 0; i < nSteps; i += 3) {
+            const PP2 = [], PI2 = [];
+            for (let i = 0; i < nSteps; i++) {
               const rr = 23.5 + i * 3.05;
               const yy = 0.7 + i * (crownY - 0.7) / (nSteps - 1);
-              hand.push(FX + Math.sin(ra) * rr, yy + 1.1, FZ + Math.cos(ra) * rr);
-              hand.push(FX + Math.sin(ra) * (rr + 3.05), yy + 1.1, FZ + Math.cos(ra) * (rr + 3.05));
+              const ra = a + s2 * off / rr;
+              pushBox(PP2, PI2,
+                FX + Math.sin(ra) * (rr + 1.5), yy + 1.05, FZ + Math.cos(ra) * (rr + 1.5),
+                0.08, 0.08, 3.3, ra);
+              pushBox(PP2, PI2,
+                FX + Math.sin(ra) * rr, yy + 0.55, FZ + Math.cos(ra) * rr,
+                0.07, 1.1, 0.07, ra);
             }
-            const hl = new T3.LineSegments(new T3.BufferGeometry(), new T3.LineBasicMaterial({ color: 0xf0f2f5, transparent: true, opacity: 0.85 }));
-            hl.geometry.setAttribute('position', new T3.Float32BufferAttribute(hand, 3));
+            const hg = new T3.BufferGeometry();
+            hg.setAttribute('position', new T3.Float32BufferAttribute(PP2, 3));
+            hg.setIndex(PI2);
+            hg.computeVertexNormals();
+            const hl = new T3.Mesh(hg, mat({ color: 0x8d949b, roughness: 0.5, metalness: 0.5 }));
+            hl.castShadow = true;
             scene.add(hl);
           }
         }
       }
-stairs(blkL);
+      stairs(AISLE_L);
 // escalinatas de acceso a los bloques desde la arena/plaza
       [-1, 1].forEach((s) => {
         for (let i = 0; i < 3; i++) {
@@ -3354,41 +4165,177 @@ stairs(blkL);
         }
       });
 
-// ---------- TECHO DESPLEGABLE EN ABANICO (sale del borde frontal del techo azul de la tarima; se despliega de derecha a izquierda cubriendo TODOS los asientos) ----------
-      // 20 hojas que giran alrededor del pivote vertical en el frente de la tarima (0,15.3,-45.2): 180 grados de cobertura
-      const fL = 62, fW = 13, fN = 20;
-      for (let i = 0; i < fN; i++) {
-        const ai = (90 - i * (180 / (fN - 1))) * D2R;
+// ---------- TECHO RETRACTIL EN ARCO (4 pilares + corredera curvos que siguen la media luna) ----------
+      // El riel es un arco de radio 68 m centrado en el foco de las gradas (FX,FZ), por fuera de
+      // la corona (radio max 65.2). Los paños son sectores concentricos: se apilan en un extremo
+      // del arco y se reparten deslizando hasta cubrir TODAS las filas, sin girarse entre si.
+      const RAIL_R = 68, RAIL_Y = 16.9;
+      const PILLAR_A = [-70, -23.3, 23.3, 70];
+      const PAN_IN = 24, PAN_OUT = 62, PAN_Y = 15.5;
+      const PAN_N = 12, PAN_SPAN = 20 * D2R;  // 12 x 20 grados = 240 > 156 de las gradas
+      const ARC_A0 = -84 * D2R, ARC_A1 = 84 * D2R;
+      const pillarMat = mat({ color: 0xb9c3cf, roughness: 0.5, metalness: 0.45 });
+      const railMat = mat({ color: 0x8f9aa8, roughness: 0.42, metalness: 0.6 });
+      const arcPt = (r, a, y) => new T3.Vector3(r * Math.sin(a), y, FZ + r * Math.cos(a));
+
+      // 4 pilares sobre el arco, detras de la ultima fila (r = 60)
+      PILLAR_A.forEach((ad) => {
+        const a = ad * D2R;
+        const col = new T3.Mesh(new T3.CylinderGeometry(1.1, 1.5, RAIL_Y, 20), pillarMat);
+        col.position.copy(arcPt(RAIL_R, a, RAIL_Y / 2));
+        col.castShadow = true;
+        scene.add(col);
+        const foot = new T3.Mesh(new T3.CylinderGeometry(2.3, 2.7, 0.5, 18), concD);
+        foot.position.copy(arcPt(RAIL_R, a, 0.25));
+        foot.castShadow = true;
+        foot.receiveShadow = true;
+        scene.add(foot);
+        const cap = new T3.Mesh(new T3.BoxGeometry(3.4, 0.7, 3.4), railMat);
+        cap.position.copy(arcPt(RAIL_R, a, RAIL_Y + 0.2));
+        cap.rotation.y = a;
+        cap.castShadow = true;
+        scene.add(cap);
+        [-1, 1].forEach((s) => {                 // arriostrado inclinado hacia el interior
+          const br = new T3.Mesh(new T3.CylinderGeometry(0.28, 0.28, 9.5, 10), railMat);
+          br.position.copy(arcPt(RAIL_R - 2.7, a, RAIL_Y / 2 - 2.4));
+          br.rotation.set(0, a, -0.52 * s);
+          scene.add(br);
+        });
+      });
+
+      // corredera: viga en arco + traviesas
+      const SEG = 34;
+      for (let s = 0; s < SEG; s++) {
+        const a0 = ARC_A0 + (ARC_A1 - ARC_A0) * s / SEG;
+        const a1 = ARC_A0 + (ARC_A1 - ARC_A0) * (s + 1) / SEG;
+        const am = (a0 + a1) / 2;
+        const chord = 2 * RAIL_R * Math.sin((a1 - a0) / 2);
+        const beam = new T3.Mesh(new T3.BoxGeometry(chord + 0.25, 0.95, 0.6), railMat);
+        beam.position.copy(arcPt(RAIL_R, am, RAIL_Y));
+        beam.rotation.y = am;
+        beam.castShadow = true;
+        scene.add(beam);
+        if (s % 2 === 0) {
+          const tie = new T3.Mesh(new T3.BoxGeometry(0.5, 0.55, 4.8), railMat);
+          tie.position.copy(arcPt(RAIL_R - 2.4, am, RAIL_Y + 0.1));
+          tie.rotation.y = am;
+          scene.add(tie);
+        }
+      }
+
+// paños: dos filas opuestas que se deslizan desde los extremos hacia el centro,
+      // cubriendo todo el abanico de gradas (-75° a +75°) sin hueco central
+      const HALF_N = PAN_N / 2;   // 6 por lado
+      // Lado IZQUIERDO (angulos negativos -> centro)
+      for (let i = 0; i < HALF_N; i++) {
         const g = new T3.Group();
-        const tilt = new T3.Group();
-        const leaf = new T3.Mesh(new T3.BoxGeometry(fW, 0.24, fL), roofMat);
-        leaf.position.set(0, 0.12, fL / 2);
+        const leaf = new T3.Mesh(
+          new T3.RingGeometry(PAN_IN, PAN_OUT, 14, 1, -Math.PI / 2 - PAN_SPAN / 2, PAN_SPAN), roofMat);
+        leaf.rotation.x = -Math.PI / 2;
+        leaf.position.y = 0.15;
         leaf.castShadow = true;
-        tilt.add(leaf);
-        const rb1 = new T3.Mesh(new T3.BoxGeometry(0.25, 0.36, fL - 1.2), beamMat);
-        rb1.position.set(0, 0.32, fL / 2);
-        tilt.add(rb1);
-        g.add(tilt);
-        g.position.set(0, 15.3, -45.2);
+        leaf.receiveShadow = true;
+        g.add(leaf);
+        const under = new T3.Mesh(
+          new T3.RingGeometry(PAN_IN + 1.6, PAN_OUT - 1.6, 14, 1, -Math.PI / 2 - PAN_SPAN / 2 + 0.02, PAN_SPAN - 0.04),
+          mat({ color: 0x7ba6e0, roughness: 0.7 }));
+        under.rotation.x = -Math.PI / 2;
+        under.position.y = -0.06;
+        g.add(under);
+        [-1, -0.34, 0.34, 1].forEach((f) => {
+          const ar = f * PAN_SPAN * 0.42;
+          const rr = (PAN_IN + PAN_OUT) / 2;
+          const rb = new T3.Mesh(new T3.BoxGeometry(0.34, 0.42, PAN_OUT - PAN_IN - 1), beamMat);
+          rb.position.set(rr * Math.sin(ar), 0.38, rr * Math.cos(ar));
+          rb.rotation.y = ar;
+          g.add(rb);
+        });
+        const edge = new T3.Mesh(new T3.BoxGeometry(21, 0.5, 0.5), beamMat);
+        edge.position.set(0, 0.4, PAN_OUT - 0.7);
+        g.add(edge);
+        const car = new T3.Mesh(new T3.BoxGeometry(2.2, 1.3, 3.2), railMat);
+        car.position.set(0, RAIL_Y + 1.0 - PAN_Y, RAIL_R);
+        g.add(car);
+        const strut = new T3.Mesh(new T3.BoxGeometry(0.45, 0.45, 6.5), railMat);
+        strut.position.set(0, 1.2, RAIL_R - 3);
+        strut.rotation.x = -0.38;
+        g.add(strut);
+        g.position.set(0, PAN_Y, FZ);
         scene.add(g);
-        panels.push({ g: g, tilt: tilt, stackY: 0, openY: ai, stagger: i * 0.045, rot0: 0, rot1: -0.04, stackX: 0, openX: 0 });
+        panels.push({
+          g: g, car: car, cz: FZ, ry: RAIL_Y + 1.0,
+          closedA: (-80 + i * 1.15) * D2R,
+          openA: (-70 + i * 12.5) * D2R,   // centros: -70, -57.5, -45, -32.5, -20, -7.5
+          closedY: PAN_Y + i * 0.34,
+          openY: PAN_Y,
+          stagger: i * 0.035
+        });
+      }
+      // Lado DERECHO (angulos positivos -> centro)
+      for (let i = 0; i < HALF_N; i++) {
+        const g = new T3.Group();
+        const leaf = new T3.Mesh(
+          new T3.RingGeometry(PAN_IN, PAN_OUT, 14, 1, -Math.PI / 2 - PAN_SPAN / 2, PAN_SPAN), roofMat);
+        leaf.rotation.x = -Math.PI / 2;
+        leaf.position.y = 0.15;
+        leaf.castShadow = true;
+        leaf.receiveShadow = true;
+        g.add(leaf);
+        const under = new T3.Mesh(
+          new T3.RingGeometry(PAN_IN + 1.6, PAN_OUT - 1.6, 14, 1, -Math.PI / 2 - PAN_SPAN / 2 + 0.02, PAN_SPAN - 0.04),
+          mat({ color: 0x7ba6e0, roughness: 0.7 }));
+        under.rotation.x = -Math.PI / 2;
+        under.position.y = -0.06;
+        g.add(under);
+        [-1, -0.34, 0.34, 1].forEach((f) => {
+          const ar = f * PAN_SPAN * 0.42;
+          const rr = (PAN_IN + PAN_OUT) / 2;
+          const rb = new T3.Mesh(new T3.BoxGeometry(0.34, 0.42, PAN_OUT - PAN_IN - 1), beamMat);
+          rb.position.set(rr * Math.sin(ar), 0.38, rr * Math.cos(ar));
+          rb.rotation.y = ar;
+          g.add(rb);
+        });
+        const edge = new T3.Mesh(new T3.BoxGeometry(21, 0.5, 0.5), beamMat);
+        edge.position.set(0, 0.4, PAN_OUT - 0.7);
+        g.add(edge);
+        const car = new T3.Mesh(new T3.BoxGeometry(2.2, 1.3, 3.2), railMat);
+        car.position.set(0, RAIL_Y + 1.0 - PAN_Y, RAIL_R);
+        g.add(car);
+        const strut = new T3.Mesh(new T3.BoxGeometry(0.45, 0.45, 6.5), railMat);
+        strut.position.set(0, 1.2, RAIL_R - 3);
+        strut.rotation.x = -0.38;
+        g.add(strut);
+        g.position.set(0, PAN_Y, FZ);
+        scene.add(g);
+        panels.push({
+          g: g, car: car, cz: FZ, ry: RAIL_Y + 1.0,
+          closedA: (80 - i * 1.15) * D2R,
+          openA: (7.5 + i * 12.5) * D2R,    // centros: 7.5, 20, 32.5, 45, 57.5, 70
+          closedY: PAN_Y + i * 0.34,
+          openY: PAN_Y,
+          stagger: i * 0.035
+        });
       }
 
       // ---------- ESCENARIO (parte posterior) ----------
       const stageMats = [
-        mat({ color: 0x9aa2ac, roughness: 0.85 }),
-        mat({ color: 0x9aa2ac, roughness: 0.85 }),
-        new T3.MeshStandardMaterial({ map: brickTex, roughness: 0.92 }),
-        mat({ color: 0x6d747c, roughness: 0.9 }),
-        mat({ color: 0x9aa2ac, roughness: 0.85 }),
-        mat({ color: 0x9aa2ac, roughness: 0.85 })
+        mat({ color: 0x8d949c, roughness: 0.85 }),
+        mat({ color: 0x8d949c, roughness: 0.85 }),
+        // indice 2 = cara +Y: la tapa. Era ladrillo, ahora madera clara.
+        new T3.MeshStandardMaterial({ map: woodTex, roughness: 0.72 }),
+        mat({ color: 0x5f666e, roughness: 0.9 }),
+        mat({ color: 0x8d949c, roughness: 0.85 }),
+        mat({ color: 0x8d949c, roughness: 0.85 })
       ];
       const stage = new T3.Mesh(new T3.BoxGeometry(30, 1.7, 16), stageMats);
       stage.position.set(0, 0.95, -55);
       stage.castShadow = true;
       stage.receiveShadow = true;
       scene.add(stage);
-      const stageSkirt = new T3.Mesh(new T3.BoxGeometry(31, 0.85, 16.6), concD);
+      // faldon: madera oscura, para que la tarima se lea como volumen y no como
+      // una losa gris mas alta que el suelo.
+      const stageSkirt = new T3.Mesh(new T3.BoxGeometry(31, 0.85, 16.6),
+        new T3.MeshStandardMaterial({ map: woodDarkTex, roughness: 0.8 }));
       stageSkirt.position.set(0, 0.425, -55);
       scene.add(stageSkirt);
 [[0.55, -46.6], [1.15, -48.0]].forEach((s2) => {
@@ -3411,143 +4358,605 @@ stairs(blkL);
         spk.castShadow = true;
         scene.add(spk);
       });
-
-      // ---------- MURO DE FONDO DE LADRILLO ----------
-      const wallB = new T3.Mesh(new T3.BoxGeometry(40, 10.5, 0.9), brickW);
-      wallB.position.set(0, 5.25, -64.2);
-      wallB.castShadow = true;
-      wallB.receiveShadow = true;
-      scene.add(wallB);
-      for (let px = -19; px <= 19; px += 6) {
-        const pil = new T3.Mesh(new T3.BoxGeometry(1.1, 10.5, 1.5), brickW);
-        pil.position.set(px, 5.25, -64.5);
-        scene.add(pil);
+      // Baranda de la tarima: perfiles y montantes, no lineas. Va en el borde
+      // frontal y por los dos laterales, sin cerrar el acceso de las escaleras.
+      {
+        const RB = [], RI = [];
+        function bar(V, I, x1, y1, z1, x2, y2, z2, t) {
+          const dx = x2 - x1, dy = y2 - y1, dz = z2 - z1;
+          const ln = Math.sqrt(dx * dx + dy * dy + dz * dz);
+          // pushBox no inclina, asi que solo sirve para tramos horizontales
+          // (yaw) o verticales (sin yaw). Los barandales son justo eso.
+          const yaw = Math.atan2(dx, dz);
+          pushBox(V, I, (x1 + x2) / 2, (y1 + y2) / 2, (z1 + z2) / 2, t, ln, t, yaw);
+        }
+        const RT = 0.11;
+        [-1, 1].forEach((s7) => {
+          // lateral: desde el fondo hasta el borde frontal
+          bar(RB, RI, s7 * 15.1, 1.8 + 1.05, -62.5, s7 * 15.1, 1.8 + 1.05, -47.4, RT);
+          bar(RB, RI, s7 * 15.1, 1.8 + 0.62, -62.5, s7 * 15.1, 1.8 + 0.62, -47.4, RT * 0.8);
+          for (let z = -62.5; z <= -47.4; z += 1.9) {
+            bar(RB, RI, s7 * 15.1, 1.8, z, s7 * 15.1, 1.8 + 1.05, z, RT * 0.85);
+          }
+        });
+        // frontal, con hueco central para el pasillo
+        [[-15.1, -4.5], [4.5, 15.1]].forEach((sg) => {
+          bar(RB, RI, sg[0], 1.8 + 1.05, -47.15, sg[1], 1.8 + 1.05, -47.15, RT);
+          bar(RB, RI, sg[0], 1.8 + 0.62, -47.15, sg[1], 1.8 + 0.62, -47.15, RT * 0.8);
+          const n = Math.max(2, Math.round((sg[1] - sg[0]) / 1.9));
+          for (let i = 0; i <= n; i++) {
+            const x = sg[0] + (sg[1] - sg[0]) * (i / n);
+            bar(RB, RI, x, 1.8, -47.15, x, 1.8 + 1.05, -47.15, RT * 0.85);
+          }
+        });
+        const rg2 = new T3.BufferGeometry();
+        rg2.setAttribute('position', new T3.Float32BufferAttribute(RB, 3));
+        rg2.setIndex(RI);
+        rg2.computeVertexNormals();
+        const rail = new T3.Mesh(rg2, mat({ color: 0x8d949b, roughness: 0.5, metalness: 0.5 }));
+        rail.castShadow = true;
+        scene.add(rail);
       }
-      const cornice = new T3.Mesh(new T3.BoxGeometry(41.5, 0.8, 1.3), concW);
-      cornice.position.set(0, 10.7, -64.2);
-      scene.add(cornice);
-      const base = new T3.Mesh(new T3.BoxGeometry(41, 1.2, 1.4), concD);
-      base.position.set(0, 0.6, -64.2);
-      scene.add(base);
-      [-1, 1].forEach((s) => {
-        const tor = new T3.Mesh(new T3.BoxGeometry(3, 9, 2.6), concW);
-        tor.position.set(20.2 * s, 4.5, -58.5);
-        tor.castShadow = true;
-        scene.add(tor);
-        const caja = new T3.Mesh(new T3.BoxGeometry(3.2, 4, 4.6), concG);
-        caja.position.set(20.2 * s, 2, -62.5);
-        scene.add(caja);
-        const door = new T3.Mesh(new T3.BoxGeometry(1.6, 2.5, 0.2), mat({ color: 0x3a2f24, roughness: 0.8 }));
-        door.position.set(20.2 * s, 1.25, -60.1);
-        scene.add(door);
+
+      // ---------- PAÑOS DE CERAMICA BLANCA A LOS COSTADOS DE LA TARIMA ----------
+      // Dos paños verticales que suben desde la tarima (y=1.8) hasta el envés
+      // del techo (y=14.6) y que hacen de muro lateral del escenario. No son
+      // largos: 11 m de fondo, corridos hacia la mitad trasera de la tarima y
+      // no todo el ancho. La ceramica es mas lustrosa que el concreto.
+      const ceramTex = canvasTex(256, 256, (g, w, h) => {
+        g.fillStyle = '#e9e7e1';
+        g.fillRect(0, 0, w, h);
+        const tw = w / 4, th = h / 8;
+        for (let r = 0; r < 8; r++) {
+          for (let c = -1; c < 5; c++) {
+            const sh = 0.96 + Math.random() * 0.07;
+            g.fillStyle = 'rgb(' + Math.round(233 * sh) + ',' + Math.round(231 * sh) + ',' + Math.round(225 * sh) + ')';
+            g.fillRect(c * tw + 1.5, r * th + 1.5, tw - 3, th - 3);
+          }
+        }
+        g.strokeStyle = 'rgba(160,156,148,0.45)';
+        g.lineWidth = 1.5;
+        for (let r = 1; r < 8; r++) { g.beginPath(); g.moveTo(0, r * th); g.lineTo(w, r * th); g.stroke(); }
+        for (let c = 1; c < 4; c++) { g.beginPath(); g.moveTo(c * tw, 0); g.lineTo(c * tw, h); g.stroke(); }
+      }, 3, 4);
+      const ceramM = new T3.MeshStandardMaterial({ map: ceramTex, color: 0xf2f0ea, roughness: 0.34, metalness: 0.04 });
+      const CW_H = 14.6 - 1.8, CW_D = 8, CW_T = 0.6;
+      [-1, 1].forEach((s11) => {
+        const w = new T3.Mesh(new T3.BoxGeometry(CW_T, CW_H, CW_D), ceramM);
+        w.position.set(s11 * 16.2, 1.8 + CW_H / 2, -57.5);
+        w.castShadow = true; w.receiveShadow = true;
+        scene.add(w);
+        // coronacion: remata el pano contra el techo
+        const cap = new T3.Mesh(new T3.BoxGeometry(1.0, 0.34, CW_D + 0.5), concW);
+        cap.position.set(s11 * 16.2, 14.72, -57.5);
+        cap.castShadow = true;
+        scene.add(cap);
+        // zocalo de proteccion en la base
+        const plinth = new T3.Mesh(new T3.BoxGeometry(0.9, 1.1, CW_D + 0.3), concD);
+        plinth.position.set(s11 * 16.2, 1.35, -57.5);
+        plinth.castShadow = true; plinth.receiveShadow = true;
+        scene.add(plinth);
+        // cantoneras verticales de remate en los dos extremos
+        [-1, 1].forEach((s12) => {
+          const ed = new T3.Mesh(new T3.BoxGeometry(0.82, CW_H, 0.3), concW);
+          ed.position.set(s11 * 16.2, 1.8 + CW_H / 2, -57.5 + s12 * (CW_D / 2));
+          ed.castShadow = true;
+          scene.add(ed);
+        });
+        // El pano se ALARGA hacia atras y hacia afuera en L hasta tocar la
+        // cara interna del bloque de ladrillo (x=21.8), que en ese punto llega
+        // a z=-63.75..-50.75. El brazo transversal corre a plena altura para
+        // que la union se lea estructural y no como un muro bajo suelto.
+        const armLen = 21.8 - 16.2;
+        const armZ = -57.5 - (CW_D / 2) + 0.3;
+        const arm = new T3.Mesh(new T3.BoxGeometry(armLen, CW_H, CW_T), ceramM);
+        arm.position.set(s11 * (16.2 + armLen / 2), 1.8 + CW_H / 2, armZ);
+        arm.castShadow = true; arm.receiveShadow = true;
+        scene.add(arm);
+        const armCap = new T3.Mesh(new T3.BoxGeometry(armLen + 0.3, 0.34, CW_T + 0.4), concW);
+        armCap.position.set(s11 * (16.2 + armLen / 2), 14.72, armZ);
+        armCap.castShadow = true;
+        scene.add(armCap);
+        const armPl = new T3.Mesh(new T3.BoxGeometry(armLen + 0.3, 1.1, CW_T + 0.4), concD);
+        armPl.position.set(s11 * (16.2 + armLen / 2), 1.35, armZ);
+        armPl.castShadow = true; armPl.receiveShadow = true;
+        scene.add(armPl);
       });
 
-// ---------- TECHO AZUL FIJO (SOLO SOBRE EL ESCENARIO, SIN PILARES AL FRENTE) ----------
-      // columnas SOLO en la parte trasera; el frente va en voladizo
-[[-16.2, -62.8], [16.2, -62.8]].forEach((cp) => {
-        const col = new T3.Mesh(new T3.BoxGeometry(1.6, 14.1, 1.6), concW);
-        col.position.set(cp[0], 7.05, cp[1]);
-        col.castShadow = true;
-        scene.add(col);
-        const cap = new T3.Mesh(new T3.BoxGeometry(2.1, 0.5, 2.1), concG);
-        cap.position.set(cp[0], 14.32, cp[1]);
-        scene.add(cap);
+      // ---------- FONDO ABIERTO DEL ESCENARIO ----------
+      // Antes era un muro macizo de ladrillo de 40 x 10.5 m que cerraba la
+      // concha por detras. Aqui va una estructura metalica abierta: se ve el
+      // cielo entre los montantes y la cubierta se apoya en ella.
+      const BACK_Z = -64.2, BACK_H = 12.6;
+      const backSteel = mat({ color: 0xa8b0b8, roughness: 0.55, metalness: 0.4 });
+      const backPanel = mat({ color: 0x6f757c, roughness: 0.95 });
+      const backSlat = mat({ color: 0x8d7a5e, roughness: 0.9 });
+      const MONT = [-18, -12, -6, 0, 6, 12, 18];
+      MONT.forEach((mx) => {
+        const up = new T3.Mesh(new T3.BoxGeometry(0.8, BACK_H, 0.8), backSteel);
+        up.position.set(mx, BACK_H / 2, BACK_Z);
+        up.castShadow = true;
+        scene.add(up);
+        // cartela de pie
+        const ft = new T3.Mesh(new T3.BoxGeometry(2.4, 0.4, 2.4), concD);
+        ft.position.set(mx, 0.2, BACK_Z);
+        ft.receiveShadow = true;
+        scene.add(ft);
       });
-      const hingeBeam = new T3.Mesh(new T3.BoxGeometry(33, 0.55, 0.55), beamMat);
-      hingeBeam.position.set(0, 14.5, -63.4);
+      [4.6, 9.0, BACK_H].forEach((by) => {
+        const bm = new T3.Mesh(new T3.BoxGeometry(37.6, 0.7, 0.7), backSteel);
+        bm.position.set(0, by, BACK_Z);
+        bm.castShadow = true;
+        scene.add(bm);
+      });
+      for (let k = 0; k < MONT.length - 1; k++) {
+        const xa = MONT[k], xb2 = MONT[k + 1], cx2 = (xa + xb2) / 2;
+        // arriostramiento en cruz
+        [1, -1].forEach((s6) => {
+          const h0 = 1.0, h1 = BACK_H - 1.0;
+          const ln = Math.hypot(xb2 - xa, h1 - h0);
+          const dg = new T3.Mesh(new T3.BoxGeometry(0.3, ln, 0.3), backSteel);
+          dg.position.set(cx2, (h0 + h1) / 2, BACK_Z + 0.55);
+          dg.rotation.z = Math.atan2((xb2 - xa) * s6, h1 - h0);
+          dg.castShadow = true;
+          scene.add(dg);
+        });
+        // panel acustico ranurado: solo franja media, el remate superior queda
+        // abierto a proposito
+        const pn = new T3.Mesh(new T3.BoxGeometry(5.2, 7.2, 0.25), backPanel);
+        pn.position.set(cx2, 4.5, BACK_Z + 0.35);
+        pn.castShadow = true; pn.receiveShadow = true;
+        scene.add(pn);
+        for (let r = 0; r < 10; r++) {
+          const sl = new T3.Mesh(new T3.BoxGeometry(5.2, 0.13, 0.36), backSlat);
+          sl.position.set(cx2, 1.3 + r * 0.71, BACK_Z + 0.56);
+          scene.add(sl);
+        }
+      }
+      // zocalo de concreto
+      const base = new T3.Mesh(new T3.BoxGeometry(38.4, 1.1, 1.5), concD);
+      base.position.set(0, 0.55, BACK_Z);
+      base.castShadow = true; base.receiveShadow = true;
+      scene.add(base);
+      // luminarias de contra montadas en la viga alta
+      [-15, -9, -3, 3, 9, 15].forEach((mx) => {
+        const hs = new T3.Mesh(new T3.BoxGeometry(1.7, 0.42, 0.95), mat({ color: 0x3a3f45, roughness: 0.7 }));
+        hs.position.set(mx, 8.55, BACK_Z + 0.85);
+        hs.castShadow = true;
+        scene.add(hs);
+        const gl = new T3.Mesh(new T3.PlaneGeometry(1.45, 0.7), lampMat);
+        gl.position.set(mx, 8.36, BACK_Z + 1.02);
+        gl.rotation.x = 0.55;
+        scene.add(gl);
+      });
+            // ---------- TIRA LED DEL FONDO ----------
+            // Barra horizontal justo bajo la viga alta + retornos verticales en las
+            // dos esquinas. Usa material emisivo para que proyecte luz sobre la
+            // estructura metálica y los paneles acústicos del fondo.
+            {
+              const ledCol = new T3.Color(0x2ad4ff);
+const ledMat = new T3.MeshStandardMaterial({
+          color: 0x0b0b0b,
+          emissive: ledCol.clone(),
+          emissiveIntensity: 6.0,
+          roughness: 0.95,
+          metalness: 0.05
+        });
+        const ledHalo = new T3.MeshBasicMaterial({
+          color: 0x2ad4ff, transparent: true, opacity: 0.65,
+          blending: T3.AdditiveBlending, depthWrite: false, toneMapped: false
+        });
+              const LED_LY = BACK_H - 0.55;      // bajo la viga de BACK_H
+              const LED_LX = 19.0;               // media anchura de la pared (38 m)
+              const LED_LZ = BACK_Z + 0.95;      // por delante de montantes y riostras
+              // barra principal
+              const bar = new T3.Mesh(new T3.BoxGeometry(LED_LX * 2, 0.26, 0.26), ledMat);
+              bar.position.set(0, LED_LY, LED_LZ);
+              bar.castShadow = false;
+              bar.receiveShadow = false;
+              scene.add(bar);
+              // halo suave
+              const barHalo = new T3.Mesh(new T3.BoxGeometry(LED_LX * 2, 2.2, 1.2), ledHalo);
+              barHalo.position.set(0, LED_LY, LED_LZ - 0.05);
+              scene.add(barHalo);
+              // retornos verticales en esquinas
+              const rets = [];
+              const retHalos = [];
+              [-1, 1].forEach((sx) => {
+                const r = new T3.Mesh(new T3.BoxGeometry(0.26, 10.6, 0.26), ledMat);
+                r.position.set(sx * LED_LX, LED_LY - 5.3, LED_LZ);
+                r.castShadow = false; r.receiveShadow = false;
+                scene.add(r);
+                rets.push(r);
+                const rh = new T3.Mesh(new T3.BoxGeometry(1.6, 10.6, 1.2), ledHalo);
+                rh.position.set(sx * LED_LX, LED_LY - 5.3, LED_LZ - 0.05);
+                scene.add(rh);
+                retHalos.push(rh);
+              });
+              // luces puntuales para proyectar el color sobre el fondo
+              LED.lights = [];
+              const seg = 8;
+              const barLen = LED_LX * 2;
+              for (let i = 0; i <= seg; i++) {
+                const t = i / seg;
+                const x = -LED_LX + t * barLen;
+                const pl = new T3.PointLight(ledCol, 9.0, 55, 1.2);
+                pl.userData = { baseInt: 9.0 };
+                pl.position.set(x, LED_LY - 0.45, LED_LZ - 1.4);
+                pl.castShadow = false;
+                scene.add(pl);
+                LED.lights.push(pl);
+              }
+              [-1, 1].forEach((sx) => {
+                for (let j = 0; j <= 3; j++) {
+                  const t = j / 3;
+                  const y = LED_LY - 0.8 - t * 9.6;
+                  const plr = new T3.PointLight(ledCol, 7.0, 45, 1.2);
+                  plr.userData = { baseInt: 7.0 };
+                  plr.position.set(sx * (LED_LX - 0.05), y, LED_LZ - 1.2);
+                  plr.castShadow = false;
+                  scene.add(plr);
+                  LED.lights.push(plr);
+                }
+              });
+LED.strip = bar;
+              LED.halo = barHalo;
+              LED.rets = rets;
+              LED.retHalos = retHalos;
+              LED.mat = ledMat;
+              LED.hmat = ledHalo;
+              // Spots dirigidos al escenario (tarima) para iluminar músicos
+              LED.spots = [];
+              [-6, 6].forEach((sx) => {
+                const sp = new T3.SpotLight(ledCol, 6.0, 45, Math.PI / 6, 0.6, 1.2);
+                sp.position.set(sx * LED_LX, LED_LY - 1.0, LED_LZ - 0.5);
+                sp.target.position.set(sx * 8, 1.8, -52);
+                sp.castShadow = false;
+                scene.add(sp);
+                scene.add(sp.target);
+                LED.spots.push(sp);
+              });
+            }
+
+      // ---------- AREAS TECNICAS POSTERIORES (planta, puntos 8, 9 y 10) ----------
+      // Detras del escenario hay un bloque central de apoyo y dos salas
+      // laterales. Desde el frente quedan tapados por la estructura abierta
+      // (los paneles suben hasta y=8.1), asi que se ven de verdad solo desde
+      // atras o desde arriba, que es lo que pide la planta.
+      {
+        const svcMat = mat({ color: 0xcfcac2, roughness: 0.9 });
+        const svcRoof = mat({ color: 0x9b968f, roughness: 0.85 });
+        // bloque central: camerinos / areas tecnicas / almacen
+        const core = new T3.Mesh(new T3.BoxGeometry(26, 6.5, 8), svcMat);
+        core.position.set(0, 3.25, -69.5);
+        core.castShadow = true; core.receiveShadow = true;
+        scene.add(core);
+        const coreRoof = new T3.Mesh(new T3.BoxGeometry(26.6, 0.35, 8.6), svcRoof);
+        coreRoof.position.set(0, 6.6, -69.5);
+        coreRoof.castShadow = true;
+        scene.add(coreRoof);
+        // antepecho: remata el bloque y le da escala
+        const par = new T3.Mesh(new T3.BoxGeometry(26.6, 0.7, 0.3), concW);
+        par.position.set(0, 7.1, -65.3);
+        par.castShadow = true;
+        scene.add(par);
+        // puertas de servicio en la cara que da al escenario
+        [-8.5, 0, 8.5].forEach((dx) => {
+          const dr2 = new T3.Mesh(new T3.BoxGeometry(1.5, 2.5, 0.22), mat({ color: 0x4a5057, roughness: 0.75 }));
+          dr2.position.set(dx, 1.25, -65.42);
+          dr2.castShadow = true;
+          scene.add(dr2);
+          const lin = new T3.Mesh(new T3.BoxGeometry(1.8, 0.22, 0.36), concW);
+          lin.position.set(dx, 2.62, -65.36);
+          scene.add(lin);
+        });
+        // equipos de clima en la cubierta
+        [-7, 7].forEach((dx) => {
+          const ac = new T3.Mesh(new T3.BoxGeometry(2.6, 1.1, 2.0), mat({ color: 0xb8bcc1, roughness: 0.6, metalness: 0.35 }));
+          ac.position.set(dx, 7.3, -69.5);
+          ac.castShadow = true;
+          scene.add(ac);
+          const grill = new T3.Mesh(new T3.CylinderGeometry(0.72, 0.72, 0.12, 16), mat({ color: 0x6d737a, roughness: 0.5, metalness: 0.5 }));
+          grill.position.set(dx, 7.9, -69.5);
+          scene.add(grill);
+        });
+        // salas laterales, entre el bloque central y los muros de ladrillo
+        [-1, 1].forEach((s10) => {
+          const rm = new T3.Mesh(new T3.BoxGeometry(6, 4.5, 7), svcMat);
+          rm.position.set(s10 * 16.5, 2.25, -68.6);
+          rm.castShadow = true; rm.receiveShadow = true;
+          scene.add(rm);
+          const rf = new T3.Mesh(new T3.BoxGeometry(6.5, 0.3, 7.5), svcRoof);
+          rf.position.set(s10 * 16.5, 4.6, -68.6);
+          rf.castShadow = true;
+          scene.add(rf);
+          const vd = new T3.Mesh(new T3.BoxGeometry(1.3, 2.3, 0.2), mat({ color: 0x4a5057, roughness: 0.75 }));
+          vd.position.set(s10 * 16.5, 1.15, -65.15);
+          scene.add(vd);
+        });
+        // plaza de circulacion del personal, delante de todo el bloque
+        const yard = new T3.Mesh(new T3.BoxGeometry(40, 0.16, 3.4), concG);
+        yard.position.set(0, 0.08, -64.9);
+        yard.receiveShadow = true;
+        scene.add(yard);
+      }
+
+      // ---------- 2 BLOQUES DE LADRILLO ----------
+      const WALL_FRONT = -63.75;
+      const brickCoffee = new T3.MeshStandardMaterial({ map: brickTex, color: 0x6f4a2a, roughness: 0.95 });
+      // Ojo: la camara esta en z = +76 mirando a -Z, asi que +X se ve a la IZQUIERDA
+      // de la pantalla. Claro = -X (derecha), oscuro = +X (izquierda).
+      [
+        [-34.8, 26.0, 13.0,  9.0, brickW,      1],
+        [ 34.8, 26.0, 13.0, 13.8, brickCoffee, -1]
+      ].forEach(([bx, bw, bd, bh, bm, doorSide]) => {
+        const cz = -57.25;
+        const body = new T3.Mesh(new T3.BoxGeometry(bw, bh, bd), bm);
+        body.position.set(bx, bh / 2, cz);
+        body.castShadow = true;
+        body.receiveShadow = true;
+        scene.add(body);
+        const ribs = Math.max(2, Math.round(bd / 2.4));
+        for (let k = 1; k < ribs; k++) {
+          const rh = Math.max(0.2, bh - 0.35);
+          const rib = new T3.Mesh(new T3.BoxGeometry(0.75, rh, 0.55), bm);
+          rib.position.set(bx, rh / 2, cz - bd / 2 + (bd / ribs) * k);
+          rib.castShadow = true;
+          scene.add(rib);
+        }
+        const dh = Math.min(4.2, bh * 0.3), dw = dh * 0.72;
+        const dx = bx + doorSide * 5;
+        const leaf = new T3.Mesh(new T3.BoxGeometry(dw, dh, 0.35), mat({ color: 0x3a2f24, roughness: 0.8 }));
+        leaf.position.set(dx, dh / 2, cz + bd / 2 - 0.12);
+        scene.add(leaf);
+        const lint = new T3.Mesh(new T3.BoxGeometry(dw + 0.5, 0.4, 0.5), concW);
+        lint.position.set(dx, dh + 0.2, cz + bd / 2 - 0.12);
+        lint.castShadow = true;
+        scene.add(lint);
+        const cap = new T3.Mesh(new T3.BoxGeometry(bw + 0.55, 0.4, bd + 0.55), concW);
+        cap.position.set(bx, bh + 0.2, cz);
+        cap.castShadow = true;
+        scene.add(cap);
+        const plinth = new T3.Mesh(new T3.BoxGeometry(bw + 0.45, 0.75, bd + 0.45), concD);
+        plinth.position.set(bx, 0.375, cz);
+        plinth.castShadow = true;
+        plinth.receiveShadow = true;
+        scene.add(plinth);
+      });
+      const hingeBeam = new T3.Mesh(new T3.BoxGeometry(34.4, 0.55, 0.55), beamMat);
+      hingeBeam.position.set(0, 14.6, -64.6);
       scene.add(hingeBeam);
-      const sideBeamL = new T3.Mesh(new T3.BoxGeometry(0.55, 0.55, 17.5), beamMat);
-      sideBeamL.position.set(-16.6, 14.5, -54.7);
+      const sideBeamL = new T3.Mesh(new T3.BoxGeometry(0.55, 0.55, 20), beamMat);
+      sideBeamL.position.set(-16.9, 14.6, -54.6);
       scene.add(sideBeamL);
-      const sideBeamR = new T3.Mesh(new T3.BoxGeometry(0.55, 0.55, 17.5), beamMat);
-      sideBeamR.position.set(16.6, 14.5, -54.7);
+      const sideBeamR = new T3.Mesh(new T3.BoxGeometry(0.55, 0.55, 20), beamMat);
+      sideBeamR.position.set(16.9, 14.6, -54.6);
       scene.add(sideBeamR);
-      // cubierta fija azul sobre la tarima (no se mueve), sobresale un poco al frente
-      const roofFix = new T3.Mesh(new T3.BoxGeometry(32.4, 0.5, 18.9), roofMat);
-      roofFix.position.set(0, 14.75, -54.6);
+      // ---------- CUBIERTA DE LA TARIMA (losa azul fija) ----------
+      // OJO: esta NO es el arco retráctil de las gradas, que va aparte. Es la
+      // losa plana que cubre el escenario. Antes media 32.4 x 18.9; se sube
+      // algo a 34 x 21 para que el vuelo siga siendo razonable (2 m por lado
+      // sobre una tarima de 30 x 16) y se le monta una planta solar encima.
+      const RS_W = 34, RS_D = 21, RS_Y = 15.0;
+      const roofFix = new T3.Mesh(new T3.BoxGeometry(RS_W, 0.5, RS_D), roofMat);
+      roofFix.position.set(0, RS_Y, -54.6);
       roofFix.rotation.x = 0.03;
       roofFix.castShadow = true;
+      roofFix.receiveShadow = true;
       scene.add(roofFix);
-      const roofUnder = new T3.Mesh(new T3.BoxGeometry(31.6, 0.18, 18.1), mat({ color: 0x7ba6e0, roughness: 0.7 }));
-      roofUnder.position.set(0, 14.42, -54.6);
+      const roofUnder = new T3.Mesh(new T3.BoxGeometry(RS_W - 0.9, 0.18, RS_D - 0.9), mat({ color: 0x7ba6e0, roughness: 0.7 }));
+      roofUnder.position.set(0, RS_Y - 0.33, -54.6);
       roofUnder.rotation.x = 0.03;
       scene.add(roofUnder);
       const fascia = mat({ color: 0x0d4da0, roughness: 0.5 });
-      for (let s = -1; s <= 1; s += 2) {
-        const fm = new T3.Mesh(new T3.BoxGeometry(0.22, 0.24, 19.2), fascia);
-        fm.position.set(s * 16.2, 14.55, -54.6);
+      [1, -1].forEach((s8) => {
+        const fm = new T3.Mesh(new T3.BoxGeometry(0.24, 0.28, RS_D + 0.35), fascia);
+        fm.position.set(s8 * (RS_W / 2), RS_Y - 0.22, -54.6);
         fm.rotation.x = 0.03;
+        fm.castShadow = true;
         scene.add(fm);
-        const fz = new T3.Mesh(new T3.BoxGeometry(32.8, 0.24, 0.22), fascia);
-        fz.position.set(0, 14.55, -54.6 + s * 9.5);
+        const fz = new T3.Mesh(new T3.BoxGeometry(RS_W + 0.35, 0.28, 0.24), fascia);
+        fz.position.set(0, RS_Y - 0.22, -54.6 + s8 * (RS_D / 2));
         fz.rotation.x = 0.03;
+        fz.castShadow = true;
         scene.add(fz);
+      });
+      // canaletas en los dos lados largos
+      [1, -1].forEach((s9) => {
+        const gu = new T3.Mesh(new T3.BoxGeometry(0.5, 0.34, RS_D - 1), mat({ color: 0xb9bfc6, roughness: 0.7, metalness: 0.2 }));
+        gu.position.set(s9 * (RS_W / 2 - 0.42), RS_Y + 0.2, -54.6);
+        gu.rotation.x = 0.03;
+        gu.castShadow = true;
+        scene.add(gu);
+      });
+
+      // ---------- PLANTA FOTOVOLTAICA SOBRE LA CUBIERTA ----------
+      // Panel de 2.0 x 1.3 con textura de celdas. 12 columnas x 9 filas = 108
+      // paneles en un unico InstancedMesh, sobre rails, inclinados 10 grados al
+      // norte (-Z), que es lo correcto para Bogota.
+      const pvTex = canvasTex(128, 80, (g, w, h) => {
+        g.fillStyle = '#101828';
+        g.fillRect(0, 0, w, h);
+        const cols = 4, rows = 2, cw = w / cols, ch = h / rows;
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const sh = 0.8 + Math.random() * 0.4;
+            g.fillStyle = 'rgb(' + Math.round(30 * sh) + ',' + Math.round(47 * sh) + ',' + Math.round(84 * sh) + ')';
+            g.fillRect(c * cw + 2, r * ch + 2, cw - 4, ch - 4);
+          }
+        }
+        g.strokeStyle = 'rgba(178,196,222,0.45)';
+        g.lineWidth = 1;
+        for (let c = 1; c < cols; c++) { g.beginPath(); g.moveTo(c * cw, 0); g.lineTo(c * cw, h); g.stroke(); }
+        for (let r = 1; r < rows; r++) { g.beginPath(); g.moveTo(0, r * ch); g.lineTo(w, r * ch); g.stroke(); }
+        g.strokeStyle = 'rgba(205,218,238,0.8)';
+        g.lineWidth = 2;
+        g.strokeRect(1, 1, w - 2, h - 2);
+      }, 1, 1);
+      const pvMat = new T3.MeshStandardMaterial({ map: pvTex, roughness: 0.26, metalness: 0.3 });
+      const pvFrame = mat({ color: 0xb4bac1, roughness: 0.45, metalness: 0.55 });
+      const PV_NX = 12, PV_NZ = 9, PV_W = 2.0, PV_D = 1.3, PV_G = 0.35;
+      const PV_TILT = -0.175;
+      const pvW = PV_NX * PV_W + (PV_NX - 1) * PV_G;
+      const pvD = PV_NZ * PV_D + (PV_NZ - 1) * PV_G;
+      // grupo con la misma pendiente que la losa: los paneles se apoyan en el
+      // plano real de la cubierta y no flotan
+      const pvRoot = new T3.Group();
+      pvRoot.position.set(0, RS_Y + 0.26, -54.6);
+      pvRoot.rotation.x = 0.03;
+      scene.add(pvRoot);
+      for (let rI = 0; rI < 4; rI++) {
+        const lz = -pvD / 2 + pvD * (rI + 0.5) / 4;
+        const rl = new T3.Mesh(new T3.BoxGeometry(pvW + 0.6, 0.12, 0.16), pvFrame);
+        rl.position.set(0, 0.05, lz);
+        rl.castShadow = true;
+        pvRoot.add(rl);
       }
+      const pvMesh = new T3.InstancedMesh(new T3.BoxGeometry(PV_W, 0.07, PV_D), pvMat, PV_NX * PV_NZ);
+      {
+        const m4 = new T3.Matrix4();
+        const qq = new T3.Quaternion().setFromEuler(new T3.Euler(PV_TILT, 0, 0, 'YXZ'));
+        const p3 = new T3.Vector3();
+        const s3 = new T3.Vector3(1, 1, 1);
+        let i = 0;
+        for (let r = 0; r < PV_NZ; r++) {
+          for (let c = 0; c < PV_NX; c++, i++) {
+            p3.set(-pvW / 2 + PV_W / 2 + c * (PV_W + PV_G), 0.13, -pvD / 2 + PV_D / 2 + r * (PV_D + PV_G));
+            m4.compose(p3, qq, s3);
+            pvMesh.setMatrixAt(i, m4);
+          }
+        }
+        pvMesh.instanceMatrix.needsUpdate = true;
+      }
+      pvMesh.castShadow = true;
+      pvMesh.receiveShadow = true;
+      pvRoot.add(pvMesh);
+      // armario de inversores y cuadro electrico, al borde trasero del tejado
+      const inv = new T3.Mesh(new T3.BoxGeometry(2.2, 1.3, 1.0), mat({ color: 0xd2d6da, roughness: 0.6, metalness: 0.2 }));
+      inv.position.set(-RS_W / 2 + 2.4, RS_Y + 0.9, -54.6 - RS_D / 2 + 1.6);
+      inv.rotation.x = 0.03;
+      inv.castShadow = true;
+      scene.add(inv);
+      const invTop = new T3.Mesh(new T3.BoxGeometry(2.35, 0.12, 1.15), mat({ color: 0x8f959b, roughness: 0.5, metalness: 0.4 }));
+      invTop.position.set(-RS_W / 2 + 2.4, RS_Y + 1.6, -54.6 - RS_D / 2 + 1.6);
+      invTop.rotation.x = 0.03;
+      scene.add(invTop);
 
 // casitas/edificaciones alrededor ELIMINADAS por pedido del usuario
       // (solo queda la concha, el cesped y los arboles)
 
 // arbustos alrededor de la concha eliminados por pedido del usuario
       // (quedan los arboles del exterior y el cesped)
-      const brMat = mat({ color: 0x8f9580, roughness: 0.9 });
-      const brMat2 = mat({ color: 0x5d3a20, roughness: 0.95 });
-      const folA = mat({ color: 0x4f9460, roughness: 0.95 });
-      const folB = mat({ color: 0x3f8a52, roughness: 0.95 });
-function addTree(x, z, s, kind) {
+      // ---------- ARBOLES ----------
+      // Antes eran bolitas lisas (esferas achatadas) y se veian bastante planas.
+      // Ahora la copa son grumos irregulares: un icosaedro deformado con ruido,
+      // en shadow plano. Es lo que mas se acerca a un arbol sin meter texturas
+      // ni miles de poligonos.
+      const brMat = mat({ color: 0x6d5a44, roughness: 0.95 });
+      const brMat2 = mat({ color: 0x5a3f2a, roughness: 0.96 });
+      const folMats = [
+        mat({ color: 0x3f7a4a, roughness: 0.98, flatShading: true }),
+        mat({ color: 0x356b41, roughness: 0.98, flatShading: true }),
+        mat({ color: 0x4a8a52, roughness: 0.98, flatShading: true }),
+        mat({ color: 0x2d5c39, roughness: 0.98, flatShading: true })
+      ];
+
+      // Geometria de un grumo de hojas: icosaedro con los vertices movidos por
+      // ruido senoidal. Cada grumo sale distinto y la silueta se rompe, que es
+      // justo lo que hacia que los arboles parecieran "_bolas_".
+      function foliageGeo(radius, seed, rough) {
+        const g = new T3.IcosahedronGeometry(radius, 1);
+        const p = g.attributes.position;
+        const v = new T3.Vector3();
+        for (let i2 = 0; i2 < p.count; i2++) {
+          v.fromBufferAttribute(p, i2);
+          const n =
+            Math.sin(v.x * 2.3 + seed) * Math.cos(v.y * 1.9 + seed * 1.7) * 0.5 +
+            Math.sin(v.z * 3.1 - seed * 0.8) * Math.cos(v.x * 1.3 + seed) * 0.3 +
+            Math.sin(v.y * 4.3 + seed * 2.3) * 0.2;
+          v.multiplyScalar(1 + n * rough);
+          p.setXYZ(i2, v.x, v.y, v.z);
+        }
+        g.computeVertexNormals();
+        return g;
+      }
+
+      // Tronco con el pie algo abierto: si no, parece un palo clavado en el cesped.
+      function trunkGeo(rTop, rBot, h, seed) {
+        const g = new T3.CylinderGeometry(rTop, rBot, h, 9, 3);
+        const p = g.attributes.position;
+        const v = new T3.Vector3();
+        for (let i2 = 0; i2 < p.count; i2++) {
+          v.fromBufferAttribute(p, i2);
+          const yy = v.y + h / 2;                       // 0 en la base
+          const tt = Math.max(0, 1 - yy / (h * 0.22));  // solo el pie se ensancha
+          const wob = Math.sin(Math.atan2(v.z, v.x) * 3 + seed) * 0.1 + 0.1;
+          v.x *= 1 + tt * wob;
+          v.z *= 1 + tt * wob;
+          // leve curvatura: los troncos no son perfectamente verticales
+          v.x += (yy / h) * (yy / h) * h * 0.06;
+          p.setXYZ(i2, v.x, v.y, v.z);
+        }
+        g.computeVertexNormals();
+        return g;
+      }
+
+      function addTree(x, z, s, kind) {
         const g = new T3.Group();
         const t = new T3.Group();
+        const seed = Math.random() * 100;
         t.rotation.y = Math.random() * Math.PI * 2;
-        t.rotation.z = (Math.random() - 0.5) * 0.06;
+        t.rotation.z = (Math.random() - 0.5) * 0.07;
+        t.scale.set(1 + (Math.random() - 0.5) * 0.16, 1, 1 + (Math.random() - 0.5) * 0.16);
         g.add(t);
-        if (kind === 0) {
-          const trunk = new T3.Mesh(new T3.CylinderGeometry(0.18 * s, 0.4 * s, 5.6 * s, 7), brMat2);
-          trunk.position.y = 2.8 * s;
-          t.add(trunk);
-          for (let k2 = 0; k2 < 7; k2++) {
-            const bb = k2 * 0.8976;
-            const blob = new T3.Mesh(new T3.SphereGeometry((1.5 + (k2 % 3) * 0.55) * s, 10, 8), k2 % 2 ? folA : folB);
-            blob.position.set(Math.cos(bb) * (1.1 + (k2 % 2) * 0.4) * s, (4.6 + (k2 % 3) * 0.55) * s, Math.sin(bb) * (1.1 + (k2 % 2) * 0.4) * s);
-            blob.scale.set(1.6, 0.62, 1.6);
-            t.add(blob);
-          }
-          const topB = new T3.Mesh(new T3.SphereGeometry(2.05 * s, 10, 8), folA);
-          topB.position.y = 6.6 * s;
-          topB.scale.set(1.45, 0.72, 1.45);
-          t.add(topB);
-        } else if (kind === 1) {
-          const trunk = new T3.Mesh(new T3.CylinderGeometry(0.24 * s, 0.55 * s, 7.4 * s, 8), brMat);
-          trunk.position.y = 3.7 * s;
-          t.add(trunk);
-          for (let k2 = 0; k2 < 3; k2++) {
-            const br = new T3.Mesh(new T3.CylinderGeometry(0.07 * s, 0.16 * s, 1.6 * s, 5), brMat2);
-            br.position.set(Math.cos(k2 * 2.1) * 0.5 * s, (2.2 + k2 * 1.1) * s, Math.sin(k2 * 2.1) * 0.5 * s);
-            br.rotation.z = 0.9;
-            t.add(br);
-          }
-          const crown = new T3.Mesh(new T3.SphereGeometry(2.8 * s, 10, 8), folA);
-          crown.position.y = 8.6 * s;
-          crown.scale.set(1.55, 0.55, 1.55);
-          t.add(crown);
-          const c2 = new T3.Mesh(new T3.SphereGeometry(1.9 * s, 9, 7), folB);
-          c2.position.y = 9.5 * s;
-          c2.scale.set(1.5, 0.5, 1.5);
-          t.add(c2);
-          const c3 = new T3.Mesh(new T3.SphereGeometry(1.2 * s, 8, 6), folA);
-          c3.position.y = 10.25 * s;
-          c3.scale.set(1.3, 0.5, 1.3);
-          t.add(c3);
-        } else {
-          const trunk = new T3.Mesh(new T3.CylinderGeometry(0.22 * s, 0.5 * s, 8.4 * s, 8), brMat);
-          trunk.position.y = 4.2 * s;
-          t.add(trunk);
-          for (let k2 = 0; k2 < 9; k2++) {
-            const bb = k2 * 0.698;
-            const blob = new T3.Mesh(new T3.SphereGeometry((1.15 + (k2 % 3) * 0.5) * s, 9, 7), k2 % 2 ? folB : folA);
-            blob.position.set(Math.cos(bb) * (0.85 + (k2 % 2) * 0.35) * s, (7.4 + (k2 % 4) * 0.45) * s, Math.sin(bb) * (0.85 + (k2 % 2) * 0.35) * s);
-            blob.scale.set(1.55, 0.85, 1.55);
-            t.add(blob);
-          }
+
+        // Tres portes distintos. La silueta es lo que mas cambia el conjunto:
+        // arbol bajo y abierto, arbol alto de sombra, y el mas ramificado.
+        let trunkH, blobs, topBlob;
+        if (kind === 0) { trunkH = 5.4; blobs = 11; topBlob = 1.9; }
+        else if (kind === 1) { trunkH = 8.2; blobs = 9; topBlob = 1.4; }
+        else { trunkH = 7.0; blobs = 14; topBlob = 1.5; }
+
+        const trunk = new T3.Mesh(trunkGeo(0.17 * s, 0.46 * s, trunkH * s, seed), brMat2);
+        trunk.position.y = (trunkH * s) / 2;
+        trunk.castShadow = true;
+        t.add(trunk);
+
+        // ramas: suben hacia fuera y sostienen la copa
+        const branches = kind === 2 ? 5 : 3;
+        for (let k2 = 0; k2 < branches; k2++) {
+          const a = seed + k2 * (Math.PI * 2 / branches) + Math.random() * 0.4;
+          const len = (1.5 + Math.random() * 1.4) * s;
+          const br = new T3.Mesh(new T3.CylinderGeometry(0.055 * s, 0.13 * s, len, 6), brMat);
+          br.position.set(Math.cos(a) * len * 0.26, (trunkH * s) * (0.62 + Math.random() * 0.2), Math.sin(a) * len * 0.26);
+          br.rotation.z = Math.cos(a) * 0.95;
+          br.rotation.x = -Math.sin(a) * 0.95;
+          t.add(br);
         }
+
+        // copa: grumos repartidos en casquete, mas grandes hacia fuera
+        const crownY = trunkH * s * 0.94;
+        const spread = (kind === 1 ? 2.5 : 3.4) * s;
+        for (let k2 = 0; k2 < blobs; k2++) {
+          const a = (k2 / blobs) * Math.PI * 2 + seed + Math.random() * 0.5;
+          const rad = spread * (0.35 + Math.random() * 0.75);
+          const up = crownY + (Math.random() - 0.35) * spread * 0.85;
+          const rr = (0.85 + Math.random() * 0.95) * s * (kind === 1 ? 0.92 : 1);
+          const blob = new T3.Mesh(
+            foliageGeo(rr, seed + k2 * 3.7, 0.3),
+            folMats[(k2 + kind) % folMats.length]
+          );
+          blob.position.set(Math.cos(a) * rad, up, Math.sin(a) * rad);
+          blob.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+          blob.castShadow = true;
+          t.add(blob);
+        }
+        // remate de la copa
+        const top = new T3.Mesh(foliageGeo(topBlob * s, seed + 99, 0.28), folMats[kind % folMats.length]);
+        top.position.y = crownY + spread * 0.62;
+        top.castShadow = true;
+        t.add(top);
+
         g.position.set(x, 0, z);
         g.castShadow = true;
         scene.add(g);
@@ -3562,7 +4971,7 @@ function addTree(x, z, s, kind) {
         [-84, -62], [84, -62], [-92, 30], [92, 30], [0, 58],
         [-60, -118], [60, -118], [-106, -76], [106, -76], [-128, -12],
         [128, -12], [-126, 28], [126, 28], [-82, 58], [82, 58],
-        [-40, 66], [40, 66], [-50, -60], [50, -60]
+        [-40, 66], [40, 66], [-62, -60], [62, -60]
       ];
       for (let k = 0; k < TPS.length; k++) {
         const p = TPS[k];
@@ -3583,7 +4992,98 @@ function addTree(x, z, s, kind) {
       starSys.geometry.setAttribute('position', new T3.Float32BufferAttribute(starPos, 3));
       scene.add(starSys);
 
-// ---------- LLUVIA (sistema simple: gotas que caen desde el banco de nubes) ----------
+      // ---------- CIELO (domo con degradado) ----------
+      // Antes el fondo era transparente y se veia la pagina detras. Con un domo
+      // propio el modelo tiene horizonte y el clima tiene donde reflejarse.
+      // El cielo ya no son dos colores: hay dispersion (mas azul arriba),
+      // bruma gruesa en el horizonte, disco solar y resplandor alrededor.
+      sunDirV = new T3.Vector3(0, 1, 0);
+      skyMat = new T3.ShaderMaterial({
+        side: T3.BackSide, depthWrite: false, fog: false,
+        uniforms: {
+          zenith: { value: new T3.Color(0x1d4f9c) },
+          horizon: { value: new T3.Color(0xc3d9ee) },
+          sunCol: { value: new T3.Color(0xfff3dc) },
+          sunDir: { value: sunDirV },
+          sunI: { value: 1.0 },
+          haze: { value: 0.55 }
+        },
+        vertexShader: 'varying vec3 vDir;\n' +
+          'void main(){ vDir = position;\n' +
+          ' gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+        fragmentShader: [
+          'uniform vec3 zenith; uniform vec3 horizon; uniform vec3 sunCol;',
+          'uniform vec3 sunDir; uniform float sunI; uniform float haze;',
+          'varying vec3 vDir;',
+          'void main(){',
+          '  vec3 d = normalize(vDir);',
+          '  float y = d.y;',
+          '  // dispersion: el azul se concentra arriba, la bruma se acumula abajo',
+          '  float t = pow(clamp(y, 0.0, 1.0), 0.42);',
+          '  vec3 col = mix(horizon, zenith, t);',
+          '  float band = exp(-abs(y) * 5.0);',
+          '  col = mix(col, horizon, band * haze);',
+          '  // resplandor: halo ancho + nucleo estrecho alrededor del sol',
+          '  float a = max(dot(d, normalize(sunDir)), 0.0);',
+          '  float glow = pow(a, 6.0) * 0.30 + pow(a, 40.0) * 0.55;',
+          '  col += sunCol * glow * sunI;',
+          '  float disc = smoothstep(0.99955, 0.99985, a);',
+          '  col += sunCol * disc * sunI * 2.2;',
+          '  gl_FragColor = vec4(col, 1.0);',
+          '}'
+        ].join('\n')
+      });
+      skyMesh = new T3.Mesh(new T3.SphereGeometry(500, 32, 20), skyMat);
+      skyMesh.renderOrder = -1;
+      skyMesh.frustumCulled = false;
+      scene.add(skyMesh);
+
+      // ---------- NUBES (capas de sprites difusos a la deriva) ----------
+      const puffTex = (function () {
+        const c = document.createElement('canvas');
+        c.width = 256; c.height = 128;
+        const x = c.getContext('2d');
+        const blobs = [[64, 82, 46], [104, 62, 60], [150, 70, 54], [186, 86, 42],
+                       [96, 96, 42], [142, 100, 38], [58, 100, 30], [178, 104, 28]];
+        for (let i = 0; i < blobs.length; i++) {
+          const b = blobs[i];
+          const g = x.createRadialGradient(b[0], b[1], 0, b[0], b[1], b[2]);
+          g.addColorStop(0, 'rgba(255,255,255,0.92)');
+          g.addColorStop(0.5, 'rgba(255,255,255,0.40)');
+          g.addColorStop(1, 'rgba(255,255,255,0)');
+          x.fillStyle = g;
+          x.beginPath(); x.arc(b[0], b[1], b[2], 0, Math.PI * 2); x.fill();
+        }
+        return new T3.CanvasTexture(c);
+      })();
+      cloudSys = new T3.Group();
+      scene.add(cloudSys);
+      for (let i = 0; i < 17; i++) {
+        const grp = new T3.Group();
+        const n = 3 + (i % 3);
+        const mats = [];
+        for (let k = 0; k < n; k++) {
+          const m = new T3.SpriteMaterial({ map: puffTex, transparent: true, opacity: 0,
+                                            depthWrite: false, fog: false, color: 0xffffff });
+          const sp = new T3.Sprite(m);
+          sp.position.set((k - n / 2) * (17 + Math.random() * 12) + (Math.random() - 0.5) * 10,
+                          (Math.random() - 0.5) * 8, (Math.random() - 0.5) * 18);
+          const sc = 26 + Math.random() * 26;
+          sp.scale.set(sc, sc * 0.5, 1);
+          grp.add(sp);
+          mats.push(m);
+        }
+        grp.position.set(-190 + Math.random() * 380, 48 + Math.random() * 26, -130 + Math.random() * 190);
+        grp.userData.sp = 0.6 + Math.random() * 0.9;
+        grp.userData.seed = Math.random();
+        grp.userData.mats = mats;
+        cloudSys.add(grp);
+        clouds.push(grp);
+      }
+
+      // ---------- LLUVIA ----------
+      // Se mantiene la logica original (gota, golpe en el suelo, escorrentia por
+      // la membrana) pero con mas cuerpo y una salpicadura por impacto.
       rainGeo = new T3.BufferGeometry();
       const rpSrc = new Float32Array(RAIN_N * 3);
       rainPosArr = rpSrc;
@@ -3592,41 +5092,75 @@ function addTree(x, z, s, kind) {
       rainSt = new Uint8Array(RAIN_N);
       rainT = new Float32Array(RAIN_N);
       for (let i = 0; i < RAIN_N; i++) {
-        rainSpdArr.push(18 + Math.random() * 14);
+        rainSpdArr.push(26 + Math.random() * 20);
         spawnRainAt(i);
       }
-      // textura de gota: linea vertical (no cubos)
       const rSpr = document.createElement('canvas');
-      rSpr.width = 32; rSpr.height = 32;
+      rSpr.width = 32; rSpr.height = 64;
       const rg = rSpr.getContext('2d');
-      const rgrd = rg.createLinearGradient(0, 0, 0, 32);
-      rgrd.addColorStop(0, 'rgba(255,255,255,0.95)');
-      rgrd.addColorStop(0.35, 'rgba(255,255,255,0.8)');
-      rgrd.addColorStop(0.8, 'rgba(255,255,255,0.3)');
+      const rgrd = rg.createLinearGradient(0, 0, 0, 64);
+      rgrd.addColorStop(0, 'rgba(255,255,255,0)');
+      rgrd.addColorStop(0.28, 'rgba(226,242,255,0.85)');
+      rgrd.addColorStop(0.62, 'rgba(255,255,255,0.95)');
       rgrd.addColorStop(1, 'rgba(255,255,255,0)');
       rg.fillStyle = rgrd;
-      rg.fillRect(13, 0, 6, 32);
+      rg.fillRect(14, 0, 4, 64);
       const rTex = new T3.CanvasTexture(rSpr);
-      rainSys = new T3.Points(rainGeo, new T3.PointsMaterial({ color: 0x66baff, size: 6, sizeAttenuation: false, map: rTex, transparent: true, opacity: 1, depthWrite: false, fog: false }));
+      rainSys = new T3.Points(rainGeo, new T3.PointsMaterial({
+        color: 0xa8d4ff, size: 13, sizeAttenuation: false, map: rTex,
+        transparent: true, opacity: 0, depthWrite: false, fog: false
+      }));
       rainSys.frustumCulled = false;
-      rainSys.visible = rainOn;
+      rainSys.visible = false;
       scene.add(rainSys);
-rainCl = new T3.Group();
-      for (let i = 0; i < 10; i++) {
-        const cl = new T3.Mesh(new T3.SphereGeometry(16 + Math.random() * 13, 10, 8), mat({ color: 0x1a2334, roughness: 1 }));
-        cl.position.set(-95 + i * 15 + Math.random() * 4, 44 + Math.random() * 12, -62 + (i % 3) * 9);
-        cl.scale.set(1.7, 0.5, 1.15);
-        rainCl.add(cl);
+
+      // ---------- SALPICADURAS ----------
+      const ringTex = (function () {
+        const c = document.createElement('canvas');
+        c.width = 64; c.height = 64;
+        const x = c.getContext('2d');
+        const g = x.createRadialGradient(32, 32, 20, 32, 32, 31);
+        g.addColorStop(0, 'rgba(255,255,255,0)');
+        g.addColorStop(0.55, 'rgba(206,232,255,0.75)');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        x.fillStyle = g;
+        x.beginPath(); x.arc(32, 32, 31, 0, Math.PI * 2); x.fill();
+        return new T3.CanvasTexture(c);
+      })();
+      for (let i = 0; i < SPL_N; i++) {
+        const m = new T3.MeshBasicMaterial({ map: ringTex, transparent: true, opacity: 0,
+                                             depthWrite: false, color: 0xbfe0ff, fog: false });
+        const q = new T3.Mesh(new T3.PlaneGeometry(1, 1), m);
+        q.rotation.x = -Math.PI / 2;
+        q.visible = false;
+        scene.add(q);
+        splashes.push({ m: q, mat: m, t: 0, dur: 1 });
       }
-      rainCl.visible = rainOn;
-      scene.add(rainCl);
+
+      // ---------- RAYO ----------
+      boltMesh = new T3.Line(
+        new T3.BufferGeometry().setFromPoints([new T3.Vector3(), new T3.Vector3()]),
+        new T3.LineBasicMaterial({ color: 0xeaf4ff, transparent: true, opacity: 0, fog: false })
+      );
+      boltMesh.visible = false;
+      boltMesh.frustumCulled = false;
+      scene.add(boltMesh);
 
       // sombras para todo lo opaco
       scene.traverse((o) => {
         if (!o.isMesh) return;
-        const glassy = o.material && o.material.transparent && o.material.opacity < 0.25;
+                  const glassy = o.material && o.material.transparent && o.material.opacity < 0.25;
         if (!glassy) o.castShadow = true;
         o.receiveShadow = true;
+      });
+
+      pbrMats = [];
+      scene.traverse((o) => {
+        if (!o.material) return;
+        const list = Array.isArray(o.material) ? o.material : [o.material];
+        for (let i = 0; i < list.length; i++) {
+          if (list[i] && list[i].isMeshStandardMaterial && pbrMats.indexOf(list[i]) < 0) pbrMats.push(list[i]);
+        }
       });
 
       buildPointer();
@@ -3639,7 +5173,13 @@ rainCl = new T3.Group();
       if (!host) return;
       host.style.touchAction = 'none';
       host.addEventListener('pointerdown', (e) => {
-        dragMode = e.button === 2 ? 1 : 0;   // boton derecho = zoom, izquierdo = rotar
+        if (e.button === 1 || (e.button === 0 && (e.shiftKey || e.altKey))) {
+          dragMode = 2; // pan
+        } else if (e.button === 2) {
+          dragMode = 1; // zoom
+        } else {
+          dragMode = 0; // orbit
+        }
         dragOn = true;
         dragX = e.clientX;
         dragY = e.clientY;
@@ -3653,11 +5193,17 @@ rainCl = new T3.Group();
         dragX = e.clientX;
         dragY = e.clientY;
         if (dragMode === 1) {
-          camDistTarget = clamp(camDistTarget * (1 + dy * 0.006), 45, 175);
+          camDistTarget = clamp(camDistTarget * (1 + dy * 0.0035), 35, 200);
+          return;
+        }
+        if (dragMode === 2) {
+          // pan: mueve el target de la cámara
+          camYawTarget -= dx * 0.0018;
+          camPtTarget = clamp(camPtTarget + dy * 0.0018, -0.25, 1.65);
           return;
         }
         if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
-        controlFb(dx * 0.0035, dy * 0.0035);
+        controlFb(dx * 0.003, dy * 0.003);
       });
       host.addEventListener('pointerup', (e) => {
         dragOn = false;
@@ -3672,8 +5218,8 @@ rainCl = new T3.Group();
         if (!ready) return;
         e.preventDefault();
         e.stopPropagation();
-        const k = 1 + Math.abs(e.deltaY) * 0.002;
-        camDistTarget = clamp(camDistTarget * (e.deltaY > 0 ? k : 1 / k), 45, 175);
+        const k = 1 + Math.abs(e.deltaY) * 0.001;
+        camDistTarget = clamp(camDistTarget * (e.deltaY > 0 ? k : 1 / k), 35, 200);
       }, { passive: false });
       host.addEventListener('contextmenu', (e) => e.preventDefault());
     }
@@ -3735,20 +5281,24 @@ function syncRoofBtn() {
       const o = i * 3;
       rainPosArr[o + 1] = 0.32;
       rainSt[i] = 1;
-      rainT[i] = 0.18 + Math.random() * 0.12;
+      rainT[i] = 0.1 + Math.random() * 0.08;
     }
     function updateRain(dt) {
-      if (!rainOn || !rainGeo) return;
+      if (!rainGeo) return;
+      const rate = wxCur.rain;
+      const lim = Math.floor(RAIN_N * Math.min(1, rate * 1.05));
+      const windX = wxCur.wind * 1.5;
       for (let i = 0; i < RAIN_N; i++) {
         const o = i * 3;
         const sp = rainSpdArr[i];
+        if (i >= lim) { rainPosArr[o + 1] = -60; rainSt[i] = 0; continue; }
         if (rainSt[i] === 0) {
           // caen con un poco de viento
           rainPosArr[o + 1] -= sp * dt;
-          rainPosArr[o] += 1.4 * dt;
+          rainPosArr[o] += windX * dt;
           const x = rainPosArr[o], z = rainPosArr[o + 2], y = rainPosArr[o + 1];
           // llegan al suelo
-          if (y < 0.32) { groundHit(i); continue; }
+          if (y < 0.32) { groundHit(i); if (Math.random() < 0.5) spawnSplash(x, z); continue; }
           // sobre la membrana (si el techo esta abierto) se posa y se resbala por la pendiente al borde
           if (fold > 0.5 && Math.abs(x) < 19 && z > -65.2 && z < -46 && y < memY(z) + 1.4 && y > memY(z) - 0.8) {
             rainPosArr[o + 1] = memY(z) + 0.2;
@@ -3764,6 +5314,298 @@ function syncRoofBtn() {
       rainGeo.attributes.position.needsUpdate = true;
     }
 
+    // ---------- AYUDANTES DE CLIMA ----------
+    function lerpHex(a, b, t) {
+      const ar = (a >> 16) & 255, ag = (a >> 8) & 255, ab = a & 255;
+      const br = (b >> 16) & 255, bg = (b >> 8) & 255, bb = b & 255;
+      return ((Math.round(ar + (br - ar) * t) << 16) |
+              (Math.round(ag + (bg - ag) * t) << 8) |
+               Math.round(ab + (bb - ab) * t)) >>> 0;
+    }
+    function syncWxBtn() {
+      if (rainBtn) {
+        const raining = wxCur.rain > 0.05;
+        rainBtn.classList.toggle('rain-on', raining);
+        rainBtn.textContent = raining ? 'DETENER LLUVIA' : 'SIMULAR LLUVIA';
+      }
+    }
+    function setWeather(w) {
+      if (!WX[w]) return;
+      wxName = w;
+      wxAuto = false;
+      wxClock = 0;
+      syncWxBtn();
+      // Si el clima lo elige una persona, se aplica ya: si no, habria que esperar
+      // varios segundos a que la interpolacion llegue. El ciclo automatico sigue
+      // siendo lento y progressive, que es lo que quiero que se vea "vivo".
+      applyWxNow();
+    }
+    function setHour(h) {
+      // 0 = medianoche, 6 = amanecer, 12 = mediodia, 18 = atardecer
+      sunPhase = ((((h % 24) + 24) % 24)) / 24;
+      applyWxNow();
+    }
+    function getHour() { return sunPhase * 24; }
+    function setSunCycle(b) {
+      sunCycle = !!b;
+      const btn = document.getElementById('wxSunAuto');
+      if (btn) btn.classList.toggle('on', sunCycle);
+      applyWxNow();
+    }
+    function applyWxNow() {
+      if (!ready || !scene || !renderer || !camera) return;
+      updateWx(0, true);
+      updateClouds(0);
+      updateSplashes(0);
+      renderer.render(scene, camera);
+    }
+    function setAuto(v) {
+      wxAuto = !!v;
+      wxClock = 0;
+      syncWxBtn();
+    }
+    function strike() {
+      // Regenera el rayo en una posicion nueva y lo enciende un instante.
+      const N = 14, pts = [];
+      let x = (Math.random() - 0.5) * 220, z = -40 + (Math.random() - 0.5) * 150;
+      for (let i = 0; i <= N; i++) {
+        pts.push(new T3.Vector3(x, 150 - (150 / N) * i, z));
+        x += (Math.random() - 0.5) * 9;
+        z += (Math.random() - 0.5) * 5;
+      }
+      boltMesh.geometry.dispose();
+      boltMesh.geometry = new T3.BufferGeometry().setFromPoints(pts);
+      boltMesh.visible = true;
+      wxFlash = 1;
+    }
+    function spawnSplash(x, z) {
+      for (let i = 0; i < splashes.length; i++) {
+        if (splashes[i].t <= 0) {
+          splashes[i].t = splashes[i].dur = 0.34 + Math.random() * 0.2;
+          splashes[i].m.position.set(x, 0.07, z);
+          splashes[i].m.scale.set(0.6, 0.6, 0.6);
+          splashes[i].m.visible = true;
+          return;
+        }
+      }
+    }
+    // Paradas del cielo segun la altura del sol. Se interpolan entre ellas,
+    // asi que el amanecer y el atardecer salen graduales y no un salto.
+    const SKY_KEYS = [
+      { e: -0.60, zen: 0x03060d, hor: 0x080d18, sun: 0x1a2440, si: 0.00, hz: 0.30 },
+      { e: -0.24, zen: 0x0d1730, hor: 0x2c3358, sun: 0x5a4a60, si: 0.06, hz: 0.55 },
+      { e: -0.09, zen: 0x1b2c55, hor: 0x7a5a70, sun: 0xb06a52, si: 0.45, hz: 0.72 },
+      { e:  0.02, zen: 0x2b3f74, hor: 0xe07a34, sun: 0xff7a28, si: 1.45, hz: 0.85 },
+      { e:  0.13, zen: 0x2f5ea8, hor: 0xf5b473, sun: 0xffb264, si: 1.20, hz: 0.66 },
+      { e:  0.32, zen: 0x2464b4, hor: 0xd7e6f4, sun: 0xfff0d8, si: 1.00, hz: 0.50 },
+      { e:  0.85, zen: 0x1a4c9c, hor: 0xc3d9ee, sun: 0xfff3dc, si: 0.95, hz: 0.42 }
+    ];
+    function skyAt(e) {
+      let i = 0;
+      while (i < SKY_KEYS.length - 2 && e > SKY_KEYS[i + 1].e) i++;
+      const a = SKY_KEYS[i], b = SKY_KEYS[i + 1];
+      const u = Math.max(0, Math.min(1, (e - a.e) / (b.e - a.e)));
+      const k = u * u * (3 - 2 * u);
+      return {
+        zen: lerpHex(a.zen, b.zen, k),
+        hor: lerpHex(a.hor, b.hor, k),
+        sun: lerpHex(a.sun, b.sun, k),
+        si: a.si + (b.si - a.si) * k,
+        hz: a.hz + (b.hz - a.hz) * k
+      };
+    }
+    function updateSky(dt, instant) {
+      if (sunCycle && !instant) {
+        // vuelta completa al dia en unos 4 minutos: se ve el cambio sin esperar
+        sunPhase += dt / 240;
+        if (sunPhase >= 1) sunPhase -= 1;
+        sunAz += dt * 0.02;
+      }
+      // el sol arranca por el este y se va de altura: 0 = medio dia, 1 = noche
+      const ang = sunPhase * Math.PI * 2;
+      sunEl = Math.sin(ang - Math.PI / 2);
+      const ce = Math.cos(Math.asin(Math.max(-1, Math.min(1, sunEl))));
+      sunDirV.set(ce * Math.sin(sunAz), sunEl, ce * Math.cos(sunAz)).normalize();
+
+      const sk = skyAt(sunEl);
+      const u = skyMat.uniforms;
+
+      // Cuanto de dia hay. Se calcula DESPUES de mover el sol: antes se hacia
+      // con el valor del frame anterior, asi que las luces iban con retraso y el
+      // atardecer salia exactamente igual que la noche.
+      const dayE = Math.max(0, Math.min(1, (sunEl + 0.20) / 0.42));
+
+      // El environment map se genero una vez con tonos de noche. Si se deja
+      // fijo, a mediodia anade luz difusa de mas y el cesped se satura. Se
+      // atenua por hora y nubosidad en vez de regenerarlo cada frame.
+      const envI = (0.20 + 0.40 * dayE) * (1 - wxCur.cover * 0.45);
+      for (let i = 0; i < pbrMats.length; i++) pbrMats[i].envMapIntensity = envI;
+      // las luces de arquitectura ceden el paso al sol de dia
+      const deco = 0.14 + 0.86 * (1 - dayE) * (1 - wxCur.cover * 0.35);
+      for (let i = 0; i < decoLights.length; i++) {
+        const base = decoLights[i].base;
+        // stageSpot siempre visible (mín 35 % de día)
+        const minDay = (decoLights[i].l === stageSpot) ? 0.35 : 0;
+        decoLights[i].l.intensity = base * Math.max(deco, minDay);
+      }
+
+      // la bruma del clima se suma a la del cielo: con lluvia el horizonte se cierra
+      u.zenith.value.setHex(lerpHex(sk.zen, wxCur.skyT, wxCur.cover * 0.55));
+      u.horizon.value.setHex(lerpHex(sk.hor, wxCur.skyB, wxCur.cover * 0.62));
+      u.sunCol.value.setHex(sk.sun);
+      u.sunI.value = sk.si * (1 - wxCur.cover * 0.85);
+      u.haze.value = Math.min(1, sk.hz + wxCur.cover * 0.3 + wxCur.wet * 0.1);
+
+      // luz solar principal (day) / luna (night)
+      if (sunL) {
+        const day = dayE;
+        sunL.intensity = wxCur.key * (0.30 + 0.90 * day) + wxFlash * 5.0;
+        if (day > 0.02) {
+          sunL.position.set(sunDirV.x * 180, Math.max(20, sunDirV.y * 180), sunDirV.z * 180);
+          sunL.color.setHex(lerpHex(lerpHex(0xff9a45, 0xfff2d8, dayE), 0xfff6e8, dayE * dayE));
+        } else {
+          sunL.intensity = 0;
+        }
+      }
+      if (moonL) {
+        const night = Math.max(0, Math.min(1, (0.06 - sunEl) / 0.3));
+        moonL.intensity = wxCur.key * (0.15 + 0.85 * night) * (1 - wxCur.cover * 0.5) + wxFlash * 3.0;
+        if (night > 0.02) {
+          moonL.position.set(-sunDirV.x * 140, Math.max(15, -sunDirV.y * 140), -sunDirV.z * 140);
+          moonL.color.setHex(lerpHex(0xbfe6ff, 0xd0e8ff, night));
+        } else {
+          moonL.intensity = 0;
+        }
+      }
+      if (hemiL) {
+        // de dia la hemiferica es la que rellena; de noche casi nada
+        hemiL.intensity = (0.05 + wxCur.hemi * dayE * 0.60 * (1 - wxCur.cover * 0.55)) + wxFlash * 1.6;
+        hemiL.color.setHex(lerpHex(0x6f86b8, 0xbfe0ff, dayE));
+      }
+      if (starSys) {
+        const night = Math.max(0, Math.min(1, (0.06 - sunEl) / 0.3));
+        starSys.visible = night > 0.02 && wxCur.cover < 0.9;
+        starSys.material.opacity = 0.95 * night * (1 - wxCur.cover);
+      }
+      if (skyMesh) skyMesh.position.copy(camera.position);
+
+      // el reloj de la interfaz sigue al sol
+      if (hourEl && document.activeElement !== hourEl) hourEl.value = String(sunPhase * 24);
+      if (hourVal) {
+        const hh24 = sunPhase * 24;
+        const hh = Math.floor(hh24) % 24, mm = Math.floor((hh24 % 1) * 60);
+        hourVal.textContent = (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+      }
+    }
+    function updateWx(dt, instant) {
+      // ciclo automatico: si nadie toca nada, el clima va cambiando solo
+      if (wxAuto) {
+        wxClock += dt;
+        if (wxClock >= wxNext) {
+          wxClock = 0;
+          wxNext = 13 + Math.random() * 9;
+          wxName = WX_SEQ[(WX_SEQ.indexOf(wxName) + 1) % WX_SEQ.length];
+          syncWxBtn();
+        }
+      }
+      const T = WX[wxName];
+      const k = instant ? 1 : (1 - Math.exp(-dt * 0.6));
+      for (let i = 0; i < WX_NUM.length; i++) {
+        const key = WX_NUM[i];
+        wxCur[key] += (T[key] - wxCur[key]) * k;
+      }
+      for (let i = 0; i < WX_COL.length; i++) {
+        const key = WX_COL[i];
+        wxCur[key] = lerpHex(wxCur[key], T[key], k);
+      }
+
+      // Relampagos solo en tormenta, y nunca en la pasada instantanea: con dt=0
+      // el fogonazo no se apagaria y el frame se quedaria en blanco.
+      if (!instant && wxName === 'tormenta') {
+        wxFlashNext -= dt;
+        if (wxFlashNext <= 0) { strike(); wxFlashNext = 2.2 + Math.random() * 6.5; }
+      } else {
+        wxFlashNext = 3 + Math.random() * 4;
+      }
+      if (instant) wxFlash = 0;
+      else wxFlash *= Math.exp(-dt * 6.5);
+      if (boltMesh) {
+        boltMesh.material.opacity = Math.max(0, wxFlash * 1.6 - 0.15);
+        if (wxFlash < 0.02) boltMesh.visible = false;
+      }
+
+      // el cielo, el sol y las luces se resuelven en updateSky
+      updateSky(dt, instant);
+      // la niebla si depende solo del clima
+      if (fogL) {
+        fogL.color.setHex(wxCur.fog);
+        fogL.near = wxCur.fogN;
+        fogL.far = wxCur.fogF;
+      }
+      renderer.toneMappingExposure = wxCur.exp * (0.52 + 0.20 * Math.max(0, Math.min(1, (sunEl + 0.20) / 0.42)))
+                                    + wxFlash * 0.5;
+
+      // suelo mojado: mas oscuro, mas brillante y reflectante
+      if (gndMat) {
+        gndMat.roughness = 1 - 0.34 * wxCur.wet;
+        gndMat.metalness = 0.10 * wxCur.wet;
+        gndMat.color.setHex(lerpHex(0xffffff, 0x7f8b95, wxCur.wet))
+                     .multiplyScalar(1 - wxCur.cover * 0.5);
+      }
+
+      // lluvia: cantidad, tamano e inclinacion por viento
+      const rain = wxCur.rain;
+      amb = rain;
+      rainOn = rain > 0.05;
+      if (rainSys) {
+        rainSys.visible = rain > 0.02;
+        rainSys.material.opacity = Math.min(0.85, 0.2 + rain * 0.6);
+        rainSys.material.size = 9 + 5 * rain;
+        rainSys.material.color.setHex(lerpHex(0xa8d4ff, 0xd8ecff, wxFlash));
+        // inclinar el sistema entero es la forma barata de mostrar el viento
+        rainSys.rotation.z = -Math.atan2(wxCur.wind * 1.5, 30);
+      }
+      if (rainOn !== wxSound) {
+        wxSound = rainOn;
+        if (rainOn) startRainSound(); else stopRainSound();
+      }
+    }
+    function updateClouds(dt) {
+      if (!cloudSys) return;
+      const w = wxCur.wind * 2.2;
+      for (let i = 0; i < clouds.length; i++) {
+        const c = clouds[i];
+        c.position.x += w * c.userData.sp * dt;
+        if (c.position.x > 210) c.position.x -= 420;
+        const sd = c.userData.seed;
+        c.position.y += Math.sin(performance.now() * 0.00013 + sd * 9) * 0.006;
+        // el color va de la base (clara) al tejado (oscuro): da volumen
+        const mixv = 0.35 + 0.5 * (1 - (c.position.y - 48) / 26);
+        // de dia las nubes cogen luz; al atardecer se tiñen de naranja
+        const day = Math.max(0, Math.min(1, (sunEl + 0.05) / 0.3));
+        const lit = lerpHex(wxCur.cloudD, wxCur.cloud, Math.max(0, Math.min(1, mixv)));
+        const warm = lerpHex(0xffb072, 0xfff2df, day);
+        const col = lerpHex(lit, warm, day * 0.45 * mixv);
+        const mats = c.userData.mats;
+        for (let k = 0; k < mats.length; k++) {
+          mats[k].color.setHex(col);
+          mats[k].opacity = wxCur.cover * (0.42 + 0.34 * sd);
+        }
+      }
+    }
+    function updateSplashes(dt) {
+      for (let i = 0; i < splashes.length; i++) {
+        const s = splashes[i];
+        if (s.t <= 0) continue;
+        s.t -= dt;
+        if (s.t <= 0) { s.m.visible = false; s.mat.opacity = 0; continue; }
+        const u = 1 - s.t / s.dur;          // 0 -> 1 mientras vive
+        const sc = 0.6 + u * 2.4;
+        s.m.scale.set(sc, sc, sc);
+        s.mat.opacity = (1 - u) * 0.7 * Math.min(1, wxCur.rain * 1.3);
+      }
+    }
+
     function tick(ts) {
       if (!scene || !renderer || !camera) return;
       const act = document.getElementById('slide3d');
@@ -3771,24 +5613,21 @@ function syncRoofBtn() {
       if (host && renderer.domElement && (host.clientWidth !== renderer.domElement.clientWidth || host.clientHeight !== renderer.domElement.clientHeight)) onResize();
       const dt = Math.min((ts - lastTs) / 1000, 0.05);
       lastTs = ts;
-      fold += (foldTarget - fold) * 0.035;
+fold += (foldTarget - fold) * 0.014;
       const ef = fold * fold * (3 - 2 * fold);
-      if (!dragOn && performance.now() - lastHandMove > 1500) {
-        if (camYawTarget >= 2.2) autoSign = -1;
-        else if (camYawTarget <= -2.2) autoSign = 1;
-        camYawTarget += 0.08 * dt * autoSign;
-      }
-      camYaw += (camYawTarget - camYaw) * 0.045;
-      camPt += (camPtTarget - camPt) * 0.05;
-      camDist += (camDistTarget - camDist) * 0.06;
+      // auto-rotación desactivada para control manual total
+      camYaw += (camYawTarget - camYaw) * 0.06;
+      camPt += (camPtTarget - camPt) * 0.065;
+      camDist += (camDistTarget - camDist) * 0.08;
       for (let i = 0; i < panels.length; i++) {
         const p = panels[i];
         p.g.visible = fold > 0.06;
         const pf = clamp((fold - p.stagger) / (1 - p.stagger), 0, 1);
-        const e2 = pf * pf * (3 - 2 * pf);
-        p.g.rotation.y = lerp(p.stackY, p.openY, e2);
-        p.tilt.rotation.x = lerp(p.rot0, p.rot1, e2);
-        p.tilt.position.x = lerp(p.stackX || 0, p.openX || 0, e2);
+        const e2 = pf * pf * pf * (pf * (pf * 6 - 15) + 10); // smootherstep
+        p.g.rotation.y = lerp(p.closedA, p.openA, e2);
+        const py = lerp(p.closedY, p.openY, e2);
+        p.g.position.set(0, py, p.cz);
+        if (p.car) p.car.position.y = p.ry - py;
       }
       for (let i = 0; i < curtains.length; i++) {
         curtains[i].mesh.visible = fold > 0.06;
@@ -3796,15 +5635,16 @@ function syncRoofBtn() {
       }
       if (memMat) memMat.opacity = 0.32 + 0.3 * ef;
       if (stageSpot) stageSpot.intensity = 2.5 + 9 * ef;
+      updateWx(dt);
       updateRain(dt);
-      if (rainSys) rainSys.visible = rainOn;
-      if (rainCl) rainCl.visible = rainOn;
-      amb += ((rainOn ? 1 : 0) - amb) * 0.05;
-      if (moonL) moonL.intensity = 1.45 - 0.6 * amb;
-      if (fogL) { fogL.near = 110 - 16 * amb; fogL.far = 300 - 95 * amb; }
-      if (starSys) starSys.visible = !rainOn;
+      updateClouds(dt);
+      updateSplashes(dt);
+      if (skyMesh) skyMesh.position.set(camera.position.x, 0, camera.position.z);
+      // los arboles se doblan mas cuanto mas viento sopla, con rachas
+      const gust = 0.65 + 0.35 * Math.sin(ts * 0.0009);
       for (let i = 0; i < trees.length; i++) {
-        trees[i].g.rotation.z = Math.sin(ts * 0.002 + trees[i].ph) * 0.02;
+        trees[i].g.rotation.z = Math.sin(ts * 0.002 + trees[i].ph) *
+          (0.02 + 0.055 * wxCur.wind) * gust;
       }
       camera.position.set(
         Math.cos(camPt) * Math.sin(camYaw) * camDist,
@@ -3812,6 +5652,7 @@ function syncRoofBtn() {
         -46 + Math.cos(camPt) * Math.cos(camYaw) * camDist
       );
       camera.lookAt(0, 7, -40);
+      if (peopleTick) peopleTick(ts);
       renderer.render(scene, camera);
     }
 
@@ -3848,15 +5689,10 @@ function syncRoofBtn() {
       lastHY = f.y;
     }
 
-    function controlFb(x, y) {
-      if (fbLastX === null) { fbLastX = x; fbLastY = y; return; }
-      const dx = x - fbLastX;
-      const dy = y - fbLastY;
-      fbLastX = x;
-      fbLastY = y;
+    function controlFb(dx, dy) {
       if (Math.abs(dx) < 0.004 && Math.abs(dy) < 0.004) return;
       camYawTarget = clamp(camYawTarget - dx * 3.2, -1000, 1000);
-      camPtTarget = clamp(camPtTarget - dy * 2.2, -0.15, 1.55);
+      camPtTarget = clamp(camPtTarget - dy * 2.2, -0.25, 1.65);
     }
 
     function setZoomTarget(z) {
@@ -3880,13 +5716,8 @@ function syncRoofBtn() {
     }
 
     function toggleRain() {
-      if (!ready || !rainBtn) return;
-      rainOn = !rainOn;
-      if (rainSys) rainSys.visible = rainOn;
-      if (rainCl) rainCl.visible = rainOn;
-      if (rainOn) startRainSound(); else stopRainSound();
-      rainBtn.classList.toggle('rain-on', rainOn);
-      rainBtn.textContent = rainOn ? 'DETENER LLUVIA' : 'SIMULAR LLUVIA';
+      if (!ready) return;
+      setWeather(wxName === 'lluvia' ? 'despejado' : 'lluvia');
     }
 
     function isReady() { return ready; }
@@ -3899,7 +5730,13 @@ function syncRoofBtn() {
       setZoomTarget: setZoomTarget,
       setRoof: setRoof,
       toggleRoof: toggleRoof,
-      toggleRain: toggleRain
+      toggleRain: toggleRain,
+      setWeather: setWeather,
+      setAuto: setAuto,
+      setHour: setHour,
+      getHour: getHour,
+      setSunCycle: setSunCycle,
+      getWeather: function () { return wxName; }
     };
   })();
 </script>
