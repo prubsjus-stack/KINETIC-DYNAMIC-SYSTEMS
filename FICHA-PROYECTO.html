@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha del Proyecto · EcoTense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#5aaaff;--blue-dim:rgba(90,170,255,.35);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Montserrat',Arial,sans-serif;color:#fff;background:radial-gradient(ellipse 120% 90% at 70% 20%,#0a1630 0%,#060d1f 40%,#02060f 75%,#01040c 100%);background-attachment:fixed;padding:40px 20px 80px;line-height:1.7;}
+.wrap{max-width:960px;margin:0 auto;}
+.hero{text-align:center;padding:52px 24px;border:1px solid rgba(90,170,255,.25);border-radius:20px;background:linear-gradient(180deg,rgba(12,26,50,.6),rgba(6,13,28,.6));box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px rgba(90,170,255,.12);margin-bottom:32px;}
+.kicker{font-size:12px;font-weight:700;letter-spacing:8px;text-transform:uppercase;color:var(--blue);text-shadow:0 0 18px var(--blue-dim);margin-bottom:16px;}
+.hero h1{font-size:clamp(28px,5vw,56px);font-weight:900;letter-spacing:5px;text-transform:uppercase;line-height:1.2;text-shadow:0 0 45px rgba(150,205,255,.5);}
+.hero h1 span{color:var(--blue);}
+section.card{border:1px solid rgba(90,170,255,.22);background:rgba(8,18,34,.6);border-radius:16px;padding:30px 32px;margin-bottom:26px;box-shadow:0 20px 50px rgba(0,0,0,.35);}
+section.card h2{font-size:clamp(18px,2.4vw,25px);font-weight:800;letter-spacing:3px;text-transform:uppercase;}
+section.card h2::after{content:"";display:block;width:44px;height:3px;margin-top:10px;background:var(--blue);box-shadow:0 0 12px var(--blue-dim);}
+section.card p{margin-top:14px;font-size:15px;color:#dbe7f8;}
+.num{display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;border:1px solid rgba(90,170,255,.5);border-radius:50%;color:var(--blue);font-weight:800;font-size:14px;margin-right:10px;text-shadow:0 0 10px var(--blue-dim);}
+ul.clean{list-style:none;margin-top:14px;}
+ul.clean li{padding-left:22px;position:relative;margin:7px 0;font-size:15px;color:#d7e3f5;}
+ul.clean li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border:1.5px solid var(--blue);transform:rotate(45deg);box-shadow:0 0 8px var(--blue-dim);}
+ul.clean li b{color:#fff;}
+ol.slides{list-style:none;counter-reset:sl;margin-top:14px;}
+ol.slides li{counter-increment:sl;position:relative;padding:11px 16px 11px 62px;margin:9px 0;border:1px solid rgba(90,170,255,.18);border-radius:12px;background:rgba(6,13,28,.5);font-size:14px;color:#d7e3f5;}
+ol.slides li::before{content:"0" counter(sl);position:absolute;left:13px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--blue);border:1px solid rgba(90,170,255,.5);border-radius:50%;background:rgba(8,18,34,.7);}
+ol.slides li b{color:#fff;}
+.timeline{position:relative;margin:16px 0 0 8px;padding-left:28px;border-left:2px solid rgba(90,170,255,.35);}
+.step{position:relative;padding-bottom:20px;}
+.step::before{content:"";position:absolute;left:-37px;top:4px;width:14px;height:14px;border-radius:50%;background:#0a1630;border:2px solid var(--blue);box-shadow:0 0 12px var(--blue-dim);}
+.step b{color:#fff;}
+.step p{margin-top:2px;font-size:14px;color:#d7e3f5;}
+@media(max-width:720px){section.card{padding:22px 18px;}ol.slides li{padding-left:56px;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+<div class="kicker">Presentación del proyecto a realizar</div>
+<h1><span>EcoTense</span></h1>
+</div>
+
+<section class="card">
+<h2><span class="num">1</span>Nombre del proyecto</h2>
+<p><b style="color:#fff">EcoTense,</b> cubierta retráctil inteligente para la concha acústica.</p>
+</section>
+
+<section class="card">
+<h2><span class="num">2</span>Ficha de presentación</h2>
+<p><b style="color:#fff">Cómo se presenta:</b> presentación web de 13 diapositivas con navegación por mouse, teclado, táctil y gestos con cámara.</p>
+<ol class="slides">
+<li><b>Portada</b> — Título y nombres con entrada 1 por 1.</li>
+<li><b>¿Quiénes somos?</b> — Infraestructura, automatización, sostenibilidad e innovación.</li>
+<li><b>Misión y Visión</b> — Convergencia de ingenierías e industria sostenible.</li>
+<li><b>Logos</b> — Logo 2D y logo 3D.</li>
+<li><b>Problema</b> — Concha acústica expuesta a lluvia y viento.</li>
+<li><b>Nuestra solución (3D)</b> — Visor interactivo: cubierta desplegable, hora solar y lluvia.</li>
+<li><b>Imagen de cubierta</b> — Render de EcoTense instalada.</li>
+<li><b>¿Cómo funciona?</b> — Sensores → control → despliegue → protección, con energía solar.</li>
+<li><b>Tres ingenierías</b> — Mecatrónica, Industrial y Multimedia.</li>
+<li><b>Sostenibilidad</b> — PET reciclado, energía solar y economía circular.</li>
+<li><b>Marketing</b> — Público objetivo y estrategias.</li>
+<li><b>Diferencial</b> — Infraestructura + automatización + sostenibilidad + comunicación.</li>
+<li><b>Cierre</b> — Mensaje final del proyecto.</li>
+</ol>
+<ul class="clean">
+<li><b>Imagen 3D:</b> modelo interactivo orbitable de la concha acústica con cubierta retráctil, control de hora solar y simulación de lluvia.</li>
+<li><b>Símbolo:</b> logos 2D y 3D de KINETIX, azul #5aaaff sobre fondo nocturno.</li>
+<li><b>Página:</b> sitio web estático publicado en GitHub Pages, disponible de forma permanente.</li>
+</ul>
+</section>
+
+<section class="card">
+<h2><span class="num">3</span>Reseña del proyecto</h2>
+<p>EcoTense es una cubierta retráctil inteligente que protege la concha acústica de la lluvia y el viento: sensores climáticos ordenan el despliegue automático de una membrana de PET reciclado alimentada con energía solar. Sirve para usar el espacio todo el año sin cancelar eventos, cuidando asistentes, equipos e infraestructura.</p>
+</section>
+
+<section class="card">
+<h2><span class="num">4</span>Justificación y ejecución</h2>
+<ul class="clean">
+<li><b>Justificación:</b> la concha queda inutilizada con lluvia y viento; se cancelan eventos y se deteriora la infraestructura. El proyecto da uso continuo al espacio con impacto técnico, económico y ambiental.</li>
+</ul>
+<div class="timeline">
+<div class="step"><b>Fase 1 — Levantamiento.</b><p>Medidas de la concha, estudio de lluvias y vientos, requisitos de carga y anclaje.</p></div>
+<div class="step"><b>Fase 2 — Diseño.</b><p>Estructura retráctil, membrana de PET reciclado, sistema fotovoltaico y planos.</p></div>
+<div class="step"><b>Fase 3 — Automatización.</b><p>Sensores, actuadores, controlador y lógica manual/automática.</p></div>
+<div class="step"><b>Fase 4 — Prototipo y pruebas.</b><p>Maqueta y visor 3D, despliegue, estanqueidad y respuesta climática.</p></div>
+<div class="step"><b>Fase 5 — Instalación.</b><p>Montaje de estructura, membrana, paneles y control en sitio.</p></div>
+<div class="step"><b>Fase 6 — Operación.</b><p>Mantenimiento preventivo, monitoreo y capacitación del personal.</p></div>
+</div>
+</section>
+
+</div>
+</body>
+</html>
