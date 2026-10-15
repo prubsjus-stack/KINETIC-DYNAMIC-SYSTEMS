@@ -34,7 +34,43 @@ ol.slides li b{color:#fff;}
 .step::before{content:"";position:absolute;left:-37px;top:4px;width:14px;height:14px;border-radius:50%;background:#0a1630;border:2px solid var(--blue);box-shadow:0 0 12px var(--blue-dim);}
 .step b{color:#fff;}
 .step p{margin-top:2px;font-size:14px;color:#d7e3f5;}
+/* ============ ANIMACIONES EPICAS ============ */
+.hero{position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;left:50%;top:50%;width:120vmax;height:120vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(rgba(90,170,255,.05) 0deg 4deg,transparent 4deg 12deg);-webkit-mask:radial-gradient(circle,transparent 24%,#000 26%,#000 46%,transparent 48%);mask:radial-gradient(circle,transparent 24%,#000 26%,#000 46%,transparent 48%);opacity:.6;animation:haloSpin 55s linear infinite;pointer-events:none;}
+@keyframes haloSpin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.hero .kicker,.hero h1{position:relative;z-index:1;}
+.hero .kicker{animation:labelTrack 1s cubic-bezier(.22,1,.36,1) .05s backwards;}
+@keyframes labelTrack{from{opacity:0;letter-spacing:22px;filter:blur(8px);}to{opacity:1;filter:blur(0);}}
+.hero h1{animation:heroTitle 1.15s cubic-bezier(.22,1,.36,1) .15s backwards,heroGlow 3.4s ease-in-out 1.5s infinite;}
+@keyframes heroTitle{from{opacity:0;transform:translateY(34px) scale(.96);filter:blur(12px);}60%{opacity:1;filter:blur(0);}to{opacity:1;transform:none;filter:blur(0);}}
+@keyframes heroGlow{0%,100%{text-shadow:0 0 45px rgba(150,205,255,.5);}50%{text-shadow:0 0 80px rgba(150,205,255,.95);}}
+section.card{animation:cardUp .75s cubic-bezier(.22,1,.36,1) backwards;}
+section.card:nth-of-type(1){animation-delay:.25s;}
+section.card:nth-of-type(2){animation-delay:.4s;}
+section.card:nth-of-type(3){animation-delay:.55s;}
+section.card:nth-of-type(4){animation-delay:.7s;}
+@keyframes cardUp{from{opacity:0;transform:translateY(40px);filter:blur(8px);}to{opacity:1;transform:none;filter:blur(0);}}
+section.card{transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;}
+section.card:hover{transform:translateY(-5px);border-color:rgba(90,170,255,.5);box-shadow:0 28px 65px rgba(0,0,0,.5),0 0 32px rgba(90,170,255,.18);}
+ol.slides li,ul.clean li{transition:transform .3s,border-color .3s,box-shadow .3s;}
+ol.slides li:hover{transform:translateX(8px);border-color:rgba(90,170,255,.55);box-shadow:0 0 22px rgba(90,170,255,.18);}
+.num{position:relative;}
+.num::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--blue);animation:ringPulse 2.4s ease-out infinite;pointer-events:none;}
+@keyframes ringPulse{0%{transform:scale(.7);opacity:.9;}70%{transform:scale(1.35);opacity:0;}100%{transform:scale(1.35);opacity:0;}}
+.timeline{animation:lineGrow 1.2s ease .9s backwards;transform-origin:top;}
+@keyframes lineGrow{from{transform:scaleY(0);opacity:0;}to{transform:scaleY(1);opacity:1;}}
+.step{animation:stepIn .6s cubic-bezier(.22,1,.36,1) backwards;}
+.step:nth-child(1){animation-delay:1s;}.step:nth-child(2){animation-delay:1.15s;}.step:nth-child(3){animation-delay:1.3s;}.step:nth-child(4){animation-delay:1.45s;}.step:nth-child(5){animation-delay:1.6s;}.step:nth-child(6){animation-delay:1.75s;}
+@keyframes stepIn{from{opacity:0;transform:translateX(-36px);filter:blur(6px);}to{opacity:1;transform:none;filter:blur(0);}}
+body::after{content:"";position:fixed;right:-12vmax;top:-12vmax;width:34vmax;height:34vmax;border-radius:50%;background:radial-gradient(circle,rgba(90,170,255,.12),transparent 65%);filter:blur(10px);pointer-events:none;z-index:0;animation:orbFloat 9s ease-in-out infinite;}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-4vmax,4vmax) scale(1.15);}}
+.wrap{position:relative;z-index:1;}
 @media(max-width:720px){section.card{padding:22px 18px;}ol.slides li{padding-left:56px;}}
+.logo-frame{position:relative;z-index:1;margin:6px auto 20px;width:fit-content;animation:logoPop 1s cubic-bezier(.22,1,.36,1) .3s backwards;}
+@keyframes logoPop{from{opacity:0;transform:scale(.5);filter:blur(12px);}60%{opacity:1;filter:blur(0);}to{opacity:1;transform:scale(1);}}
+.logo-frame img{display:block;max-width:min(280px,60vw);border-radius:18px;border:1px solid rgba(90,170,255,.45);box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 45px rgba(90,170,255,.30);animation:logoFloat 5s ease-in-out 1.4s infinite;}
+@keyframes logoFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+@media (prefers-reduced-motion:reduce){.hero::before,body::after{animation:none;opacity:.2;}.hero h1,.hero .kicker,section.card,.step,.logo-frame{animation-duration:.01s !important;animation-delay:0s !important;}.logo-frame img{animation:none;}}
 </style>
 </head>
 <body>
@@ -42,6 +78,7 @@ ol.slides li b{color:#fff;}
 
 <div class="hero">
 <div class="kicker">Presentación del proyecto a realizar</div>
+<div class="logo-frame"><img src="logo-2d.jpg" alt="Logo del proyecto EcoTense"></div>
 <h1><span>EcoTense</span></h1>
 </div>
 
