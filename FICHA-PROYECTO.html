@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ficha del Proyecto · EcoTense</title>
+<title>Ficha de presentación · EcoTense</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
@@ -11,83 +11,49 @@
 :root{--blue:#5aaaff;--blue-dim:rgba(90,170,255,.35);}
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Montserrat',Arial,sans-serif;color:#fff;background:radial-gradient(ellipse 120% 90% at 70% 20%,#0a1630 0%,#060d1f 40%,#02060f 75%,#01040c 100%);background-attachment:fixed;padding:40px 20px 80px;line-height:1.7;}
-.wrap{max-width:960px;margin:0 auto;}
-.hero{text-align:center;padding:52px 24px;border:1px solid rgba(90,170,255,.25);border-radius:20px;background:linear-gradient(180deg,rgba(12,26,50,.6),rgba(6,13,28,.6));box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px rgba(90,170,255,.12);margin-bottom:32px;}
-.kicker{font-size:12px;font-weight:700;letter-spacing:8px;text-transform:uppercase;color:var(--blue);text-shadow:0 0 18px var(--blue-dim);margin-bottom:16px;}
-.hero h1{font-size:clamp(28px,5vw,56px);font-weight:900;letter-spacing:5px;text-transform:uppercase;line-height:1.2;text-shadow:0 0 45px rgba(150,205,255,.5);}
-.hero h1 span{color:var(--blue);}
-section.card{border:1px solid rgba(90,170,255,.22);background:rgba(8,18,34,.6);border-radius:16px;padding:30px 32px;margin-bottom:26px;box-shadow:0 20px 50px rgba(0,0,0,.35);}
-section.card h2{font-size:clamp(18px,2.4vw,25px);font-weight:800;letter-spacing:3px;text-transform:uppercase;}
-section.card h2::after{content:"";display:block;width:44px;height:3px;margin-top:10px;background:var(--blue);box-shadow:0 0 12px var(--blue-dim);}
-section.card p{margin-top:14px;font-size:15px;color:#dbe7f8;}
-.num{display:inline-flex;width:34px;height:34px;align-items:center;justify-content:center;border:1px solid rgba(90,170,255,.5);border-radius:50%;color:var(--blue);font-weight:800;font-size:14px;margin-right:10px;text-shadow:0 0 10px var(--blue-dim);}
-ul.clean{list-style:none;margin-top:14px;}
-ul.clean li{padding-left:22px;position:relative;margin:7px 0;font-size:15px;color:#d7e3f5;}
-ul.clean li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border:1.5px solid var(--blue);transform:rotate(45deg);box-shadow:0 0 8px var(--blue-dim);}
-ul.clean li b{color:#fff;}
-ol.slides{list-style:none;counter-reset:sl;margin-top:14px;}
-ol.slides li{counter-increment:sl;position:relative;padding:11px 16px 11px 62px;margin:9px 0;border:1px solid rgba(90,170,255,.18);border-radius:12px;background:rgba(6,13,28,.5);font-size:14px;color:#d7e3f5;}
-ol.slides li::before{content:"0" counter(sl);position:absolute;left:13px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--blue);border:1px solid rgba(90,170,255,.5);border-radius:50%;background:rgba(8,18,34,.7);}
-ol.slides li b{color:#fff;}
-.timeline{position:relative;margin:16px 0 0 8px;padding-left:28px;border-left:2px solid rgba(90,170,255,.35);}
-.step{position:relative;padding-bottom:20px;}
-.step::before{content:"";position:absolute;left:-37px;top:4px;width:14px;height:14px;border-radius:50%;background:#0a1630;border:2px solid var(--blue);box-shadow:0 0 12px var(--blue-dim);}
-.step b{color:#fff;}
-.step p{margin-top:2px;font-size:14px;color:#d7e3f5;}
-/* ============ ANIMACIONES EPICAS ============ */
-.hero{position:relative;overflow:hidden;}
-.hero::before{content:"";position:absolute;left:50%;top:50%;width:120vmax;height:120vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(rgba(90,170,255,.05) 0deg 4deg,transparent 4deg 12deg);-webkit-mask:radial-gradient(circle,transparent 24%,#000 26%,#000 46%,transparent 48%);mask:radial-gradient(circle,transparent 24%,#000 26%,#000 46%,transparent 48%);opacity:.6;animation:haloSpin 55s linear infinite;pointer-events:none;}
-@keyframes haloSpin{to{transform:translate(-50%,-50%) rotate(360deg);}}
-.hero .kicker,.hero h1{position:relative;z-index:1;}
-.hero .kicker{animation:labelTrack 1s cubic-bezier(.22,1,.36,1) .05s backwards;}
-@keyframes labelTrack{from{opacity:0;letter-spacing:22px;filter:blur(8px);}to{opacity:1;filter:blur(0);}}
-.hero h1{animation:heroTitle 1.15s cubic-bezier(.22,1,.36,1) .15s backwards,heroGlow 3.4s ease-in-out 1.5s infinite;}
-@keyframes heroTitle{from{opacity:0;transform:translateY(34px) scale(.96);filter:blur(12px);}60%{opacity:1;filter:blur(0);}to{opacity:1;transform:none;filter:blur(0);}}
-@keyframes heroGlow{0%,100%{text-shadow:0 0 45px rgba(150,205,255,.5);}50%{text-shadow:0 0 80px rgba(150,205,255,.95);}}
-section.card{animation:cardUp .75s cubic-bezier(.22,1,.36,1) backwards;}
-section.card:nth-of-type(1){animation-delay:.25s;}
-section.card:nth-of-type(2){animation-delay:.4s;}
-section.card:nth-of-type(3){animation-delay:.55s;}
-section.card:nth-of-type(4){animation-delay:.7s;}
-@keyframes cardUp{from{opacity:0;transform:translateY(40px);filter:blur(8px);}to{opacity:1;transform:none;filter:blur(0);}}
-section.card{transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;}
-section.card:hover{transform:translateY(-5px);border-color:rgba(90,170,255,.5);box-shadow:0 28px 65px rgba(0,0,0,.5),0 0 32px rgba(90,170,255,.18);}
-ol.slides li,ul.clean li{transition:transform .3s,border-color .3s,box-shadow .3s;}
-ol.slides li:hover{transform:translateX(8px);border-color:rgba(90,170,255,.55);box-shadow:0 0 22px rgba(90,170,255,.18);}
-.num{position:relative;}
-.num::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid var(--blue);animation:ringPulse 2.4s ease-out infinite;pointer-events:none;}
-@keyframes ringPulse{0%{transform:scale(.7);opacity:.9;}70%{transform:scale(1.35);opacity:0;}100%{transform:scale(1.35);opacity:0;}}
-.timeline{animation:lineGrow 1.2s ease .9s backwards;transform-origin:top;}
-@keyframes lineGrow{from{transform:scaleY(0);opacity:0;}to{transform:scaleY(1);opacity:1;}}
-.step{animation:stepIn .6s cubic-bezier(.22,1,.36,1) backwards;}
-.step:nth-child(1){animation-delay:1s;}.step:nth-child(2){animation-delay:1.15s;}.step:nth-child(3){animation-delay:1.3s;}.step:nth-child(4){animation-delay:1.45s;}.step:nth-child(5){animation-delay:1.6s;}.step:nth-child(6){animation-delay:1.75s;}
-@keyframes stepIn{from{opacity:0;transform:translateX(-36px);filter:blur(6px);}to{opacity:1;transform:none;filter:blur(0);}}
 body::after{content:"";position:fixed;right:-12vmax;top:-12vmax;width:34vmax;height:34vmax;border-radius:50%;background:radial-gradient(circle,rgba(90,170,255,.12),transparent 65%);filter:blur(10px);pointer-events:none;z-index:0;animation:orbFloat 9s ease-in-out infinite;}
 @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-4vmax,4vmax) scale(1.15);}}
-.wrap{position:relative;z-index:1;}
-@media(max-width:720px){section.card{padding:22px 18px;}ol.slides li{padding-left:56px;}}
+.wrap{max-width:960px;margin:0 auto;position:relative;z-index:1;}
+.hero{text-align:center;padding:52px 24px;border:1px solid rgba(90,170,255,.25);border-radius:20px;background:linear-gradient(180deg,rgba(12,26,50,.6),rgba(6,13,28,.6));box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 60px rgba(90,170,255,.12);margin-bottom:32px;position:relative;overflow:hidden;}
+.hero::before{content:"";position:absolute;left:50%;top:50%;width:120vmax;height:120vmax;transform:translate(-50%,-50%);background:repeating-conic-gradient(rgba(90,170,255,.05) 0deg 4deg,transparent 4deg 12deg);-webkit-mask:radial-gradient(circle,transparent 24%,#000 26%,#000 46%,transparent 48%);mask:radial-gradient(circle,transparent 24%,#000 26%,#000 46%,transparent 48%);opacity:.6;animation:haloSpin 55s linear infinite;pointer-events:none;}
+@keyframes haloSpin{to{transform:translate(-50%,-50%) rotate(360deg);}}
+.kicker{font-size:12px;font-weight:700;letter-spacing:8px;text-transform:uppercase;color:var(--blue);text-shadow:0 0 18px var(--blue-dim);margin-bottom:16px;position:relative;z-index:1;animation:labelTrack 1s cubic-bezier(.22,1,.36,1) .05s backwards;}
+@keyframes labelTrack{from{opacity:0;letter-spacing:22px;filter:blur(8px);}to{opacity:1;filter:blur(0);}}
+.hero h1{font-size:clamp(28px,5vw,56px);font-weight:900;letter-spacing:5px;text-transform:uppercase;position:relative;z-index:1;animation:heroTitle 1.15s cubic-bezier(.22,1,.36,1) .15s backwards,heroGlow 3.4s ease-in-out 1.5s infinite;}
+.hero h1 span{color:var(--blue);}
+@keyframes heroTitle{from{opacity:0;transform:translateY(34px) scale(.96);filter:blur(12px);}60%{opacity:1;filter:blur(0);}to{opacity:1;transform:none;filter:blur(0);}}
+@keyframes heroGlow{0%,100%{text-shadow:0 0 45px rgba(150,205,255,.5);}50%{text-shadow:0 0 80px rgba(150,205,255,.95);}}
+section.card{border:1px solid rgba(90,170,255,.22);background:rgba(8,18,34,.6);border-radius:16px;padding:30px 32px;margin-bottom:26px;box-shadow:0 20px 50px rgba(0,0,0,.35);animation:cardUp .75s cubic-bezier(.22,1,.36,1) .25s backwards;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease;}
+@keyframes cardUp{from{opacity:0;transform:translateY(40px);filter:blur(8px);}to{opacity:1;transform:none;filter:blur(0);}}
+section.card:hover{transform:translateY(-5px);border-color:rgba(90,170,255,.5);box-shadow:0 28px 65px rgba(0,0,0,.5),0 0 32px rgba(90,170,255,.18);}
+section.card p{margin-top:14px;font-size:15px;color:#dbe7f8;}
 .logo-show{margin:20px auto 6px;max-width:520px;animation:cardUp .8s cubic-bezier(.22,1,.36,1) .5s backwards;}
 .logo-show img{display:block;width:100%;border-radius:16px;border:1px solid rgba(90,170,255,.4);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 45px rgba(90,170,255,.25);transition:transform .4s ease,box-shadow .4s ease;}
 .logo-show img:hover{transform:scale(1.02);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 65px rgba(90,170,255,.4);}
-@media (prefers-reduced-motion:reduce){.hero::before,body::after{animation:none;opacity:.2;}.hero h1,.hero .kicker,section.card,.step,.logo-show{animation-duration:.01s !important;animation-delay:0s !important;}.logo-show img{transition:none;}}
+ul.clean{list-style:none;margin-top:14px;}
+ul.clean li{padding-left:22px;position:relative;margin:7px 0;font-size:15px;color:#d7e3f5;transition:transform .3s;}
+ul.clean li::before{content:"";position:absolute;left:0;top:.62em;width:8px;height:8px;border:1.5px solid var(--blue);transform:rotate(45deg);box-shadow:0 0 8px var(--blue-dim);}
+ul.clean li b{color:#fff;}
+ul.clean li:hover{transform:translateX(8px);}
+ol.slides{list-style:none;counter-reset:sl;margin-top:14px;}
+ol.slides li{counter-increment:sl;position:relative;padding:11px 16px 11px 62px;margin:9px 0;border:1px solid rgba(90,170,255,.18);border-radius:12px;background:rgba(6,13,28,.5);font-size:14px;color:#d7e3f5;transition:transform .3s,border-color .3s,box-shadow .3s;}
+ol.slides li::before{content:"0" counter(sl);position:absolute;left:13px;top:50%;transform:translateY(-50%);width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--blue);border:1px solid rgba(90,170,255,.5);border-radius:50%;background:rgba(8,18,34,.7);}
+ol.slides li b{color:#fff;}
+ol.slides li:hover{transform:translateX(8px);border-color:rgba(90,170,255,.55);box-shadow:0 0 22px rgba(90,170,255,.18);}
+@media(max-width:720px){section.card{padding:22px 18px;}ol.slides li{padding-left:56px;}}
+@media (prefers-reduced-motion:reduce){.hero::before,body::after{animation:none;opacity:.2;}.hero h1,.kicker,section.card,.logo-show{animation-duration:.01s !important;animation-delay:0s !important;}.logo-show img{transition:none;}}
 </style>
 </head>
 <body>
 <div class="wrap">
 
 <div class="hero">
-<div class="kicker">Presentación del proyecto a realizar</div>
+<div class="kicker">Ficha de presentación</div>
 <h1><span>EcoTense</span></h1>
 </div>
 
 <section class="card">
-<h2><span class="num">1</span>Nombre del proyecto</h2>
-<p><b style="color:#fff">EcoTense,</b> cubierta retráctil inteligente para la concha acústica.</p>
-</section>
-
-<section class="card">
-<h2><span class="num">2</span>Ficha de presentación</h2>
-<p><b style="color:#fff">Cómo se presenta:</b> presentación web de 13 diapositivas con navegación por mouse, teclado, táctil y gestos con cámara.</p>
+<p><b style="color:#fff">Cómo presentan:</b> presentación web de 13 diapositivas con navegación por mouse, teclado, táctil y gestos con cámara.</p>
 <div class="logo-show"><img src="logo-3d.jpg" alt="Símbolo del proyecto EcoTense"></div>
 <ol class="slides">
 <li><b>Portada</b> — Título y nombres con entrada 1 por 1.</li>
@@ -106,29 +72,9 @@ body::after{content:"";position:fixed;right:-12vmax;top:-12vmax;width:34vmax;hei
 </ol>
 <ul class="clean">
 <li><b>Imagen 3D:</b> modelo interactivo orbitable de la concha acústica con cubierta retráctil, control de hora solar y simulación de lluvia.</li>
-<li><b>Símbolo:</b> emblema del proyecto en versión 3D metálica, azul #5aaaff sobre fondo nocturno.</li>
+<li><b>Símbolo:</b> emblema del proyecto en versión 3D metálica, azul sobre fondo nocturno.</li>
 <li><b>Página:</b> sitio web estático publicado en GitHub Pages, disponible de forma permanente.</li>
 </ul>
-</section>
-
-<section class="card">
-<h2><span class="num">3</span>Reseña del proyecto</h2>
-<p>EcoTense es una cubierta retráctil inteligente que protege la concha acústica de la lluvia y el viento: sensores climáticos ordenan el despliegue automático de una membrana de PET reciclado alimentada con energía solar. Sirve para usar el espacio todo el año sin cancelar eventos, cuidando asistentes, equipos e infraestructura.</p>
-</section>
-
-<section class="card">
-<h2><span class="num">4</span>Justificación y ejecución</h2>
-<ul class="clean">
-<li><b>Justificación:</b> la concha queda inutilizada con lluvia y viento; se cancelan eventos y se deteriora la infraestructura. El proyecto da uso continuo al espacio con impacto técnico, económico y ambiental.</li>
-</ul>
-<div class="timeline">
-<div class="step"><b>Fase 1 — Levantamiento.</b><p>Medidas de la concha, estudio de lluvias y vientos, requisitos de carga y anclaje.</p></div>
-<div class="step"><b>Fase 2 — Diseño.</b><p>Estructura retráctil, membrana de PET reciclado, sistema fotovoltaico y planos.</p></div>
-<div class="step"><b>Fase 3 — Automatización.</b><p>Sensores, actuadores, controlador y lógica manual/automática.</p></div>
-<div class="step"><b>Fase 4 — Prototipo y pruebas.</b><p>Maqueta y visor 3D, despliegue, estanqueidad y respuesta climática.</p></div>
-<div class="step"><b>Fase 5 — Instalación.</b><p>Montaje de estructura, membrana, paneles y control en sitio.</p></div>
-<div class="step"><b>Fase 6 — Operación.</b><p>Mantenimiento preventivo, monitoreo y capacitación del personal.</p></div>
-</div>
 </section>
 
 </div>
