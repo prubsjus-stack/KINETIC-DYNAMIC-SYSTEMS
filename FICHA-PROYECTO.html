@@ -66,11 +66,10 @@ body::after{content:"";position:fixed;right:-12vmax;top:-12vmax;width:34vmax;hei
 @keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-4vmax,4vmax) scale(1.15);}}
 .wrap{position:relative;z-index:1;}
 @media(max-width:720px){section.card{padding:22px 18px;}ol.slides li{padding-left:56px;}}
-.logo-frame{position:relative;z-index:1;margin:6px auto 20px;width:fit-content;animation:logoPop 1s cubic-bezier(.22,1,.36,1) .3s backwards;}
-@keyframes logoPop{from{opacity:0;transform:scale(.5);filter:blur(12px);}60%{opacity:1;filter:blur(0);}to{opacity:1;transform:scale(1);}}
-.logo-frame img{display:block;max-width:min(280px,60vw);border-radius:18px;border:1px solid rgba(90,170,255,.45);box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 45px rgba(90,170,255,.30);animation:logoFloat 5s ease-in-out 1.4s infinite;}
-@keyframes logoFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
-@media (prefers-reduced-motion:reduce){.hero::before,body::after{animation:none;opacity:.2;}.hero h1,.hero .kicker,section.card,.step,.logo-frame{animation-duration:.01s !important;animation-delay:0s !important;}.logo-frame img{animation:none;}}
+.logo-show{margin:20px auto 6px;max-width:520px;animation:cardUp .8s cubic-bezier(.22,1,.36,1) .5s backwards;}
+.logo-show img{display:block;width:100%;border-radius:16px;border:1px solid rgba(90,170,255,.4);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 45px rgba(90,170,255,.25);transition:transform .4s ease,box-shadow .4s ease;}
+.logo-show img:hover{transform:scale(1.02);box-shadow:0 24px 60px rgba(0,0,0,.55),0 0 65px rgba(90,170,255,.4);}
+@media (prefers-reduced-motion:reduce){.hero::before,body::after{animation:none;opacity:.2;}.hero h1,.hero .kicker,section.card,.step,.logo-show{animation-duration:.01s !important;animation-delay:0s !important;}.logo-show img{transition:none;}}
 </style>
 </head>
 <body>
@@ -78,7 +77,6 @@ body::after{content:"";position:fixed;right:-12vmax;top:-12vmax;width:34vmax;hei
 
 <div class="hero">
 <div class="kicker">Presentación del proyecto a realizar</div>
-<div class="logo-frame"><img src="logo-2d.jpg" alt="Logo del proyecto EcoTense"></div>
 <h1><span>EcoTense</span></h1>
 </div>
 
@@ -90,6 +88,7 @@ body::after{content:"";position:fixed;right:-12vmax;top:-12vmax;width:34vmax;hei
 <section class="card">
 <h2><span class="num">2</span>Ficha de presentación</h2>
 <p><b style="color:#fff">Cómo se presenta:</b> presentación web de 13 diapositivas con navegación por mouse, teclado, táctil y gestos con cámara.</p>
+<div class="logo-show"><img src="logo-3d.jpg" alt="Símbolo del proyecto EcoTense"></div>
 <ol class="slides">
 <li><b>Portada</b> — Título y nombres con entrada 1 por 1.</li>
 <li><b>¿Quiénes somos?</b> — Infraestructura, automatización, sostenibilidad e innovación.</li>
@@ -107,7 +106,7 @@ body::after{content:"";position:fixed;right:-12vmax;top:-12vmax;width:34vmax;hei
 </ol>
 <ul class="clean">
 <li><b>Imagen 3D:</b> modelo interactivo orbitable de la concha acústica con cubierta retráctil, control de hora solar y simulación de lluvia.</li>
-<li><b>Símbolo:</b> logos 2D y 3D de KINETIX, azul #5aaaff sobre fondo nocturno.</li>
+<li><b>Símbolo:</b> emblema del proyecto en versión 3D metálica, azul #5aaaff sobre fondo nocturno.</li>
 <li><b>Página:</b> sitio web estático publicado en GitHub Pages, disponible de forma permanente.</li>
 </ul>
 </section>
