@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html lang="es" class="cine">
+<html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1633,31 +1633,38 @@
 
   /* accesibilidad: sin animaciones si el sistema lo pide */
   @media (prefers-reduced-motion: reduce) {
-    /* si el sistema pide menos movimiento, el motor JS acorta las duraciones
-       (ver CINE.reduced) en vez de apagar el contenido */
-    html.cine .slide, html.cine .slide.active { transition: none !important; }
-    html.cine #film-grain, html.cine .orb, html.cine .beambg, html.cine #netTop,
-    html.cine .slide * { animation: none !important; }
-    html.cine .slide.compact:not(.eco) .slide-label,
-    html.cine .slide.compact:not(.eco) h1,
-    html.cine .slide.compact:not(.eco) .subtitle,
-    html.cine .slide.compact:not(.eco) .desc,
-    html.cine .slide.compact:not(.eco) .quote,
-    html.cine .slide.compact:not(.eco) .motto,
-    html.cine .slide.compact:not(.eco) .authors li,
-    html.cine .slide.compact:not(.eco) .pts li,
-    html.cine .slide.compact:not(.eco) .chips span,
-    html.cine .slide.compact:not(.eco) .mv-card,
-    html.cine .slide.compact:not(.eco) .logo-card,
-    html.cine .slide.compact:not(.eco) .cols3 .card,
-    html.cine .slide.compact:not(.eco) .feat,
-    html.cine .slide.compact:not(.eco) .panel,
-    html.cine .slide.compact:not(.eco) .tag,
-    html.cine .slide.compact:not(.eco) .tile,
-    html.cine .slide.compact:not(.eco) .impact li,
-    html.cine .slide.compact:not(.eco) .pipe-node,
-    html.cine .slide.compact:not(.eco) .funnel-step,
-    html.cine .slide .shot { opacity: 1; transform: none; filter: none; }
+    .slide.compact:not(.eco) .slide-label, .slide.compact:not(.eco) h1,
+    .slide.compact:not(.eco) .subtitle, .slide.compact:not(.eco) .desc,
+    .slide.compact:not(.eco) .quote, .slide.compact:not(.eco) .motto,
+    .slide.compact:not(.eco) .authors li, .slide.compact:not(.eco) .pts li,
+    .slide.compact:not(.eco) .chips span, .slide.compact:not(.eco) .mv-card,
+    .slide.compact:not(.eco) .logo-card, .slide.compact:not(.eco) .cols3 .card,
+    .slide.compact:not(.eco) .feat, .slide.compact:not(.eco) .panel,
+    .slide.compact:not(.eco) .tag, .slide.compact:not(.eco) .tile,
+    .slide.compact:not(.eco) .impact li, .slide.compact:not(.eco) .pipe-node,
+    .slide.compact:not(.eco) .funnel-step, .slide .shot,
+    .slide.portada::before, .slide.portada::after, .slide.who::before,
+    .slide.mv::after, .slide.logos::after, .slide.problem::before,
+    .slide.shot-slide::before, .slide.flowslide::before, .slide.diff::before,
+    .slide.diff::after, .slide.end::before, .slide.end::after, .rainfx {
+      animation: none !important;
+    }
+    .slide.compact:not(.eco) .slide-label, .slide.compact:not(.eco) h1,
+    .slide.compact:not(.eco) .subtitle, .slide.compact:not(.eco) .desc,
+    .slide.compact:not(.eco) .quote, .slide.compact:not(.eco) .motto,
+    .slide.compact:not(.eco) .authors li, .slide.compact:not(.eco) .pts li,
+    .slide.compact:not(.eco) .chips span, .slide.compact:not(.eco) .mv-card,
+    .slide.compact:not(.eco) .logo-card, .slide.compact:not(.eco) .cols3 .card,
+    .slide.compact:not(.eco) .feat, .slide.compact:not(.eco) .panel,
+    .slide.compact:not(.eco) .tag, .slide.compact:not(.eco) .tile,
+    .slide.compact:not(.eco) .impact li, .slide.compact:not(.eco) .pipe-node,
+    .slide.compact:not(.eco) .funnel-step, .slide .shot {
+      opacity: 1 !important;
+      transform: none !important;
+      filter: none !important;
+    }
+    .slide.flowslide .pipe::before, .card-bar, .slide.portada .authors li::before,
+    .slide.portada .motto::after { transform: none !important; }
   }
 
 /* ================= MODELO 3D (DIAPOSITIVA 4) ================= */
@@ -1971,278 +1978,6 @@
   }
   body:hover #cursor-glow { opacity: 1; }
 
-
-
-  /* ==========================================================
-     CAPA CINE · engine + ambient + chrome Raycast
-     ========================================================== */
-/* =============================================================================
-   CAPA CINE · motor cinematografico (Web Animations API)
-   ---------------------------------------------------------------------------
-   - El flujo (escena + coreografia) lo dirige el motor JS con WAAPI.
-   - Aqui solo se neutraliza la coreografia legacy por CSS y se define la
-     capa de ambiente + el chrome estilo Raycast.
-   ========================================================================== */
-
-/* --- 0. la transicion la manda JS: fuera el transition legacy ------------ */
-html.cine .slide,
-html.cine .slide.active { transition: none !important; will-change: transform, opacity, filter; }
-
-/* --- 1. estado base: todo visible (JS lo anima con WAAPI) ---------------- */
-html.cine .slide.compact:not(.eco) .slide-label,
-html.cine .slide.compact:not(.eco) h1,
-html.cine .slide.compact:not(.eco) .subtitle,
-html.cine .slide.compact:not(.eco) .desc,
-html.cine .slide.compact:not(.eco) .quote,
-html.cine .slide.compact:not(.eco) .motto,
-html.cine .slide.compact:not(.eco) .authors li,
-html.cine .slide.compact:not(.eco) .pts li,
-html.cine .slide.compact:not(.eco) .chips span,
-html.cine .slide.compact:not(.eco) .mv-card,
-html.cine .slide.compact:not(.eco) .logo-card,
-html.cine .slide.compact:not(.eco) .cols3 .card,
-html.cine .slide.compact:not(.eco) .feat,
-html.cine .slide.compact:not(.eco) .panel,
-html.cine .slide.compact:not(.eco) .tag,
-html.cine .slide.compact:not(.eco) .tile,
-html.cine .slide.compact:not(.eco) .impact li,
-html.cine .slide.compact:not(.eco) .pipe-node,
-html.cine .slide.compact:not(.eco) .funnel-step,
-html.cine .slide .shot,
-html.cine .slide.eco .slide-label,
-html.cine .slide.eco h1,
-html.cine .slide.eco .motto,
-html.cine .slide.eco .pts li,
-html.cine .slide.eco .eco-rule {
-  opacity: 1;
-  transform: none;
-  filter: none;
-}
-
-/* --- 2. fuera las entradas CSS legacy (el motor es WAAPI) --------------- */
-html.cine .slide.active .slide-label,
-html.cine .slide.active h1,
-html.cine .slide.active .subtitle,
-html.cine .slide.active .desc,
-html.cine .slide.compact.active:not(.eco) .slide-label,
-html.cine .slide.compact.active:not(.eco) h1,
-html.cine .slide.compact.active:not(.eco) .subtitle,
-html.cine .slide.compact.active:not(.eco) .desc,
-html.cine .slide.compact.active:not(.eco) .quote,
-html.cine .slide.compact.active:not(.eco) .motto,
-html.cine .slide.compact.active:not(.eco) .authors li,
-html.cine .slide.compact.active:not(.eco) .pts li,
-html.cine .slide.compact.active:not(.eco) .chips span,
-html.cine .slide.compact.active:not(.eco) .mv-card,
-html.cine .slide.compact.active:not(.eco) .logo-card,
-html.cine .slide.compact.active:not(.eco) .cols3 .card,
-html.cine .slide.compact.active:not(.eco) .feat,
-html.cine .slide.compact.active:not(.eco) .panel,
-html.cine .slide.compact.active:not(.eco) .tag,
-html.cine .slide.compact.active:not(.eco) .tile,
-html.cine .slide.compact.active:not(.eco) .impact li,
-html.cine .slide.compact.active:not(.eco) .pipe-node,
-html.cine .slide.compact.active:not(.eco) .funnel-step,
-html.cine .slide.active .shot,
-html.cine .slide.eco.active .slide-label,
-html.cine .slide.eco.active h1,
-html.cine .slide.eco.active .pts li,
-html.cine .slide.eco.active .pts li::before,
-html.cine .slide.eco.active .pts li::after,
-html.cine .slide.eco.active .motto,
-html.cine .slide.eco.active .eco-rule,
-html.cine .slide.logos .logo-card {
-  animation: none !important;
-}
-
-/* --- 3. lo que si se conserva: ambiente y detalle ----------------------- */
-html.cine .slide.compact.active:not(.eco) h1 {
-  animation: pSheen 9s linear 1.4s infinite !important;
-}
-html.cine .slide.logos .logo-card {
-  animation: cineFloat 7s ease-in-out 2.2s infinite !important;
-}
-html.cine .slide.portada.active .authors li::before {
-  animation: pDrawX .55s var(--eo) .82s forwards !important;
-}
-html.cine .slide.portada.active .authors li:nth-child(2)::before { animation-delay: .94s !important; }
-html.cine .slide.portada.active .authors li:nth-child(3)::before { animation-delay: 1.06s !important; }
-html.cine .slide.portada.active .authors li:nth-child(4)::before { animation-delay: 1.18s !important; }
-html.cine .slide.portada.active .motto::after {
-  animation: pDrawXm .9s var(--eo) 1.25s forwards !important;
-}
-html.cine .slide.shot-slide.active::after {
-  animation: pDrawXm 1.1s var(--eo) .55s forwards !important;
-}
-html.cine .slide.img-slide.active .big-img {
-  animation: kbPan 22s ease-in-out 1.6s infinite alternate !important;
-}
-html.cine .slide.eco.active .pts li::before {
-  animation: ecoChip .55s cubic-bezier(.25,1,.5,1) .55s forwards !important;
-}
-html.cine .slide.eco.active .pts li::after {
-  animation: ecoShine .9s cubic-bezier(.25,1,.5,1) .75s forwards !important;
-}
-
-@keyframes cineFloat {
-  0%, 100% { translate: 0 0; }
-  50%      { translate: 0 -7px; }
-}
-@keyframes cineSweep {
-  0%   { left: -34vw; opacity: 0; }
-  14%  { opacity: 1; }
-  86%  { opacity: 1; }
-  100% { left: 106vw; opacity: 0; }
-}
-
-/* --- 4. palabras del texto (split por JS) ------------------------------- */
-html.cine .w { display: inline-block; will-change: transform, opacity, filter; }
-html.cine .slide-inner { will-change: translate; }
-
-/* --- 5. ambiente: intro de fondo, foco, marco --------------------------- */
-html.cine #heroFx { z-index: 4; mix-blend-mode: screen; }
-html.cine #deck::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 8;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(120,190,255,.055), transparent 16%),
-    radial-gradient(125% 92% at 50% 6%, transparent 52%, rgba(0,0,0,.46) 100%);
-}
-html.cine #cursor-glow {
-  width: 520px;
-  height: 520px;
-  background: radial-gradient(circle, rgba(125,211,255,.13) 0%, rgba(90,170,255,.05) 38%, transparent 68%);
-  filter: blur(46px);
-}
-html.cine .scan {
-  width: 280px;
-  background: linear-gradient(90deg, transparent, rgba(120,190,255,.10) 40%, rgba(200,232,255,.34) 50%, rgba(120,190,255,.10) 60%, transparent);
-  filter: blur(10px);
-}
-html.cine .scan.run { animation: cineSweep 1.15s cubic-bezier(.22,1,.36,1); }
-
-/* --- 6. letterbox cinematografico --------------------------------------- */
-#cine-lb { position: fixed; inset: 0; z-index: 45; pointer-events: none; }
-#cine-lb i {
-  position: absolute;
-  left: 0; right: 0;
-  height: 0;
-  background: #01030a;
-  box-shadow: 0 0 28px rgba(0,0,0,.75);
-}
-#cine-lb .lb-t { top: 0; }
-#cine-lb .lb-b { bottom: 0; }
-
-/* --- 7. chrome estilo Raycast ------------------------------------------- */
-#cine-chrome {
-  position: fixed;
-  inset: 0;
-  z-index: 40;
-  pointer-events: none;
-  font-family: Montserrat, sans-serif;
-  color: var(--steel);
-}
-.cine-top {
-  position: absolute;
-  left: 0; right: 0; top: 0;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 0 24px;
-  background: linear-gradient(180deg, rgba(2,6,15,.86), rgba(2,6,15,0));
-}
-.cine-brand { display: flex; align-items: baseline; gap: 9px; }
-.cb-glyph {
-  width: 9px; height: 9px;
-  border-radius: 2px;
-  align-self: center;
-  background: linear-gradient(140deg, #b9ddff, var(--blue));
-  box-shadow: 0 0 14px rgba(90,170,255,.85);
-}
-.cb-name { font-size: 11.5px; font-weight: 800; letter-spacing: .17em; color: var(--ink); }
-.cb-sub { font-size: 9.5px; letter-spacing: .13em; color: rgba(147,169,200,.55); }
-.cine-rail {
-  position: relative;
-  flex: 1;
-  height: 1px;
-  background: rgba(147,169,200,.16);
-}
-.cine-rail i {
-  position: absolute;
-  left: 0; top: -1px;
-  height: 3px;
-  width: 9.1%;
-  border-radius: 2px;
-  background: linear-gradient(90deg, rgba(90,170,255,.2), var(--blue));
-  box-shadow: 0 0 16px rgba(90,170,255,.75);
-  transition: width .75s cubic-bezier(.16,1,.3,1);
-}
-.cine-chapter {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  font-size: 10px;
-  letter-spacing: .13em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.cine-chapter b { color: var(--blue); font-weight: 700; letter-spacing: .2em; }
-.cine-chapter i { width: 15px; height: 1px; background: rgba(147,169,200,.42); }
-.cine-chapter span { color: rgba(206,222,244,.82); }
-.cine-keys {
-  position: absolute;
-  left: 24px; bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  opacity: .5;
-}
-.ck { display: inline-flex; align-items: center; gap: 6px; font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; }
-.cine-keys kbd {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 19px; height: 19px;
-  padding: 0 5px;
-  font-family: Montserrat, sans-serif;
-  font-size: 9.5px;
-  font-weight: 600;
-  color: #cfe0f5;
-  background: linear-gradient(180deg, rgba(20,32,52,.95), rgba(8,16,30,.95));
-  border: 1px solid rgba(147,169,200,.26);
-  border-radius: 4px;
-  box-shadow: 0 1px 0 rgba(147,169,200,.16), inset 0 1px 0 rgba(255,255,255,.06);
-}
-
-/* --- 8. punteros y contador: lectura Raycast ---------------------------- */
-html.cine .dots { right: 20px; gap: 12px; }
-html.cine .dots button {
-  width: 5px; height: 5px;
-  border-radius: 3px;
-  border-color: rgba(159,208,255,.4);
-  background: rgba(159,208,255,.16);
-}
-html.cine .dots button.active {
-  width: 5px; height: 24px;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #b9ddff, var(--blue));
-  border-color: transparent;
-  box-shadow: 0 0 16px rgba(90,170,255,.7);
-  transform: none;
-}
-html.cine .dots button.active::after { animation: none; }
-html.cine .counter {
-  right: 20px; bottom: 20px;
-  font-size: 10px;
-  letter-spacing: 3px;
-}
-html.cine .counter span { color: var(--ink); }
-html.cine .counter #cur-num { color: var(--blue); }
-
 </style>
 </head>
 <body>
@@ -2536,31 +2271,6 @@ html.cine .counter #cur-num { color: var(--blue); }
 
   </main>
 
-
-  <!-- ===== CHROME CINEMATOGRAFICO (marca, rail, capitulo, teclas) ===== -->
-  <div id="cine-chrome">
-    <div class="cine-top">
-      <div class="cine-brand">
-        <span class="cb-glyph"></span>
-        <span class="cb-name">KINETIX</span>
-        <span class="cb-sub">Dynamic Systems</span>
-      </div>
-      <div class="cine-rail"><i id="cine-rail"></i></div>
-      <div class="cine-chapter">
-        <b id="cine-ch-num">01</b><i></i><span id="cine-ch-name">Portada</span>
-      </div>
-    </div>
-    <div class="cine-keys">
-      <span class="ck"><kbd>&#8593;</kbd><kbd>&#8595;</kbd> navegar</span>
-      <span class="ck"><kbd>1</kbd>&#8211;<kbd>9</kbd> saltar</span>
-      <span class="ck"><kbd>espacio</kbd> avanzar</span>
-      <span class="ck"><kbd>scroll</kbd> avanzar</span>
-    </div>
-  </div>
-
-  <!-- letterbox cinematografico -->
-  <div id="cine-lb"><i class="lb-t"></i><i class="lb-b"></i></div>
-
   <!-- indicadores -->
   <nav class="dots" id="dots"></nav>
   <div class="counter"><span id="cur-num">01</span> / <span id="tot-num">04</span></div>
@@ -2652,19 +2362,13 @@ counterTot.textContent = String(slides.length).padStart(2, '0');
     scan.classList.add('run');
   }
 
-  const TRANS_MS = 1150;   // duracion de la transicion horizontal
+  const TRANS_MS = 800;   // duracion de la transicion horizontal
 
   // anima el cambio de diapositiva en el espacio horizontal continuo:
   // avance: la actual sale por la izquierda, la siguiente entra desde la derecha.
   // Para que no se vean textos "duplicados", la que sale se desvanece (opacity
   // -> 0) mientras se desplaza y la que entra comienza desvanecida (0 -> 1).
   function transitionSlides(oldEl, newEl, dir) {
-    // motor cinematografico (WAAPI): escala, desenfoque y deriva profunda
-    if (window.CINE && typeof window.CINE.scene === 'function') {
-      window.CINE.scene(oldEl, newEl, dir);
-      return;
-    }
-    /* respaldo: transicion simple si el motor no esta disponible */
     if (!oldEl || oldEl === newEl) return;
     const ease = 'cubic-bezier(0.22, 1, 0.36, 1)';
     const fadeMs = Math.round(TRANS_MS * 0.85);
@@ -2704,6 +2408,7 @@ function goTo(n, source) {
     const oldEl = slides[current];
     current = n;
 
+    slides.forEach((s, i) => s.classList.toggle('active', i === n));
     const netTopEl = document.getElementById('netTop');
     if (netTopEl) netTopEl.classList.toggle('net-off', !!(slides[n] && slides[n].id === 'slide3d'));
     document.querySelectorAll('.dots button').forEach((d, i) => d.classList.toggle('active', i === n));
@@ -6554,398 +6259,6 @@ fold += (foldTarget - fold) * 0.014;
       orb.style.transform = `translate(${x * (i+1)}px, ${y * (i+1)}px)`;
     });
   });
-
-</script>
-
-<script id="cine-js">
-/* =============================================================================
-   MOTOR CINEMATOGRAFICO · KINETIX Dynamic Systems
-   ---------------------------------------------------------------------------
-   - Escena: transicion larga con profundidad (escala + desenfoque + deriva).
-   - Coreografia: cada pieza entra con su propio ritmo (cortinilla, palabras,
-     tarjetas en 3D, mascaras de imagen, listas escalonadas).
-   - Ambiente: letterbox, barrido de luz, foco de cursor, parallax.
-   - Todo con Web Animations API: el script manda sobre las reglas CSS.
-   ========================================================================== */
-(function () {
-  'use strict';
-
-  var doc = document;
-  var RM = window.matchMedia('(prefers-reduced-motion: reduce)');
-  var reduced = function () { return !!RM.matches; };
-
-  var T = {
-    scene: 1150,
-    line: 640,
-    curtain: 920,
-    words: 560,
-    card: 780,
-    item: 560,
-    shot: 940,
-    rule: 900
-  };
-  var E_OUT = 'cubic-bezier(.16,1,.3,1)';
-  var E_IN  = 'cubic-bezier(.62,0,.85,.35)';
-
-  var NAMES = [
-    'Portada', 'Quiénes somos', 'Tres ingenierías', 'El problema',
-    'Nuestra solución', 'EcoTense', '¿Cómo funciona?', 'Sostenibilidad',
-    'Marketing KINETIX', 'Diferencial', 'Cierre'
-  ];
-
-  var SL = Array.prototype.slice.call(doc.querySelectorAll('.slide'));
-  var activeEl = SL[0] || null;
-
-  /* --------------------------------------------------------------- utiles */
-  function q(sel, root) { return Array.prototype.slice.call((root || doc).querySelectorAll(sel)); }
-  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
-
-  /* --------------------------------------------- split de texto por palabra */
-  function canSplit(el) {
-    if (!el) return false;
-    if (el.querySelector('div,p,ul,ol,li,figure,img,svg,section,table,canvas')) return false;
-    return true;
-  }
-  function splitWords(el) {
-    if (!el) return [];
-    if (el.getAttribute('data-cine-split') === '1') return q('.w', el);
-    if (!canSplit(el)) return [];
-    var out = [];
-    var walker = doc.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
-    var texts = [];
-    var n;
-    while ((n = walker.nextNode())) {
-      if (n.nodeValue && n.nodeValue.trim()) texts.push(n);
-    }
-    for (var i = 0; i < texts.length; i++) {
-      var tn = texts[i];
-      var frag = doc.createDocumentFragment();
-      var parts = tn.nodeValue.split(/(\s+)/);
-      for (var j = 0; j < parts.length; j++) {
-        var part = parts[j];
-        if (!part) continue;
-        if (/^\s+$/.test(part)) {
-          frag.appendChild(doc.createTextNode(part));
-          continue;
-        }
-        var span = doc.createElement('span');
-        span.className = 'w';
-        span.textContent = part;
-        frag.appendChild(span);
-        out.push(span);
-      }
-      if (tn.parentNode) tn.parentNode.replaceChild(frag, tn);
-    }
-    el.setAttribute('data-cine-split', '1');
-    return out;
-  }
-
-  /* ------------------------------------------------------- plan de escena */
-  var PLAN = [
-    { sel: '.slide-label',          kind: 'line',    at: 90,  step: 0 },
-    { sel: 'h1',                    kind: 'curtain', at: 170, step: 0 },
-    { sel: '.subtitle',             kind: 'words',   at: 340, step: 0 },
-    { sel: '.desc',                 kind: 'words',   at: 440, step: 70 },
-    { sel: '.authors li',           kind: 'item',    at: 780, step: 95 },
-    { sel: '.chips span',           kind: 'item',    at: 620, step: 70 },
-    { sel: '.pts li',               kind: 'item',    at: 640, step: 95 },
-    { sel: '.impact li',            kind: 'item',    at: 700, step: 95 },
-    { sel: '.pipe-node',            kind: 'card',    at: 620, step: 90 },
-    { sel: '.tile',                 kind: 'card',    at: 640, step: 90 },
-    { sel: '.feat',                 kind: 'card',    at: 640, step: 100 },
-    { sel: '.mv-card',              kind: 'card',    at: 600, step: 110 },
-    { sel: '.logo-card',            kind: 'card',    at: 600, step: 130 },
-    { sel: '.cols3 .card',          kind: 'card',    at: 620, step: 110 },
-    { sel: '.panel',                kind: 'card',    at: 620, step: 120 },
-    { sel: '.tag',                  kind: 'item',    at: 980, step: 60 },
-    { sel: '.funnel-step',          kind: 'item',    at: 880, step: 110 },
-    { sel: '.quote',                kind: 'words',   at: 900, step: 0 },
-    { sel: '.motto:not(.energy)',   kind: 'words',   at: 1000, step: 0 },
-    { sel: '.shot',                 kind: 'shot',    at: 520, step: 0 },
-    { sel: '.eco-rule',             kind: 'rule',    at: 1010, step: 0 }
-  ];
-
-  function animateEl(el, kind, delay) {
-    if (!el || !el.animate) return;
-    var d = Math.max(120, Math.round(T[kind] * (reduced() ? 0.25 : 1)));
-    var o = { duration: d, delay: delay, easing: E_OUT, fill: 'both' };
-    try {
-      if (kind === 'line') {
-        el.animate([
-          { opacity: 0, transform: 'translateY(14px)', filter: 'blur(6px)', clipPath: 'inset(0 100% 0 0)' },
-          { opacity: 1, transform: 'translateY(0)', filter: 'blur(0px)', clipPath: 'inset(0 0% 0 0)' }
-        ], o);
-      } else if (kind === 'curtain') {
-        el.animate([
-          { opacity: 0, transform: 'translateY(18px)', clipPath: 'inset(0 100% 0 0)' },
-          { opacity: 1, transform: 'translateY(0)', clipPath: 'inset(0 0% 0 0)' }
-        ], o);
-      } else if (kind === 'words') {
-        var ws = splitWords(el);
-        for (var i = 0; i < ws.length; i++) {
-          ws[i].animate([
-            { opacity: 0, transform: 'translateY(16px)', filter: 'blur(5px)' },
-            { opacity: 1, transform: 'translateY(0)', filter: 'blur(0px)' }
-          ], { duration: d, delay: delay + i * 26, easing: E_OUT, fill: 'both' });
-        }
-      } else if (kind === 'card') {
-        el.animate([
-          { opacity: 0, transform: 'perspective(1100px) rotateX(-16deg) translateY(34px) scale(.94)', filter: 'blur(8px)' },
-          { opacity: 1, transform: 'perspective(1100px) rotateX(0deg) translateY(0) scale(1)', filter: 'blur(0px)' }
-        ], o);
-      } else if (kind === 'item') {
-        el.animate([
-          { opacity: 0, transform: 'translateY(20px)', filter: 'blur(4px)' },
-          { opacity: 1, transform: 'translateY(0)', filter: 'blur(0px)' }
-        ], o);
-      } else if (kind === 'shot') {
-        el.animate([
-          { opacity: 0, transform: 'scale(1.05)', filter: 'blur(10px)', clipPath: 'inset(12% 8% 12% 8%)' },
-          { opacity: 1, transform: 'scale(1)', filter: 'blur(0px)', clipPath: 'inset(0% 0% 0% 0%)' }
-        ], o);
-      } else if (kind === 'rule') {
-        el.animate([
-          { opacity: 0, transform: 'scaleX(0)' },
-          { opacity: 1, transform: 'scaleX(1)' }
-        ], o);
-      }
-    } catch (e) { /* motor no disponible: el contenido queda visible */ }
-  }
-
-  function choreo(slideEl, offset) {
-    if (!slideEl) return;
-    var root = slideEl.querySelector('.slide-inner') || slideEl;
-    if (reduced()) return;
-    var base = offset || 0;
-    for (var i = 0; i < PLAN.length; i++) {
-      var p = PLAN[i];
-      var els = q(p.sel, root);
-      for (var j = 0; j < els.length; j++) {
-        animateEl(els[j], p.kind, base + p.at + j * p.step);
-      }
-    }
-  }
-
-  /* ------------------------------------------------------------- ambiente */
-  function letterbox() {
-    var bars = q('#cine-lb i');
-    for (var i = 0; i < bars.length; i++) {
-      try {
-        bars[i].animate([
-          { height: '0px' },
-          { height: '4.6vh', offset: 0.34 },
-          { height: '0px' }
-        ], { duration: reduced() ? 300 : 1500, easing: 'cubic-bezier(.4,0,.2,1)' });
-      } catch (e) {}
-    }
-  }
-
-  function sweep() {
-    var sc = doc.getElementById('scan');
-    if (!sc) return;
-    sc.classList.remove('run');
-    void sc.offsetWidth;
-    sc.classList.add('run');
-  }
-
-  function chrome(slideEl) {
-    var idx = SL.indexOf(slideEl);
-    if (idx < 0) idx = 0;
-    activeEl = slideEl;
-    var rail = doc.getElementById('cine-rail');
-    var num = doc.getElementById('cine-ch-num');
-    var name = doc.getElementById('cine-ch-name');
-    if (rail) rail.style.width = ((idx + 1) / SL.length * 100).toFixed(2) + '%';
-    if (num) num.textContent = (idx + 1 < 10 ? '0' : '') + (idx + 1);
-    if (name) name.textContent = NAMES[idx] || '';
-  }
-
-  /* ------------------------------------------------------------- escena */
-  function clearAnims(el) {
-    if (!el) return;
-    if (el._cine) {
-      for (var i = 0; i < el._cine.length; i++) {
-        try { el._cine[i].cancel(); } catch (e) {}
-      }
-      el._cine = null;
-    }
-  }
-
-  function scene(oldEl, newEl, dir) {
-    if (!oldEl || oldEl === newEl) return;
-    var red = reduced();
-    var D = red ? 200 : T.scene;
-    var outD = red ? 130 : Math.round(D * 0.52);
-
-    clearAnims(oldEl);
-    clearAnims(newEl);
-
-    newEl.classList.add('active');
-    oldEl.classList.remove('active');
-    newEl.style.visibility = 'visible';
-    oldEl.style.visibility = 'visible';
-    newEl.style.opacity = '0';
-    oldEl.style.opacity = '1';
-
-    var aOut, aIn;
-    if (red) {
-      aOut = oldEl.animate([{ opacity: 1 }, { opacity: 0 }], { duration: outD, easing: 'ease', fill: 'forwards' });
-      aIn = newEl.animate([{ opacity: 0 }, { opacity: 1 }], { duration: D, easing: 'ease', delay: 60, fill: 'both' });
-    } else {
-      aOut = oldEl.animate([
-        { opacity: 1, transform: 'translateX(0) scale(1)', filter: 'blur(0px)' },
-        { opacity: 0, transform: 'translateX(' + (-dir * 7) + '%) scale(.955)', filter: 'blur(12px)' }
-      ], { duration: outD, easing: E_IN, fill: 'forwards' });
-      aIn = newEl.animate([
-        { opacity: 0, transform: 'translateX(' + (dir * 6) + '%) scale(1.07)', filter: 'blur(14px)' },
-        { opacity: 1, transform: 'translateX(0) scale(1)', filter: 'blur(0px)' }
-      ], { duration: D, easing: E_OUT, delay: Math.round(D * 0.16), fill: 'both' });
-    }
-    oldEl._cine = [aOut];
-    newEl._cine = [aIn];
-
-    var doneIn = function () {
-      try { aIn.cancel(); } catch (e) {}
-      newEl.style.visibility = '';
-      newEl.style.opacity = '';
-      newEl.style.transform = '';
-      newEl.style.filter = '';
-      newEl._cine = null;
-    };
-    var doneOut = function () {
-      try { aOut.cancel(); } catch (e) {}
-      oldEl.style.visibility = 'hidden';
-      oldEl.style.opacity = '';
-      oldEl.style.transform = '';
-      oldEl.style.filter = '';
-      oldEl._cine = null;
-    };
-    if (aIn.finished && aIn.finished.then) { aIn.finished.then(doneIn, doneIn); }
-    else { setTimeout(doneIn, D + 120); }
-    if (aOut.finished && aOut.finished.then) { aOut.finished.then(doneOut, doneOut); }
-    else { setTimeout(doneOut, outD + 120); }
-
-    // parallax: se reinicia la deriva de la escena entrante
-    var inner = newEl.querySelector('.slide-inner');
-    if (inner) inner.style.translate = '';
-    if (oldEl) {
-      var oi = oldEl.querySelector('.slide-inner');
-      if (oi) oi.style.translate = '';
-    }
-
-    choreo(newEl, 0);
-    chrome(newEl);
-    letterbox();
-  }
-
-  /* --------------------------------------------------------- parallax 3D */
-  var px = 0, py = 0, tx = 0, ty = 0, rafP = 0;
-  function parallaxFrame() {
-    rafP = 0;
-    px += (tx - px) * 0.08;
-    py += (ty - py) * 0.08;
-    if (activeEl && !activeEl.classList.contains('model3d')) {
-      var inner = activeEl.querySelector('.slide-inner');
-      if (inner) {
-        inner.style.translate = (px * 15).toFixed(2) + 'px ' + (py * 11).toFixed(2) + 'px';
-      }
-    }
-    if (Math.abs(tx - px) > 0.0015 || Math.abs(ty - py) > 0.0015) {
-      rafP = requestAnimationFrame(parallaxFrame);
-    }
-  }
-  doc.addEventListener('mousemove', function (e) {
-    tx = (e.clientX / Math.max(1, window.innerWidth) - 0.5);
-    ty = (e.clientY / Math.max(1, window.innerHeight) - 0.5);
-    if (!rafP) rafP = requestAnimationFrame(parallaxFrame);
-  }, { passive: true });
-
-  /* ------------------------------------------------------ intro de fondo */
-  function heroIntro() {
-    var cv = doc.getElementById('heroFx');
-    if (!cv || reduced()) return;
-    var ctx = cv.getContext && cv.getContext('2d');
-    if (!ctx) return;
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
-    function resize() {
-      cv.width = Math.floor(window.innerWidth * dpr);
-      cv.height = Math.floor(window.innerHeight * dpr);
-      if (ctx.setTransform) ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    resize();
-    var t0 = performance.now();
-    var LIFE = 2100;
-    var streaks = [];
-    for (var i = 0; i < 8; i++) {
-      streaks.push({
-        x: Math.random(),
-        w: 0.015 + Math.random() * 0.04,
-        d: 0.55 + Math.random() * 0.85,
-        o: 0.10 + Math.random() * 0.20
-      });
-    }
-    function frame(t) {
-      var e = (t - t0) / LIFE;
-      var w = window.innerWidth, h = window.innerHeight;
-      ctx.clearRect(0, 0, w, h);
-      if (e < 1.25) {
-        var k = 1 - e / 1.25;
-        var rg = ctx.createRadialGradient(w / 2, h * 0.44, 0, w / 2, h * 0.44, Math.max(w, h) * 0.6);
-        rg.addColorStop(0, 'rgba(120,190,255,' + (0.11 * k).toFixed(4) + ')');
-        rg.addColorStop(1, 'rgba(120,190,255,0)');
-        ctx.fillStyle = rg;
-        ctx.fillRect(0, 0, w, h);
-        for (var j = 0; j < streaks.length; j++) {
-          var s = streaks[j];
-          var p = ((e * 1.25 * s.d + s.x) % 1.4) - 0.2;
-          var x = p * w;
-          var lg = ctx.createLinearGradient(x - s.w * w, 0, x + s.w * w, 0);
-          lg.addColorStop(0, 'rgba(90,170,255,0)');
-          lg.addColorStop(0.5, 'rgba(190,230,255,' + (s.o * k).toFixed(4) + ')');
-          lg.addColorStop(1, 'rgba(90,170,255,0)');
-          ctx.fillStyle = lg;
-          ctx.fillRect(x - s.w * w, 0, s.w * 2 * w, h);
-        }
-      }
-      if (e < 1.45) { requestAnimationFrame(frame); }
-      else { ctx.clearRect(0, 0, w, h); }
-    }
-    requestAnimationFrame(frame);
-    window.addEventListener('resize', resize);
-  }
-
-  /* --------------------------------------------------------------- init */
-  function init() {
-    for (var i = 0; i < SL.length; i++) {
-      if (!SL[i].getAttribute('data-name')) {
-        SL[i].setAttribute('data-name', NAMES[i] || ('Diapositiva ' + (i + 1)));
-      }
-    }
-    chrome(SL[0]);
-    choreo(SL[0], 120);
-    letterbox();
-    sweep();
-    heroIntro();
-
-    var ch = doc.getElementById('cine-chrome');
-    if (ch && !reduced() && ch.animate) {
-      try {
-        ch.animate([
-          { opacity: 0, transform: 'translateY(-10px)' },
-          { opacity: 1, transform: 'translateY(0)' }
-        ], { duration: 900, delay: 260, easing: E_OUT, fill: 'both' });
-      } catch (e) {}
-    }
-  }
-
-  window.CINE = { scene: scene, init: init, names: NAMES };
-
-  if (doc.readyState === 'loading') {
-    doc.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
-})();
 
 </script>
 
