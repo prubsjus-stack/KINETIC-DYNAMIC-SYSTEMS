@@ -1287,6 +1287,286 @@
       animation: rise .62s cubic-bezier(.22, 1, .36, 1) .27s both;
     }
 
+    /* ================= DIAPOSITIVA 2 : MINI PRESENTACION / QR ================= */
+    .slide.qr-slide {
+      text-align: left;
+    }
+
+    .qr-inner {
+      max-width: 1120px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .qr-inner .slide-label {
+      margin-bottom: 10px;
+    }
+
+    .slide.qr-slide h1 {
+      margin: 4px 0 16px;
+      font-size: clamp(24px, 3.4vw, 44px);
+      letter-spacing: clamp(3px, .8vw, 8px);
+    }
+
+    .qr-grid {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(26px, 5vw, 76px);
+    }
+
+    .qr-copy {
+      flex: 1 1 320px;
+      max-width: 470px;
+    }
+
+    .qr-copy .desc {
+      margin: 0;
+      max-width: 470px;
+      text-align: left;
+    }
+
+    .qr-chips {
+      justify-content: flex-start;
+      margin-top: 18px;
+      margin-bottom: 0;
+    }
+
+    .qr-hint {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 22px;
+      font-size: clamp(11px, 1.15vw, 14px);
+      font-weight: 400;
+      letter-spacing: .4px;
+      color: #cfe0f6;
+    }
+
+    .qr-hint .qr-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--blue);
+      flex: 0 0 auto;
+      animation: qrPulse 2.2s ease-out infinite;
+    }
+
+    .qr-url {
+      margin-top: 9px;
+      font-family: Consolas, Monaco, monospace;
+      font-size: clamp(9px, .95vw, 11px);
+      letter-spacing: .2px;
+      color: rgba(159, 208, 255, .58);
+      word-break: break-all;
+    }
+
+    .qr-card {
+      position: relative;
+      flex: 0 0 auto;
+      padding: 20px 20px 14px;
+      border-radius: 22px;
+      border: 1px solid rgba(90, 170, 255, .38);
+      background: linear-gradient(165deg, rgba(15, 32, 62, .93), rgba(5, 12, 26, .97));
+      box-shadow: 0 28px 70px rgba(0, 0, 0, .62), 0 0 60px rgba(90, 170, 255, .18),
+        inset 0 1px 0 rgba(255, 255, 255, .06);
+      z-index: 2;
+    }
+
+    .qr-card::before {
+      content: "";
+      position: absolute;
+      inset: -34px;
+      z-index: -1;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(90, 170, 255, .26), transparent 62%);
+      filter: blur(8px);
+      animation: qrHalo 4.6s ease-in-out infinite;
+    }
+
+    .slide.active .qr-card {
+      animation: rise .75s cubic-bezier(.22, 1, .36, 1) .34s both;
+    }
+
+    .qr-box {
+      position: relative;
+      width: clamp(200px, 20vw, 336px);
+      padding: 12px;
+      border-radius: 14px;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .38);
+      overflow: hidden;
+    }
+
+    .qr-box .qr-svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .qr-scanline {
+      position: absolute;
+      left: -10%;
+      right: -10%;
+      height: 22%;
+      top: -24%;
+      pointer-events: none;
+      background: linear-gradient(180deg, transparent, rgba(90, 170, 255, .55) 45%, rgba(90, 170, 255, .75) 50%,
+          rgba(90, 170, 255, .55) 55%, transparent);
+      mix-blend-mode: multiply;
+      animation: qrScan 3.6s cubic-bezier(.45, 0, .55, 1) infinite;
+    }
+
+    .qr-cap {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3.4px;
+      text-transform: uppercase;
+      color: var(--blue);
+      text-shadow: 0 0 14px var(--blue-dim);
+    }
+
+    .qr-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--blue);
+      opacity: .7;
+      filter: drop-shadow(0 0 6px var(--blue-dim));
+    }
+
+    .qr-corner.tl { top: 9px; left: 9px; border-right: 0; border-bottom: 0; border-radius: 7px 0 0 0; }
+    .qr-corner.tr { top: 9px; right: 9px; border-left: 0; border-bottom: 0; border-radius: 0 7px 0 0; }
+    .qr-corner.bl { bottom: 9px; left: 9px; border-right: 0; border-top: 0; border-radius: 0 0 0 7px; }
+    .qr-corner.br { bottom: 9px; right: 9px; border-left: 0; border-top: 0; border-radius: 0 0 7px 0; }
+
+    .qr-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(90, 170, 255, .14);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .qr-ring.r1 {
+      width: 62vmin;
+      height: 62vmin;
+      right: 2vw;
+      top: 50%;
+      transform: translateY(-50%);
+      border-style: dashed;
+      animation: qrSpin 46s linear infinite;
+    }
+
+    .qr-ring.r2 {
+      width: 44vmin;
+      height: 44vmin;
+      right: 9vw;
+      top: 50%;
+      transform: translateY(-50%);
+      border-color: rgba(90, 170, 255, .1);
+      animation: qrSpin 34s linear infinite reverse;
+    }
+
+    .qr-orb {
+      position: absolute;
+      right: 4vw;
+      top: 50%;
+      width: 46vmin;
+      height: 46vmin;
+      transform: translateY(-50%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle, rgba(90, 170, 255, .14), transparent 64%);
+      filter: blur(4px);
+      animation: qrHalo 7s ease-in-out infinite;
+    }
+
+    .slide.active .qr-chips { animation: rise .7s cubic-bezier(.22, 1, .36, 1) .34s both; }
+    .slide.active .qr-hint { animation: rise .7s cubic-bezier(.22, 1, .36, 1) .44s both; }
+    .slide.active .qr-url { animation: rise .7s cubic-bezier(.22, 1, .36, 1) .52s both; }
+
+    @keyframes qrScan {
+      0% { top: -24%; }
+      100% { top: 104%; }
+    }
+
+    @keyframes qrHalo {
+      0%, 100% { opacity: .6; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes qrSpin {
+      to { transform: translateY(-50%) rotate(360deg); }
+    }
+
+    @keyframes qrPulse {
+      0% { box-shadow: 0 0 0 0 rgba(90, 170, 255, .55); }
+      70% { box-shadow: 0 0 0 12px rgba(90, 170, 255, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(90, 170, 255, 0); }
+    }
+
+    @media (max-width: 900px) {
+      .qr-grid {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .qr-copy {
+        max-width: 640px;
+        text-align: center;
+      }
+
+      .qr-copy .desc {
+        max-width: 640px;
+        text-align: center;
+      }
+
+      .qr-chips,
+      .qr-hint {
+        justify-content: center;
+      }
+
+      .qr-url {
+        text-align: center;
+      }
+
+      .slide.qr-slide h1 {
+        font-size: clamp(22px, 4.6vw, 32px);
+      }
+
+      .qr-box {
+        width: clamp(160px, 26vw, 210px);
+      }
+
+      .qr-ring,
+      .qr-orb {
+        display: none;
+      }
+    }
+
+    @media (max-height: 720px) {
+      .slide.qr-slide h1 {
+        font-size: clamp(20px, 2.8vw, 32px);
+        margin: 2px 0 10px;
+      }
+
+      .qr-inner .slide-label {
+        margin-bottom: 6px;
+      }
+
+      .qr-box {
+        width: clamp(150px, 21vh, 200px);
+      }
+
+      .qr-hint {
+        margin-top: 14px;
+      }
+    }
+
     /* ================= MODELO 3D (DIAPOSITIVA 4) ================= */
     .slide.model3d {
       display: flex;
@@ -1682,7 +1962,46 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 2 : ¿QUIENES SOMOS? -->
+    <!-- DIAPOSITIVA 2 : MINI PRESENTACION EN EL CELULAR (QR) -->
+    <section class="slide compact qr-slide" id="slideQR">
+      <span class="qr-orb" aria-hidden="true"></span>
+      <span class="qr-ring r1" aria-hidden="true"></span>
+      <span class="qr-ring r2" aria-hidden="true"></span>
+      <div class="slide-inner qr-inner">
+        <div class="slide-label">Mini presentación</div>
+        <h1>Escanea el <em>QR</em></h1>
+
+        <div class="qr-grid">
+          <div class="qr-copy">
+            <p class="desc small">Nuestro proyecto <b>EcoTense</b> en tu celular: la necesidad, la solución y cómo
+              funciona, en una lectura de un minuto.</p>
+
+            <div class="chips qr-chips">
+              <span>5 pantallas</span>
+              <span>Se abre al instante</span>
+              <span>Sin instalar apps</span>
+            </div>
+
+            <p class="qr-hint"><span class="qr-dot" aria-hidden="true"></span>Apunta la cámara de tu celular al código</p>
+            <p class="qr-url">prubsjus-stack.github.io/KINETIC-DYNAMIC-SYSTEMS/movil.html</p>
+          </div>
+
+          <div class="qr-card">
+            <span class="qr-corner tl" aria-hidden="true"></span>
+            <span class="qr-corner tr" aria-hidden="true"></span>
+            <span class="qr-corner bl" aria-hidden="true"></span>
+            <span class="qr-corner br" aria-hidden="true"></span>
+            <div class="qr-box">
+              <svg class="qr-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49 49" role="img" aria-label="Codigo QR de la mini presentacion movil de KINETIX" shape-rendering="crispEdges"><title>Mini presentacion KINETIX - EcoTense</title><rect width="49" height="49" fill="#ffffff"/><path d="M4 4h7v1h-7zM12 4h3v1h-3zM17 4h2v1h-2zM21 4h1v1h-1zM23 4h1v1h-1zM25 4h1v1h-1zM29 4h1v1h-1zM31 4h1v1h-1zM34 4h1v1h-1zM36 4h1v1h-1zM38 4h7v1h-7zM4 5h1v1h-1zM10 5h1v1h-1zM14 5h1v1h-1zM16 5h2v1h-2zM20 5h2v1h-2zM26 5h5v1h-5zM34 5h3v1h-3zM38 5h1v1h-1zM44 5h1v1h-1zM4 6h1v1h-1zM6 6h3v1h-3zM10 6h1v1h-1zM13 6h3v1h-3zM19 6h1v1h-1zM22 6h1v1h-1zM27 6h3v1h-3zM32 6h1v1h-1zM38 6h1v1h-1zM40 6h3v1h-3zM44 6h1v1h-1zM4 7h1v1h-1zM6 7h3v1h-3zM10 7h1v1h-1zM14 7h1v1h-1zM17 7h1v1h-1zM27 7h2v1h-2zM30 7h2v1h-2zM34 7h1v1h-1zM36 7h1v1h-1zM38 7h1v1h-1zM40 7h3v1h-3zM44 7h1v1h-1zM4 8h1v1h-1zM6 8h3v1h-3zM10 8h1v1h-1zM12 8h2v1h-2zM15 8h5v1h-5zM21 8h1v1h-1zM26 8h4v1h-4zM35 8h2v1h-2zM38 8h1v1h-1zM40 8h3v1h-3zM44 8h1v1h-1zM4 9h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM17 9h2v1h-2zM22 9h1v1h-1zM24 9h1v1h-1zM27 9h1v1h-1zM29 9h1v1h-1zM31 9h2v1h-2zM34 9h1v1h-1zM38 9h1v1h-1zM44 9h1v1h-1zM4 10h7v1h-7zM12 10h1v1h-1zM14 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM20 10h1v1h-1zM22 10h1v1h-1zM24 10h1v1h-1zM26 10h1v1h-1zM28 10h1v1h-1zM30 10h1v1h-1zM32 10h1v1h-1zM34 10h1v1h-1zM36 10h1v1h-1zM38 10h7v1h-7zM14 11h1v1h-1zM17 11h1v1h-1zM20 11h1v1h-1zM24 11h1v1h-1zM26 11h2v1h-2zM32 11h1v1h-1zM34 11h1v1h-1zM5 12h7v1h-7zM16 12h2v1h-2zM19 12h1v1h-1zM21 12h3v1h-3zM25 12h3v1h-3zM29 12h2v1h-2zM33 12h1v1h-1zM35 12h2v1h-2zM39 12h2v1h-2zM44 12h1v1h-1zM4 13h2v1h-2zM8 13h2v1h-2zM14 13h2v1h-2zM18 13h1v1h-1zM20 13h1v1h-1zM22 13h2v1h-2zM26 13h1v1h-1zM30 13h1v1h-1zM32 13h1v1h-1zM35 13h2v1h-2zM38 13h3v1h-3zM42 13h2v1h-2zM5 14h1v1h-1zM7 14h1v1h-1zM9 14h3v1h-3zM14 14h1v1h-1zM16 14h2v1h-2zM21 14h2v1h-2zM24 14h1v1h-1zM26 14h1v1h-1zM31 14h2v1h-2zM36 14h1v1h-1zM38 14h1v1h-1zM43 14h2v1h-2zM5 15h1v1h-1zM7 15h3v1h-3zM14 15h1v1h-1zM16 15h2v1h-2zM19 15h4v1h-4zM25 15h1v1h-1zM29 15h1v1h-1zM35 15h2v1h-2zM40 15h2v1h-2zM5 16h2v1h-2zM8 16h8v1h-8zM19 16h1v1h-1zM21 16h2v1h-2zM24 16h1v1h-1zM27 16h2v1h-2zM30 16h4v1h-4zM35 16h1v1h-1zM37 16h2v1h-2zM41 16h2v1h-2zM44 16h1v1h-1zM4 17h1v1h-1zM9 17h1v1h-1zM11 17h2v1h-2zM15 17h1v1h-1zM19 17h2v1h-2zM22 17h1v1h-1zM26 17h1v1h-1zM31 17h1v1h-1zM34 17h1v1h-1zM36 17h5v1h-5zM4 18h1v1h-1zM6 18h1v1h-1zM8 18h1v1h-1zM10 18h1v1h-1zM12 18h1v1h-1zM14 18h4v1h-4zM20 18h1v1h-1zM22 18h1v1h-1zM27 18h2v1h-2zM31 18h5v1h-5zM37 18h1v1h-1zM41 18h1v1h-1zM43 18h2v1h-2zM4 19h1v1h-1zM8 19h2v1h-2zM12 19h1v1h-1zM16 19h4v1h-4zM21 19h1v1h-1zM23 19h1v1h-1zM25 19h1v1h-1zM27 19h1v1h-1zM30 19h2v1h-2zM33 19h4v1h-4zM38 19h2v1h-2zM41 19h1v1h-1zM5 20h1v1h-1zM9 20h2v1h-2zM13 20h1v1h-1zM15 20h1v1h-1zM17 20h5v1h-5zM27 20h2v1h-2zM30 20h3v1h-3zM35 20h3v1h-3zM39 20h1v1h-1zM42 20h1v1h-1zM44 20h1v1h-1zM7 21h1v1h-1zM11 21h1v1h-1zM15 21h3v1h-3zM19 21h2v1h-2zM22 21h3v1h-3zM31 21h3v1h-3zM36 21h1v1h-1zM38 21h3v1h-3zM42 21h3v1h-3zM7 22h2v1h-2zM10 22h1v1h-1zM12 22h4v1h-4zM17 22h1v1h-1zM21 22h1v1h-1zM24 22h5v1h-5zM31 22h3v1h-3zM36 22h1v1h-1zM40 22h3v1h-3zM6 23h1v1h-1zM9 23h1v1h-1zM12 23h3v1h-3zM16 23h1v1h-1zM18 23h2v1h-2zM23 23h2v1h-2zM26 23h2v1h-2zM30 23h7v1h-7zM38 23h1v1h-1zM40 23h2v1h-2zM43 23h1v1h-1zM5 24h2v1h-2zM9 24h2v1h-2zM12 24h2v1h-2zM16 24h1v1h-1zM18 24h3v1h-3zM22 24h7v1h-7zM40 24h3v1h-3zM4 25h2v1h-2zM7 25h1v1h-1zM9 25h1v1h-1zM17 25h2v1h-2zM20 25h1v1h-1zM22 25h1v1h-1zM26 25h3v1h-3zM30 25h1v1h-1zM32 25h1v1h-1zM34 25h5v1h-5zM41 25h1v1h-1zM43 25h2v1h-2zM4 26h2v1h-2zM10 26h2v1h-2zM13 26h1v1h-1zM15 26h1v1h-1zM17 26h2v1h-2zM20 26h1v1h-1zM23 26h4v1h-4zM28 26h1v1h-1zM30 26h5v1h-5zM41 26h1v1h-1zM4 27h2v1h-2zM7 27h1v1h-1zM9 27h1v1h-1zM11 27h1v1h-1zM13 27h4v1h-4zM18 27h2v1h-2zM21 27h1v1h-1zM23 27h1v1h-1zM26 27h1v1h-1zM28 27h1v1h-1zM30 27h2v1h-2zM34 27h1v1h-1zM36 27h4v1h-4zM41 27h3v1h-3zM4 28h1v1h-1zM8 28h1v1h-1zM10 28h2v1h-2zM16 28h2v1h-2zM20 28h2v1h-2zM23 28h3v1h-3zM27 28h1v1h-1zM29 28h2v1h-2zM32 28h2v1h-2zM37 28h1v1h-1zM43 28h1v1h-1zM7 29h1v1h-1zM9 29h1v1h-1zM11 29h1v1h-1zM14 29h2v1h-2zM17 29h2v1h-2zM20 29h1v1h-1zM22 29h1v1h-1zM24 29h1v1h-1zM26 29h2v1h-2zM29 29h2v1h-2zM32 29h1v1h-1zM35 29h1v1h-1zM40 29h2v1h-2zM43 29h2v1h-2zM5 30h2v1h-2zM10 30h5v1h-5zM16 30h1v1h-1zM23 30h2v1h-2zM29 30h3v1h-3zM33 30h2v1h-2zM36 30h1v1h-1zM38 30h1v1h-1zM40 30h1v1h-1zM43 30h1v1h-1zM4 31h1v1h-1zM6 31h3v1h-3zM11 31h2v1h-2zM14 31h13v1h-13zM29 31h2v1h-2zM34 31h3v1h-3zM39 31h1v1h-1zM41 31h1v1h-1zM4 32h2v1h-2zM8 32h1v1h-1zM10 32h1v1h-1zM15 32h2v1h-2zM19 32h3v1h-3zM23 32h2v1h-2zM27 32h1v1h-1zM29 32h1v1h-1zM31 32h1v1h-1zM33 32h3v1h-3zM37 32h2v1h-2zM41 32h2v1h-2zM44 32h1v1h-1zM4 33h5v1h-5zM14 33h1v1h-1zM17 33h1v1h-1zM21 33h2v1h-2zM24 33h3v1h-3zM28 33h2v1h-2zM31 33h2v1h-2zM34 33h1v1h-1zM37 33h1v1h-1zM40 33h1v1h-1zM43 33h1v1h-1zM4 34h1v1h-1zM6 34h2v1h-2zM10 34h1v1h-1zM14 34h4v1h-4zM20 34h1v1h-1zM22 34h1v1h-1zM24 34h1v1h-1zM30 34h1v1h-1zM37 34h3v1h-3zM41 34h2v1h-2zM4 35h1v1h-1zM6 35h1v1h-1zM8 35h2v1h-2zM14 35h3v1h-3zM18 35h1v1h-1zM22 35h1v1h-1zM26 35h1v1h-1zM28 35h3v1h-3zM32 35h3v1h-3zM37 35h2v1h-2zM41 35h1v1h-1zM43 35h2v1h-2zM4 36h1v1h-1zM7 36h4v1h-4zM12 36h5v1h-5zM20 36h1v1h-1zM22 36h5v1h-5zM28 36h2v1h-2zM32 36h1v1h-1zM34 36h1v1h-1zM36 36h5v1h-5zM42 36h3v1h-3zM12 37h1v1h-1zM16 37h3v1h-3zM20 37h1v1h-1zM24 37h4v1h-4zM29 37h1v1h-1zM32 37h1v1h-1zM35 37h2v1h-2zM40 37h2v1h-2zM44 37h1v1h-1zM4 38h7v1h-7zM12 38h2v1h-2zM15 38h3v1h-3zM19 38h6v1h-6zM27 38h1v1h-1zM29 38h2v1h-2zM32 38h1v1h-1zM34 38h3v1h-3zM38 38h1v1h-1zM40 38h1v1h-1zM4 39h1v1h-1zM10 39h1v1h-1zM12 39h1v1h-1zM20 39h3v1h-3zM29 39h1v1h-1zM31 39h2v1h-2zM36 39h1v1h-1zM40 39h1v1h-1zM44 39h1v1h-1zM4 40h1v1h-1zM6 40h3v1h-3zM10 40h1v1h-1zM12 40h3v1h-3zM17 40h1v1h-1zM20 40h1v1h-1zM22 40h2v1h-2zM26 40h3v1h-3zM30 40h1v1h-1zM34 40h7v1h-7zM42 40h2v1h-2zM4 41h1v1h-1zM6 41h3v1h-3zM10 41h1v1h-1zM12 41h3v1h-3zM16 41h2v1h-2zM19 41h1v1h-1zM21 41h1v1h-1zM23 41h1v1h-1zM25 41h1v1h-1zM27 41h1v1h-1zM32 41h1v1h-1zM35 41h1v1h-1zM37 41h1v1h-1zM39 41h1v1h-1zM41 41h4v1h-4zM4 42h1v1h-1zM6 42h3v1h-3zM10 42h1v1h-1zM12 42h3v1h-3zM18 42h1v1h-1zM20 42h1v1h-1zM23 42h1v1h-1zM26 42h1v1h-1zM29 42h1v1h-1zM31 42h1v1h-1zM36 42h6v1h-6zM43 42h1v1h-1zM4 43h1v1h-1zM10 43h1v1h-1zM12 43h1v1h-1zM14 43h4v1h-4zM19 43h2v1h-2zM22 43h2v1h-2zM25 43h1v1h-1zM27 43h2v1h-2zM30 43h1v1h-1zM32 43h1v1h-1zM35 43h4v1h-4zM40 43h1v1h-1zM43 43h1v1h-1zM4 44h7v1h-7zM14 44h2v1h-2zM18 44h1v1h-1zM20 44h1v1h-1zM23 44h3v1h-3zM28 44h2v1h-2zM33 44h1v1h-1zM35 44h1v1h-1zM39 44h2v1h-2z" fill="#04101f"/></svg>
+              <span class="qr-scanline" aria-hidden="true"></span>
+            </div>
+            <p class="qr-cap">Escanea para abrir</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIAPOSITIVA 3 : ¿QUIENES SOMOS? -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">¿Quiénes somos?</div>
@@ -1700,7 +2019,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 3 : TRES INGENIERIAS -->
+    <!-- DIAPOSITIVA 4 : TRES INGENIERIAS -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">Tres ingenierías</div>
@@ -1738,7 +2057,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 4 : PROBLEMA -->
+    <!-- DIAPOSITIVA 5 : PROBLEMA -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">Problema</div>
@@ -1755,7 +2074,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 4 : NUESTRA SOLUCION (MODELO 3D) -->
+    <!-- DIAPOSITIVA 6 : NUESTRA SOLUCION (MODELO 3D) -->
     <section class="slide model3d" id="slide3d">
       <div class="slide-inner">
         <div class="slide-label">Nuestra solución</div>
@@ -1781,7 +2100,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 6 : IMAGEN CUBIERTA -->
+    <!-- DIAPOSITIVA 7 : IMAGEN CUBIERTA -->
     <section class="slide img-slide" id="slideImg">
       <div class="slide-inner img-only">
         <img class="big-img"
@@ -1790,7 +2109,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 7 : ¿COMO FUNCIONA? -->
+    <!-- DIAPOSITIVA 8 : ¿COMO FUNCIONA? -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">¿Cómo funciona?</div>
@@ -1808,7 +2127,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 7 : SOSTENIBILIDAD -->
+    <!-- DIAPOSITIVA 9 : SOSTENIBILIDAD -->
     <section class="slide compact eco">
       <span class="eco-dot d1" aria-hidden="true"></span>
       <span class="eco-dot d2" aria-hidden="true"></span>
@@ -1838,7 +2157,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 8 : MARKETING KINETIX -->
+    <!-- DIAPOSITIVA 10 : MARKETING KINETIX -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">Marketing KINETIX</div>
@@ -1865,7 +2184,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 9 : DIFERENCIAL -->
+    <!-- DIAPOSITIVA 11 : DIFERENCIAL -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">Diferencial</div>
@@ -1884,7 +2203,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 10 : CIERRE -->
+    <!-- DIAPOSITIVA 12 : CIERRE -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">Cierre</div>
@@ -1899,7 +2218,7 @@
 
   <!-- indicadores -->
   <nav class="dots" id="dots"></nav>
-  <div class="counter"><span id="cur-num">01</span> / <span id="tot-num">11</span></div>
+  <div class="counter"><span id="cur-num">01</span> / <span id="tot-num">12</span></div>
 
   <!-- efecto barrido -->
   <div class="scan" id="scan"></div>
