@@ -1694,30 +1694,56 @@
 
     .slide.model3d .slide-inner {
       width: 100%;
-      max-width: 1080px;
+      max-width: 1160px;
       text-align: left;
-      padding: 24px 24px;
+      padding: clamp(14px, 2.4vh, 26px) clamp(16px, 2.4vw, 28px);
     }
 
     .slide.model3d h1 {
-      margin: 12px 0 10px;
-      font-size: clamp(20px, 2.6vw, 34px);
+      margin: 8px 0 6px;
+      font-size: clamp(22px, 2.5vw, 36px);
       letter-spacing: clamp(4px, 0.8vw, 9px);
     }
 
     .slide.model3d .subtitle {
-      margin: 0 0 4px;
+      margin: 0 0 12px;
       font-size: clamp(11px, 1.2vw, 14px);
       letter-spacing: clamp(2px, 0.5vw, 5px);
       line-height: 1.6;
     }
 
+    .slide.model3d .chips {
+      justify-content: flex-start;
+      margin: 0 0 4px;
+    }
+
+    /* controles: hora + botones en una sola fila, siempre a la vista */
+    .m3d-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      margin-top: 12px;
+    }
+
+    .m3d-controls .wx-row {
+      margin-top: 0;
+      justify-content: flex-start;
+    }
+
+    .m3d-btns {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
     #viewer {
       position: relative;
       width: 100%;
-      height: 54vh;
-      max-height: 520px;
-      margin: 14px auto;
+      height: clamp(270px, 51vh, 470px);
+      max-height: none;
+      margin: 4px 0 0;
       overflow: hidden;
       border-radius: 16px;
       border: 1px solid rgba(90, 170, 255, 0.18);
@@ -1738,28 +1764,28 @@
     }
 
     #roofBtn {
-      margin-top: 14px;
-      padding: 14px 28px;
+      margin-top: 0;
+      padding: 12px 22px;
       border: 1px solid rgba(90, 170, 255, 0.65);
       border-radius: 6px;
       background: linear-gradient(120deg, rgba(90, 170, 255, 0.16), rgba(90, 170, 255, 0.04));
       color: #9fd0ff;
-      font: 700 13px Montserrat, sans-serif;
-      letter-spacing: 3px;
+      font: 700 12px Montserrat, sans-serif;
+      letter-spacing: 2.4px;
       text-transform: uppercase;
       cursor: pointer;
       transition: background 0.25s, color 0.25s, box-shadow 0.25s;
     }
 
     #rainBtn {
-      margin-top: 14px;
-      padding: 14px 28px;
+      margin-top: 0;
+      padding: 12px 22px;
       border: 1px solid rgba(90, 170, 255, 0.65);
       border-radius: 6px;
       background: linear-gradient(120deg, rgba(90, 170, 255, 0.16), rgba(90, 170, 255, 0.04));
       color: #9fd0ff;
-      font: 700 13px Montserrat, sans-serif;
-      letter-spacing: 3px;
+      font: 700 12px Montserrat, sans-serif;
+      letter-spacing: 2.4px;
       text-transform: uppercase;
       cursor: pointer;
       transition: background 0.25s, color 0.25s, box-shadow 0.25s;
@@ -1883,12 +1909,73 @@
 
     @media (max-width: 760px) {
       .slide.model3d .slide-inner {
-        padding: 20px 16px;
+        padding: 10px 13px;
+      }
+
+      .slide.model3d h1 {
+        margin: 6px 0 4px;
+        font-size: 21px;
+        letter-spacing: 5px;
+      }
+
+      .slide.model3d .subtitle {
+        margin-bottom: 8px;
+        font-size: 10px;
+        letter-spacing: 2px;
+      }
+
+      .slide.model3d .chips {
+        gap: 6px;
+        margin-bottom: 2px;
+      }
+
+      .slide.model3d .chips span {
+        padding: 4px 10px;
+        font-size: 10px;
+        letter-spacing: 0.3px;
       }
 
       #viewer {
-        height: 50vh;
-        margin: 12px auto;
+        height: 32vh;
+        margin: 4px 0 0;
+      }
+
+      .m3d-controls {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .m3d-controls .wx-row {
+        justify-content: center;
+      }
+
+      .m3d-btns {
+        justify-content: center;
+        gap: 8px;
+      }
+
+      #roofBtn,
+      #rainBtn {
+        padding: 10px 14px;
+        font-size: 10px;
+        letter-spacing: 1.6px;
+      }
+
+      .wx-hlabel,
+      .wx-hval {
+        font-size: 9px;
+        letter-spacing: 1.2px;
+      }
+
+      .wx-row .wx {
+        padding: 5px 10px;
+        font-size: 9px;
+      }
+
+      .wx-hour input[type="range"] {
+        width: 110px;
       }
     }
 
@@ -2201,15 +2288,19 @@
           <span>Membrana de PET reciclado</span>
         </div>
         <div id="viewer" aria-label="Modelo 3D de la concha acústica"></div>
-        <div class="wx-row wx-hour" id="wxHourRow">
-          <span class="wx-hlabel">Hora</span>
-          <input id="wxHour" type="range" min="0" max="24" step="0.25" value="10" aria-label="Hora del dia"
-            aria-valuetext="10:00">
-          <span class="wx-hval" id="wxHourVal">10:00</span>
-          <button class="wx auto" type="button" id="wxSunAuto">Ciclo</button>
+        <div class="m3d-controls">
+          <div class="wx-row wx-hour" id="wxHourRow">
+            <span class="wx-hlabel">Hora</span>
+            <input id="wxHour" type="range" min="0" max="24" step="0.25" value="10" aria-label="Hora del dia"
+              aria-valuetext="10:00">
+            <span class="wx-hval" id="wxHourVal">10:00</span>
+            <button class="wx auto" type="button" id="wxSunAuto">Ciclo</button>
+          </div>
+          <div class="m3d-btns">
+            <button id="roofBtn" type="button" disabled>Cargando modelo 3D…</button>
+            <button id="rainBtn" type="button" disabled>Cargando modelo 3D…</button>
+          </div>
         </div>
-        <button id="roofBtn" type="button" disabled>Cargando modelo 3D…</button>
-        <button id="rainBtn" type="button" disabled>Cargando modelo 3D…</button>
       </div>
     </section>
 
@@ -3915,13 +4006,27 @@
       let lastHandMove = 0;
       let fold = 0, foldTarget = 0;   // el techo inicia cerrado
       let panels = [], curtains = [];
+      // ---- techo retractil: geometria compartida entre build() y la lluvia ----
+      // (la pendiente y el material se definen aqui para que updateRain/updateWx
+      //  puedan usarlos sin depender del ambito de build()).
+      const PAN_IN = 24, PAN_OUT = 62, PAN_Y = 15.5;
+      const ROOF_TILT = 4.2 * Math.PI / 180;   // pendiente leve, borde exterior mas bajo
+      const ROOF_SIN = Math.sin(ROOF_TILT);
+      const ROOF_LIFT = PAN_IN * ROOF_SIN;     // deja el borde interior a su altura
+      const ROOF_ANG = 79 * Math.PI / 180;     // abanico cubierto por los 12 panos
+      let roofCZ = -52;                        // foco del arco (se toma de build)
+      let roofMatRef = null;                   // material de los panos (para mojarlo)
+      const roofY = (r) => PAN_Y + (PAN_IN - r) * ROOF_SIN + 0.45;
       let dragOn = false, dragMode = 0, dragX = 0, dragY = 0;
       let lastHX = null, lastHY = null;
       let fbLastX = null, fbLastY = null;
       let roofBtn = null, rainBtn = null, host = null;
       let rainSys = null, rainOn = false;
       let rainGeo = null, rainPosArr = null, rainSpdArr = null;
-      let rainSt = null, rainT = null;
+      let rainSt = null, rainT = null, rainDr = null;
+      let runoffSys = null, runoffGeo = null, runoffPos = null;
+      let runoffLine = null, runoffLinePos = null;
+      const RUNOFF_N = 420;
       let moonL = null, fogL = null, starSys = null, hemiL = null, sunL = null;
       let groundMesh = null, gndMat = null, skyMesh = null, skyMat = null;
       let pbrMats = [], decoLights = [];
@@ -4045,7 +4150,13 @@
         rainBtn = document.getElementById('rainBtn');
         if (rainBtn) {
           rainBtn.removeAttribute('disabled');
-          rainBtn.addEventListener('click', () => setWeather(wxName === 'lluvia' ? 'despejado' : 'lluvia'));
+          syncWxBtn();
+          rainBtn.addEventListener('click', () => {
+            const starting = wxName !== 'lluvia';
+            setWeather(starting ? 'lluvia' : 'despejado');
+            // respuesta automatica: si empieza a llover, el techo se despliega
+            if (starting) setRoof(true);
+          });
         }
 
         // ---------- HORA DEL DIA ----------
@@ -5095,8 +5206,11 @@
         // del arco y se reparten deslizando hasta cubrir TODAS las filas, sin girarse entre si.
         const RAIL_R = 68, RAIL_Y = 16.9;
         const PILLAR_A = [-70, -23.3, 23.3, 70];
-        const PAN_IN = 24, PAN_OUT = 62, PAN_Y = 15.5;
         const PAN_N = 12, PAN_SPAN = 20 * D2R;  // 12 x 20 grados = 240 > 156 de las gradas
+        // PAN_IN / PAN_OUT / PAN_Y, la pendiente y roofY() viven fuera de build():
+        // asi el sistema de lluvia puede hacer escurrir el agua por el techo.
+        roofCZ = FZ;
+        roofMatRef = roofMat;
         const ARC_A0 = -84 * D2R, ARC_A1 = 84 * D2R;
         const pillarMat = mat({color: 0xb9c3cf, roughness: 0.5, metalness: 0.45});
         const railMat = mat({color: 0x8f9aa8, roughness: 0.42, metalness: 0.6});
@@ -5153,36 +5267,42 @@
         // Lado IZQUIERDO (angulos negativos -> centro)
         for (let i = 0; i < HALF_N; i++) {
           const g = new T3.Group();
+          // lámina + costillas + remate van en un subgrupo inclinado: el borde
+          // exterior queda más bajo y el agua escurre hacia afuera.
+          const deck = new T3.Group();
+          deck.rotation.x = ROOF_TILT;
+          deck.position.y = ROOF_LIFT;
+          g.add(deck);
           const leaf = new T3.Mesh(
             new T3.RingGeometry(PAN_IN, PAN_OUT, 14, 1, -Math.PI / 2 - PAN_SPAN / 2, PAN_SPAN), roofMat);
           leaf.rotation.x = -Math.PI / 2;
           leaf.position.y = 0.15;
           leaf.castShadow = true;
           leaf.receiveShadow = true;
-          g.add(leaf);
+          deck.add(leaf);
           const under = new T3.Mesh(
             new T3.RingGeometry(PAN_IN + 1.6, PAN_OUT - 1.6, 14, 1, -Math.PI / 2 - PAN_SPAN / 2 + 0.02, PAN_SPAN - 0.04),
             mat({color: 0x7ba6e0, roughness: 0.7}));
           under.rotation.x = -Math.PI / 2;
           under.position.y = -0.06;
-          g.add(under);
+          deck.add(under);
           [-1, -0.34, 0.34, 1].forEach((f) => {
             const ar = f * PAN_SPAN * 0.42;
             const rr = (PAN_IN + PAN_OUT) / 2;
             const rb = new T3.Mesh(new T3.BoxGeometry(0.34, 0.42, PAN_OUT - PAN_IN - 1), beamMat);
             rb.position.set(rr * Math.sin(ar), 0.38, rr * Math.cos(ar));
             rb.rotation.y = ar;
-            g.add(rb);
+            deck.add(rb);
           });
           const edge = new T3.Mesh(new T3.BoxGeometry(21, 0.5, 0.5), beamMat);
           edge.position.set(0, 0.4, PAN_OUT - 0.7);
-          g.add(edge);
+          deck.add(edge);
           const car = new T3.Mesh(new T3.BoxGeometry(2.2, 1.3, 3.2), railMat);
           car.position.set(0, RAIL_Y + 1.0 - PAN_Y, RAIL_R);
           g.add(car);
-          const strut = new T3.Mesh(new T3.BoxGeometry(0.45, 0.45, 6.5), railMat);
-          strut.position.set(0, 1.2, RAIL_R - 3);
-          strut.rotation.x = -0.38;
+          const strut = new T3.Mesh(new T3.BoxGeometry(0.45, 0.45, 7.7), railMat);
+          strut.position.set(0, 0, RAIL_R - 3);
+          strut.rotation.x = -0.674;
           g.add(strut);
           g.position.set(0, PAN_Y, FZ);
           scene.add(g);
@@ -5198,36 +5318,42 @@
         // Lado DERECHO (angulos positivos -> centro)
         for (let i = 0; i < HALF_N; i++) {
           const g = new T3.Group();
+          // lámina + costillas + remate van en un subgrupo inclinado: el borde
+          // exterior queda más bajo y el agua escurre hacia afuera.
+          const deck = new T3.Group();
+          deck.rotation.x = ROOF_TILT;
+          deck.position.y = ROOF_LIFT;
+          g.add(deck);
           const leaf = new T3.Mesh(
             new T3.RingGeometry(PAN_IN, PAN_OUT, 14, 1, -Math.PI / 2 - PAN_SPAN / 2, PAN_SPAN), roofMat);
           leaf.rotation.x = -Math.PI / 2;
           leaf.position.y = 0.15;
           leaf.castShadow = true;
           leaf.receiveShadow = true;
-          g.add(leaf);
+          deck.add(leaf);
           const under = new T3.Mesh(
             new T3.RingGeometry(PAN_IN + 1.6, PAN_OUT - 1.6, 14, 1, -Math.PI / 2 - PAN_SPAN / 2 + 0.02, PAN_SPAN - 0.04),
             mat({color: 0x7ba6e0, roughness: 0.7}));
           under.rotation.x = -Math.PI / 2;
           under.position.y = -0.06;
-          g.add(under);
+          deck.add(under);
           [-1, -0.34, 0.34, 1].forEach((f) => {
             const ar = f * PAN_SPAN * 0.42;
             const rr = (PAN_IN + PAN_OUT) / 2;
             const rb = new T3.Mesh(new T3.BoxGeometry(0.34, 0.42, PAN_OUT - PAN_IN - 1), beamMat);
             rb.position.set(rr * Math.sin(ar), 0.38, rr * Math.cos(ar));
             rb.rotation.y = ar;
-            g.add(rb);
+            deck.add(rb);
           });
           const edge = new T3.Mesh(new T3.BoxGeometry(21, 0.5, 0.5), beamMat);
           edge.position.set(0, 0.4, PAN_OUT - 0.7);
-          g.add(edge);
+          deck.add(edge);
           const car = new T3.Mesh(new T3.BoxGeometry(2.2, 1.3, 3.2), railMat);
           car.position.set(0, RAIL_Y + 1.0 - PAN_Y, RAIL_R);
           g.add(car);
-          const strut = new T3.Mesh(new T3.BoxGeometry(0.45, 0.45, 6.5), railMat);
-          strut.position.set(0, 1.2, RAIL_R - 3);
-          strut.rotation.x = -0.38;
+          const strut = new T3.Mesh(new T3.BoxGeometry(0.45, 0.45, 7.7), railMat);
+          strut.position.set(0, 0, RAIL_R - 3);
+          strut.rotation.x = -0.674;
           g.add(strut);
           g.position.set(0, PAN_Y, FZ);
           scene.add(g);
@@ -6017,6 +6143,7 @@
         rainSpdArr = [];
         rainSt = new Uint8Array(RAIN_N);
         rainT = new Float32Array(RAIN_N);
+        rainDr = new Float32Array(RAIN_N);
         for (let i = 0; i < RAIN_N; i++) {
           rainSpdArr.push(26 + Math.random() * 20);
           spawnRainAt(i);
@@ -6039,6 +6166,42 @@
         rainSys.frustumCulled = false;
         rainSys.visible = false;
         scene.add(rainSys);
+
+        // gotas que ruedan por el techo: puntos mas grandes y brillantes para que
+        // se vea claramente el agua escurriendo hacia el borde y cayendo afuera.
+        const beadSpr = document.createElement('canvas');
+        beadSpr.width = 64; beadSpr.height = 64;
+        const bctx = beadSpr.getContext('2d');
+        const bgrd = bctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+        bgrd.addColorStop(0, 'rgba(255,255,255,1)');
+        bgrd.addColorStop(0.35, 'rgba(214,240,255,0.85)');
+        bgrd.addColorStop(1, 'rgba(160,215,255,0)');
+        bctx.fillStyle = bgrd;
+        bctx.beginPath(); bctx.arc(32, 32, 32, 0, Math.PI * 2); bctx.fill();
+        const beadTex = new T3.CanvasTexture(beadSpr);
+        runoffPos = new Float32Array(RUNOFF_N * 3);
+        for (let i = 0; i < RUNOFF_N; i++) runoffPos[i * 3 + 1] = -200;
+        runoffGeo = new T3.BufferGeometry();
+        runoffGeo.setAttribute('position', new T3.BufferAttribute(runoffPos, 3));
+        runoffSys = new T3.Points(runoffGeo, new T3.PointsMaterial({
+          color: 0xbfe6ff, size: 7.5, sizeAttenuation: false, map: beadTex,
+          transparent: true, opacity: 0, depthWrite: false, fog: false
+        }));
+        runoffSys.frustumCulled = false;
+        runoffSys.visible = false;
+        scene.add(runoffSys);
+
+        // estelas: pequeñas lineas radiales que marcan el agua corriendo por el paño
+        runoffLinePos = new Float32Array(RUNOFF_N * 6);
+        for (let i = 0; i < RUNOFF_N * 2; i++) runoffLinePos[i * 3 + 1] = -200;
+        const runoffLineGeo = new T3.BufferGeometry();
+        runoffLineGeo.setAttribute('position', new T3.BufferAttribute(runoffLinePos, 3));
+        runoffLine = new T3.LineSegments(runoffLineGeo, new T3.LineBasicMaterial({
+          color: 0xcdeaff, transparent: true, opacity: 0, depthWrite: false, fog: false
+        }));
+        runoffLine.frustumCulled = false;
+        runoffLine.visible = false;
+        scene.add(runoffLine);
 
         // ---------- SALPICADURAS ----------
         const ringTex = (function () {
@@ -6199,34 +6362,106 @@
       function memY(z) {return 15.2 - (z + 65.2) * 0.06;}
       function spawnRainAt(i) {
         const o = i * 3;
-        rainPosArr[o] = -85 + Math.random() * 130;
+        rainPosArr[o] = -72 + Math.random() * 144;
         rainPosArr[o + 1] = 46 + Math.random() * 20;
         rainPosArr[o + 2] = -80 + Math.random() * 100;
         rainSt[i] = 0;
         rainT[i] = 0;
+        rainDr[i] = 0;
       }
       function groundHit(i) {
         const o = i * 3;
         rainPosArr[o + 1] = 0.32;
         rainSt[i] = 1;
         rainT[i] = 0.1 + Math.random() * 0.08;
+        rainDr[i] = 0;
       }
       function updateRain(dt) {
         if (!rainGeo) return;
         const rate = wxCur.rain;
         const lim = Math.floor(RAIN_N * Math.min(1, rate * 1.05));
         const windX = wxCur.wind * 1.5;
+        const roofOpen = fold > 0.5;
+        let rn = 0;
         for (let i = 0; i < RAIN_N; i++) {
           const o = i * 3;
           const sp = rainSpdArr[i];
           if (i >= lim) {rainPosArr[o + 1] = -60; rainSt[i] = 0; continue;}
+          if (rainSt[i] === 2) {
+            // la gota rueda por el paño inclinado hacia el borde exterior
+            if (!roofOpen) {
+              rainPosArr[o + 1] = roofY(PAN_OUT) + 0.2;
+              rainDr[i] = 7;
+              rainSt[i] = 0;
+              continue;
+            }
+            const dx = rainPosArr[o], dz = rainPosArr[o + 2] - roofCZ;
+            const ang = Math.atan2(dx, dz);
+            let rr = Math.sqrt(dx * dx + dz * dz) + (13 + (sp - 26) * 0.45) * dt;
+            if (rr >= PAN_OUT - 0.3) {
+              // se desprende del borde: cae fuera de la estructura
+              rr = PAN_OUT + 0.2;
+              rainSt[i] = 0;
+              rainT[i] = 0;
+              // pequeno impulso hacia afuera para que el agua caiga mas alla del graderio
+              rainDr[i] = 10 + Math.random() * 2.5;
+              rainPosArr[o] = rr * Math.sin(ang);
+              rainPosArr[o + 2] = roofCZ + rr * Math.cos(ang);
+              rainPosArr[o + 1] = roofY(PAN_OUT) - 0.15;
+              continue;
+            }
+            rainPosArr[o] = rr * Math.sin(ang);
+            rainPosArr[o + 2] = roofCZ + rr * Math.cos(ang);
+            const py = roofY(rr) + 0.18;
+            const px = rainPosArr[o], pz = rainPosArr[o + 2];
+            // se dibuja como gota que corre (punto + estela radial), no como lluvia vertical
+            if (rn < RUNOFF_N) {
+              const q = rn * 3, q6 = rn * 6;
+              runoffPos[q] = px;
+              runoffPos[q + 1] = py;
+              runoffPos[q + 2] = pz;
+              runoffLinePos[q6] = px;
+              runoffLinePos[q6 + 1] = py;
+              runoffLinePos[q6 + 2] = pz;
+              runoffLinePos[q6 + 3] = px - (px / rr) * 2.3;
+              runoffLinePos[q6 + 4] = py + 2.3 * ROOF_SIN;
+              runoffLinePos[q6 + 5] = pz - ((pz - roofCZ) / rr) * 2.3;
+              rn++;
+              rainPosArr[o + 1] = -400;   // oculta la estela vertical de lluvia
+            } else {
+              rainPosArr[o + 1] = py;
+            }
+            continue;
+          }
           if (rainSt[i] === 0) {
             // caen con un poco de viento
             rainPosArr[o + 1] -= sp * dt;
             rainPosArr[o] += windX * dt;
+            // el agua que sale del techo conserva un impulso radial hacia afuera
+            if (rainDr[i] > 0.01) {
+              const dx = rainPosArr[o], dz = rainPosArr[o + 2] - roofCZ;
+              const rr = Math.sqrt(dx * dx + dz * dz);
+              const ang = Math.atan2(dx, dz);
+              const nr = rr + rainDr[i] * dt;
+              rainPosArr[o] = nr * Math.sin(ang);
+              rainPosArr[o + 2] = roofCZ + nr * Math.cos(ang);
+            }
             const x = rainPosArr[o], z = rainPosArr[o + 2], y = rainPosArr[o + 1];
             // llegan al suelo
             if (y < 0.32) {groundHit(i); if (Math.random() < 0.5) spawnSplash(x, z); continue;}
+            // techo desplegado: la gota toca el paño, se posa y empieza a escurrir
+            if (roofOpen && y < 17.5 && y > 10) {
+              const dx = x, dz = z - roofCZ;
+              const rr = Math.sqrt(dx * dx + dz * dz);
+              if (rr > PAN_IN - 1 && rr < PAN_OUT && Math.abs(Math.atan2(dx, dz)) < ROOF_ANG) {
+                const ry = roofY(rr);
+                if (y <= ry && y > ry - 3.5) {
+                  rainPosArr[o + 1] = ry + 0.18;
+                  rainSt[i] = 2;
+                  continue;
+                }
+              }
+            }
             // sobre la membrana (si el techo esta abierto) se posa y se resbala por la pendiente al borde
             if (fold > 0.5 && Math.abs(x) < 19 && z > -65.2 && z < -46 && y < memY(z) + 1.4 && y > memY(z) - 0.8) {
               rainPosArr[o + 1] = memY(z) + 0.2;
@@ -6240,6 +6475,21 @@
           }
         }
         rainGeo.attributes.position.needsUpdate = true;
+
+        // reflejo/brillo del agua que escurre: solo las gotas en estado 2
+        if (runoffGeo) {
+          for (let k = rn; k < RUNOFF_N; k++) {
+            runoffPos[k * 3 + 1] = -200;
+            runoffLinePos[k * 6 + 1] = -200;
+            runoffLinePos[k * 6 + 4] = -200;
+          }
+          runoffGeo.attributes.position.needsUpdate = true;
+          runoffSys.visible = rn > 0;
+          runoffSys.material.opacity = rn > 0 ? Math.min(0.6, 0.28 + wxCur.wet * 0.3) : 0;
+          runoffLine.visible = rn > 0;
+          runoffLine.material.opacity = rn > 0 ? Math.min(0.7, 0.22 + wxCur.wet * 0.5) : 0;
+          runoffLine.geometry.attributes.position.needsUpdate = true;
+        }
       }
 
       // ---------- AYUDANTES DE CLIMA ----------
@@ -6252,7 +6502,7 @@
       }
       function syncWxBtn() {
         if (rainBtn) {
-          const raining = wxCur.rain > 0.05;
+          const raining = (WX[wxName] ? WX[wxName].rain : 0) > 0.05;
           rainBtn.classList.toggle('rain-on', raining);
           rainBtn.textContent = raining ? 'DETENER LLUVIA' : 'SIMULAR LLUVIA';
         }
@@ -6481,6 +6731,12 @@
             .multiplyScalar(1 - wxCur.cover * 0.5);
         }
 
+        // los paños tambien se mojan: superficie mas lisa y un punto mas oscura
+        if (roofMatRef) {
+          roofMatRef.roughness = 0.55 - 0.25 * wxCur.wet;
+          roofMatRef.metalness = 0.08 + 0.16 * wxCur.wet;
+        }
+
         // lluvia: cantidad, tamano e inclinacion por viento
         const rain = wxCur.rain;
         amb = rain;
@@ -6541,7 +6797,7 @@
         if (host && renderer.domElement && (host.clientWidth !== renderer.domElement.clientWidth || host.clientHeight !== renderer.domElement.clientHeight)) onResize();
         const dt = Math.min((ts - lastTs) / 1000, 0.05);
         lastTs = ts;
-        fold += (foldTarget - fold) * 0.014;
+        fold += (foldTarget - fold) * Math.min(1, dt * 0.9);
         const ef = fold * fold * (3 - 2 * fold);
         // auto-rotación desactivada para control manual total
         camYaw += (camYawTarget - camYaw) * 0.06;
