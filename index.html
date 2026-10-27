@@ -2117,6 +2117,12 @@
       color: rgba(150, 205, 255, 0.45);
       white-space: nowrap;
       pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    /* en la diapositiva 3D el pie de contacto se oculta (queda solo el visor) */
+    #site-foot.foot-off {
+      opacity: 0;
     }
 
     @media (max-width: 768px) {
@@ -2563,6 +2569,9 @@
       const netTopEl = document.getElementById('netTop');
       // la red de nodos se oculta en la 3D y en el QR (el codigo debe quedar limpio)
       if (netTopEl) netTopEl.classList.toggle('net-off', is3DSlide(n) || slides[n].id === 'slideQR');
+      // el pie de contacto solo desaparece en la diapositiva 3D
+      const footEl = document.getElementById('site-foot');
+      if (footEl) footEl.classList.toggle('foot-off', is3DSlide(n));
       document.querySelectorAll('.dots button').forEach((d, i) => d.classList.toggle('active', i === n));
       counterCur.textContent = String(n + 1).padStart(2, '0');
       counterCur.parentElement.classList.remove('pop');
@@ -4023,9 +4032,10 @@
       let lastHX = null, lastHY = null;
       let fbLastX = null, fbLastY = null;
       let roofBtn = null, rainBtn = null, host = null;
-      let rainSys = null, rainOn = false;
+      let rainSys = null;
       let rainGeo = null, rainPosArr = null, rainSpdArr = null;
       let rainSt = null, rainT = null, rainDr = null;
+      let rainStreak = null, rainLenArr = null, rainHeadSys = null, rainBriArr = null;
       let runoffSys = null, runoffGeo = null, runoffPos = null;
       let runoffLine = null, runoffLinePos = null;
       const RUNOFF_N = 420;
@@ -4055,7 +4065,7 @@
         rain: 0, cover: 0.16, fogN: 145, fogF: 385, hemi: 0.5, key: 1.6, wind: 0.5, wet: 0, exp: 1.22,
         cloud: 0x33445e, cloudD: 0x1b2537, skyT: 0x08111f, skyB: 0x24405f, fog: 0x0d1a2c
       };
-      let wxFlash = 0, wxFlashNext = 5, wxSound = false;
+      let wxFlash = 0, wxFlashNext = 5;
 
       // ---------- CICLO DIA / ATARDECER / NOCHE ----------
       // El sol gira de verdad: una sola variable (sunEl) recorre el dia y de ella
@@ -4067,7 +4077,6 @@
       let stageSpot = null;
       let trees = [];
       let amb = 0;
-      let audioCtx = null, rainGain = null;
       let lastTs = 0;
       let peopleTick = null;
       const RAIN_N = 1500;
@@ -6136,38 +6145,70 @@
         }
 
         // ---------- LLUVIA ----------
-        // Se mantiene la logica original (gota, golpe en el suelo, escorrentia por
-        // la membrana) pero con mas cuerpo y una salpicadura por impacto.
+        // Cada gota se dibuja como un trazo alineado con su propia velocidad
+        // (caida + viento + arrastre radial). Antes eran puntos verticales del
+        // mismo largo, de ahi el aspecto de "rayitas" repetidas. Ahora la
+        // inclinacion, el largo y el brillo cambian gota a gota.
         rainGeo = new T3.BufferGeometry();
-        const rpSrc = new Float32Array(RAIN_N * 3);
-        rainPosArr = rpSrc;
-        rainGeo.setAttribute('position', new T3.BufferAttribute(rpSrc, 3));
+        rainPosArr = new Float32Array(RAIN_N * 3);   // cabeza (logica de colision)
+        rainStreak = new Float32Array(RAIN_N * 6);   // 2 vertices por trazo
+        rainGeo.setAttribute('position', new T3.BufferAttribute(rainStreak, 3));
+        // color por vertice: cabeza clara, cola apagada -> el trazo se desvanece
+        const rColArr = new Float32Array(RAIN_N * 6);
+        rainBriArr = new Float32Array(RAIN_N);
+        for (let i = 0; i < RAIN_N; i++) {
+          const b = 0.4 + Math.random() * 0.55;
+          rainBriArr[i] = b;
+          const c = i * 6;
+          rColArr[c] = b; rColArr[c + 1] = b; rColArr[c + 2] = b;
+        }
+        rainGeo.setAttribute('color', new T3.BufferAttribute(rColArr, 3));
         rainSpdArr = [];
+        rainLenArr = [];
         rainSt = new Uint8Array(RAIN_N);
         rainT = new Float32Array(RAIN_N);
         rainDr = new Float32Array(RAIN_N);
         for (let i = 0; i < RAIN_N; i++) {
-          rainSpdArr.push(26 + Math.random() * 20);
+          rainSpdArr.push(26 + Math.random() * 24);
+          // tiempo de exposicion: gotas rapidas dejan estelas mas largas
+          rainLenArr.push(0.032 + Math.random() * 0.05);
           spawnRainAt(i);
         }
-        const rSpr = document.createElement('canvas');
-        rSpr.width = 32; rSpr.height = 64;
-        const rg = rSpr.getContext('2d');
-        const rgrd = rg.createLinearGradient(0, 0, 0, 64);
-        rgrd.addColorStop(0, 'rgba(255,255,255,0)');
-        rgrd.addColorStop(0.28, 'rgba(226,242,255,0.85)');
-        rgrd.addColorStop(0.62, 'rgba(255,255,255,0.95)');
-        rgrd.addColorStop(1, 'rgba(255,255,255,0)');
-        rg.fillStyle = rgrd;
-        rg.fillRect(14, 0, 4, 64);
-        const rTex = new T3.CanvasTexture(rSpr);
-        rainSys = new T3.Points(rainGeo, new T3.PointsMaterial({
-          color: 0xa8d4ff, size: 13, sizeAttenuation: false, map: rTex,
-          transparent: true, opacity: 0, depthWrite: false, fog: false
+        rainSys = new T3.LineSegments(rainGeo, new T3.LineBasicMaterial({
+          color: 0xa8d4ff, vertexColors: true, transparent: true, opacity: 0,
+          depthWrite: false, fog: false, blending: T3.AdditiveBlending
         }));
         rainSys.frustumCulled = false;
         rainSys.visible = false;
         scene.add(rainSys);
+
+        // cabeza de la gota: un punto pequeño que da cuerpo al trazo
+        const headSpr = document.createElement('canvas');
+        headSpr.width = 32; headSpr.height = 32;
+        const hctx = headSpr.getContext('2d');
+        const hgrd = hctx.createRadialGradient(16, 16, 0, 16, 16, 16);
+        hgrd.addColorStop(0, 'rgba(255,255,255,1)');
+        hgrd.addColorStop(0.3, 'rgba(232,245,255,0.8)');
+        hgrd.addColorStop(1, 'rgba(200,230,255,0)');
+        hctx.fillStyle = hgrd;
+        hctx.beginPath(); hctx.arc(16, 16, 16, 0, Math.PI * 2); hctx.fill();
+        const headTex = new T3.CanvasTexture(headSpr);
+        const headGeo = new T3.BufferGeometry();
+        headGeo.setAttribute('position', new T3.BufferAttribute(rainPosArr, 3));
+        const hColArr = new Float32Array(RAIN_N * 3);
+        for (let i = 0; i < RAIN_N; i++) {
+          const b = rainBriArr[i] * 0.85;
+          hColArr[i * 3] = b; hColArr[i * 3 + 1] = b; hColArr[i * 3 + 2] = b;
+        }
+        headGeo.setAttribute('color', new T3.BufferAttribute(hColArr, 3));
+        rainHeadSys = new T3.Points(headGeo, new T3.PointsMaterial({
+          color: 0xdcefff, size: 3, sizeAttenuation: false, map: headTex,
+          vertexColors: true, transparent: true, opacity: 0, depthWrite: false,
+          fog: false, blending: T3.AdditiveBlending
+        }));
+        rainHeadSys.frustumCulled = false;
+        rainHeadSys.visible = false;
+        scene.add(rainHeadSys);
 
         // gotas que ruedan por el techo: puntos mas grandes y brillantes para que
         // se vea claramente el agua escurriendo hacia el borde y cayendo afuera.
@@ -6333,34 +6374,6 @@
         roofBtn.textContent = open ? 'CERRAR TECHO' : 'ABRIR TECHO';
       }
 
-      function startRainSound() {
-        try {
-          if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            const len = audioCtx.sampleRate * 2;
-            const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
-            const d = buf.getChannelData(0);
-            for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-            const src = audioCtx.createBufferSource();
-            src.buffer = buf;
-            src.loop = true;
-            const lp = audioCtx.createBiquadFilter();
-            lp.type = 'lowpass';
-            lp.frequency.value = 850;
-            rainGain = audioCtx.createGain();
-            rainGain.gain.value = 0;
-            src.connect(lp);
-            lp.connect(rainGain);
-            rainGain.connect(audioCtx.destination);
-            src.start();
-          }
-          if (audioCtx.state === 'suspended') audioCtx.resume();
-          rainGain.gain.setTargetAtTime(0.14, audioCtx.currentTime, 0.4);
-        } catch (err) { }
-      }
-      function stopRainSound() {
-        try {if (rainGain) rainGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.2);} catch (err) { }
-      }
       function memY(z) {return 15.2 - (z + 65.2) * 0.06;}
       function spawnRainAt(i) {
         const o = i * 3;
@@ -6373,7 +6386,7 @@
       }
       function groundHit(i) {
         const o = i * 3;
-        rainPosArr[o + 1] = 0.32;
+        rainPosArr[o + 1] = -400;   // la gota se oculta; la salpicadura ya aparece
         rainSt[i] = 1;
         rainT[i] = 0.1 + Math.random() * 0.08;
         rainDr[i] = 0;
@@ -6382,7 +6395,10 @@
         if (!rainGeo) return;
         const rate = wxCur.rain;
         const lim = Math.floor(RAIN_N * Math.min(1, rate * 1.05));
-        const windX = wxCur.wind * 1.5;
+        // rachas: el viento no sopla igual todo el rato, la cortina se abre y cierra
+        const tNow = performance.now() * 0.001;
+        const gust = 0.78 + 0.34 * Math.sin(tNow * 0.62) + 0.12 * Math.sin(tNow * 1.9);
+        const windX = wxCur.wind * 1.5 * gust;
         const roofOpen = fold > 0.5;
         let rn = 0;
         for (let i = 0; i < RAIN_N; i++) {
@@ -6429,10 +6445,8 @@
               runoffLinePos[q6 + 4] = py + 2.3 * ROOF_SIN;
               runoffLinePos[q6 + 5] = pz - ((pz - roofCZ) / rr) * 2.3;
               rn++;
-              rainPosArr[o + 1] = -400;   // oculta la estela vertical de lluvia
-            } else {
-              rainPosArr[o + 1] = py;
             }
+            rainPosArr[o + 1] = -400;   // el agua que escurre se dibuja aparte
             continue;
           }
           if (rainSt[i] === 0) {
@@ -6476,7 +6490,56 @@
             if (rainT[i] <= 0) spawnRainAt(i);
           }
         }
+        // trazos alineados con la velocidad real de cada gota
+        const rCol = rainGeo.attributes.color;
+        const hCol = rainHeadSys ? rainHeadSys.geometry.attributes.color : null;
+        const cpx = camera.position.x, cpy = camera.position.y, cpz = camera.position.z;
+        for (let i = 0; i < RAIN_N; i++) {
+          const o = i * 3, s = i * 6;
+          const hx = rainPosArr[o], hy = rainPosArr[o + 1], hz = rainPosArr[o + 2];
+          // el agua que escurre por techo/membrana se dibuja con sus propias gotas
+          const onMem = fold > 0.5 && Math.abs(hx) < 19 && hz > -65.2 && hz < -46 &&
+            hy < memY(hz) + 2;
+          if (rainSt[i] !== 0 || hy < -50 || onMem) {
+            rainStreak[s] = 0; rainStreak[s + 1] = -400; rainStreak[s + 2] = 0;
+            rainStreak[s + 3] = 0; rainStreak[s + 4] = -400; rainStreak[s + 5] = 0;
+            rCol.array[s] = 0; rCol.array[s + 3] = 0;
+            if (hCol) hCol.array[o] = 0;
+            continue;
+          }
+          const sp = rainSpdArr[i];
+          let vx = windX, vz = 0;
+          if (rainDr[i] > 0.01) {
+            const dx = hx, dz = hz - roofCZ;
+            const rr = Math.sqrt(dx * dx + dz * dz) || 1;
+            vx += rainDr[i] * dx / rr;
+            vz += rainDr[i] * dz / rr;
+          }
+          const L = rainLenArr[i];
+          rainStreak[s] = hx;
+          rainStreak[s + 1] = hy;
+          rainStreak[s + 2] = hz;
+          rainStreak[s + 3] = hx - vx * L;
+          rainStreak[s + 4] = hy + sp * L;
+          rainStreak[s + 5] = hz - vz * L;
+          // perspectiva aerea: la lluvia del fondo se apaga y da profundidad
+          const ddx = hx - cpx, ddy = hy - cpy, ddz = hz - cpz;
+          const dd = Math.sqrt(ddx * ddx + ddy * ddy + ddz * ddz);
+          const fade = 1 - 0.62 * Math.min(1, Math.max(0, (dd - 45) / 135));
+          const b = rainBriArr[i] * fade;
+          rCol.array[s] = b; rCol.array[s + 1] = b; rCol.array[s + 2] = b;
+          rCol.array[s + 3] = 0; rCol.array[s + 4] = 0; rCol.array[s + 5] = 0;
+          if (hCol) {
+            const hb = b * 0.8;
+            hCol.array[o] = hb; hCol.array[o + 1] = hb; hCol.array[o + 2] = hb;
+          }
+        }
         rainGeo.attributes.position.needsUpdate = true;
+        rCol.needsUpdate = true;
+        if (rainHeadSys) {
+          rainHeadSys.geometry.attributes.position.needsUpdate = true;
+          hCol.needsUpdate = true;
+        }
 
         // reflejo/brillo del agua que escurre: solo las gotas en estado 2
         if (runoffGeo) {
@@ -6742,18 +6805,17 @@
         // lluvia: cantidad, tamano e inclinacion por viento
         const rain = wxCur.rain;
         amb = rain;
-        rainOn = rain > 0.05;
         if (rainSys) {
           rainSys.visible = rain > 0.02;
-          rainSys.material.opacity = Math.min(0.85, 0.2 + rain * 0.6);
-          rainSys.material.size = 9 + 5 * rain;
+          // la inclinacion ya vive en la geometria (viento + caida), no en el objeto
+          rainSys.material.opacity = Math.min(0.7, 0.18 + rain * 0.48);
           rainSys.material.color.setHex(lerpHex(0xa8d4ff, 0xd8ecff, wxFlash));
-          // inclinar el sistema entero es la forma barata de mostrar el viento
-          rainSys.rotation.z = -Math.atan2(wxCur.wind * 1.5, 30);
         }
-        if (rainOn !== wxSound) {
-          wxSound = rainOn;
-          if (rainOn) startRainSound(); else stopRainSound();
+        if (rainHeadSys) {
+          rainHeadSys.visible = rain > 0.02;
+          rainHeadSys.material.opacity = Math.min(0.8, 0.22 + rain * 0.5);
+          rainHeadSys.material.size = 3 + 1.4 * rain;
+          rainHeadSys.material.color.setHex(lerpHex(0xa8d4ff, 0xd8ecff, wxFlash));
         }
       }
       function updateClouds(dt) {
