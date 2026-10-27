@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>KINETIX · EcoTense — Mini presentación</title>
   <meta name="theme-color" content="#02060f">
-  <meta name="description" content="Mini presentación de KINETIX Dynamic Systems y EcoTense: la necesidad, la solución y cómo funciona.">
+  <link rel="icon" href="data:,">
+  <meta name="description" content="KINETIX Dynamic Systems presenta EcoTense: la problemática, la solución y la ingeniería detrás de la cubierta retráctil inteligente.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
@@ -23,6 +24,7 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+    html.lock, body.lock { overflow: hidden; }
 
     body {
       font-family: 'Montserrat', Arial, sans-serif;
@@ -43,6 +45,23 @@
       background:
         repeating-linear-gradient(0deg, rgba(90, 170, 255, 0.035) 0 1px, transparent 1px 4px);
       opacity: .35;
+    }
+
+    /* ---------- intro epica (canvas) ---------- */
+    #intro {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #02060f;
+      transition: opacity .7s ease;
+    }
+
+    #intro.done { opacity: 0; pointer-events: none; }
+
+    #intro canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
     }
 
     /* ---------- barra de progreso y puntos ---------- */
@@ -338,7 +357,7 @@
 
     .shot img { display: block; width: 100%; height: auto; border-radius: 10px; }
 
-    /* ---------- pasos ---------- */
+    /* ---------- pasos / materiales ---------- */
     .steps { display: grid; gap: 12px; margin-top: 6px; counter-reset: st; }
 
     .step {
@@ -443,6 +462,8 @@
 </head>
 
 <body>
+  <div id="intro" aria-hidden="true"><canvas id="introFx"></canvas></div>
+
   <div class="bar"><i id="bar"></i></div>
   <nav class="pips" id="pips" aria-label="Pantallas"></nav>
 
@@ -460,7 +481,7 @@
 
         <div class="rule anim" style="--d:.34s"></div>
 
-        <div class="team-label anim" style="--d:.4s">Equipo</div>
+        <div class="team-label anim" style="--d:.4s">Equipo fundador</div>
         <ul class="team anim" style="--d:.44s">
           <li>Samuel Esteban Sánchez Álvarez</li>
           <li>Justin David Mendoza Ortiz</li>
@@ -472,33 +493,33 @@
       </div>
     </section>
 
-    <!-- 2 · NECESIDAD -->
-    <section class="sc" data-title="La necesidad">
+    <!-- 2 · PROBLEMÁTICA -->
+    <section class="sc" data-title="Problemática">
       <div class="wrap">
-        <div class="kicker anim" style="--d:.05s">01 · La necesidad</div>
-        <h1 class="anim" style="--d:.1s">La lluvia<br><em>apaga</em> el show</h1>
-        <p class="lead anim" style="--d:.16s">La concha acústica de la UMNG está a cielo abierto. Cada aguacero o
-          ráfaga de viento <b>interrumpe los eventos</b> y castiga una infraestructura pensada para durar.</p>
+        <div class="kicker anim" style="--d:.05s">01 · Problemática</div>
+        <h1 class="anim" style="--d:.1s">La lluvia<br><em>detiene</em> el evento</h1>
+        <p class="lead anim" style="--d:.16s">La concha acústica de la UMNG opera a cielo abierto: cada aguacero o
+          ráfaga de viento <b>interrumpe la programación</b> y expone la infraestructura, el sonido y al público.</p>
 
         <ul class="pts anim" style="--d:.22s">
-          <li><b>Eventos cancelados</b> o interrumpidos a mitad de función.</li>
-          <li><b>Espacio subutilizado</b>: el recinto depende del clima.</li>
-          <li><b>Deterioro</b> de estructura, sonido e iluminación.</li>
-          <li><b>Riesgo</b> para asistentes, músicos y equipos.</li>
+          <li><b>Continuidad:</b> eventos cancelados o suspendidos a mitad de función.</li>
+          <li><b>Rentabilidad:</b> el recinto depende del clima y pierde días de uso.</li>
+          <li><b>Infraestructura:</b> deterioro de estructura, sonido e iluminación.</li>
+          <li><b>Seguridad:</b> riesgo para asistentes, artistas y equipos.</li>
         </ul>
 
         <div class="rule anim" style="--d:.28s"></div>
-        <p class="motto anim" style="--d:.32s"><b>La necesidad:</b> un espacio que funcione los 365 días del año.</p>
+        <p class="motto anim" style="--d:.32s"><b>La necesidad:</b> un recinto operativo los 365 días del año.</p>
       </div>
     </section>
 
     <!-- 3 · SOLUCIÓN -->
-    <section class="sc" data-title="La solución">
+    <section class="sc" data-title="Solución">
       <div class="wrap">
         <div class="kicker anim" style="--d:.05s">02 · Nuestra solución</div>
         <h1 class="anim" style="--d:.1s">EcoTense</h1>
-        <p class="lead anim" style="--d:.16s">Una <b>cubierta retráctil inteligente</b> que se despliega sola cuando el
-          clima cambia y protege el escenario sin intervención humana.</p>
+        <p class="lead anim" style="--d:.16s">Una <b>cubierta retráctil automatizada</b> que se despliega por sí sola
+          cuando el clima cambia: protege el escenario y permite que el evento continúe, sin intervención humana.</p>
 
         <div class="chips anim" style="--d:.22s">
           <span>Apertura automatizada</span>
@@ -512,38 +533,69 @@
           <img src="logo-3d.jpg" alt="Símbolo del proyecto EcoTense" loading="lazy">
         </div>
 
-        <p class="motto anim" style="--d:.34s"><b>Resultado:</b> infraestructura + tecnología + sostenibilidad.</p>
+        <p class="motto anim" style="--d:.34s"><b>Para qué:</b> continuidad operativa, protección de las personas y
+          mayor vida útil del recinto.</p>
       </div>
     </section>
 
-    <!-- 4 · CÓMO FUNCIONA -->
+    <!-- 4 · DE QUÉ ESTÁ HECHA -->
+    <section class="sc" data-title="Ingeniería">
+      <div class="wrap">
+        <div class="kicker anim" style="--d:.05s">03 · Ingeniería</div>
+        <h1 class="anim" style="--d:.1s">De qué está<br>hecha</h1>
+
+        <div class="steps">
+          <div class="step anim" style="--d:.14s"><b>1</b><span><strong>Membrana de PET reciclado</strong>Resiste agua
+              y viento; se fabrica con PET recuperado en la planta de tratamiento de la universidad.</span></div>
+          <div class="step anim" style="--d:.18s"><b>2</b><span><strong>Estructura y rieles metálicos</strong>Guían el
+              despliegue con precisión y sostienen la cubierta.</span></div>
+          <div class="step anim" style="--d:.22s"><b>3</b><span><strong>Sensores climáticos</strong>Miden viento,
+              lluvia e intensidad lumínica en tiempo real.</span></div>
+          <div class="step anim" style="--d:.26s"><b>4</b><span><strong>Sistema de control</strong>Decide y ejecuta la
+              apertura o el retraimiento de la membrana.</span></div>
+          <div class="step anim" style="--d:.3s"><b>5</b><span><strong>Energía solar</strong>Panel fotovoltaico con
+              almacenamiento para operar sin depender de la red.</span></div>
+        </div>
+
+        <p class="motto anim" style="--d:.36s"><b>Diseño modular:</b> mantenimiento simple y adaptable a otros
+          espacios.</p>
+      </div>
+    </section>
+
+    <!-- 5 · CÓMO FUNCIONA -->
     <section class="sc" data-title="Cómo funciona">
       <div class="wrap">
-        <div class="kicker anim" style="--d:.05s">03 · Cómo funciona</div>
+        <div class="kicker anim" style="--d:.05s">04 · Cómo funciona</div>
         <h1 class="anim" style="--d:.1s">Cinco pasos</h1>
 
         <div class="steps">
-          <div class="step anim" style="--d:.14s"><b>1</b><span><strong>Lluvia o viento</strong>El clima cambia y el sistema lo detecta.</span></div>
-          <div class="step anim" style="--d:.18s"><b>2</b><span><strong>Sensores</strong>Miden viento, lluvia e intensidad lumínica.</span></div>
-          <div class="step anim" style="--d:.22s"><b>3</b><span><strong>Sistema de control</strong>Decide desplegar o retraer la membrana.</span></div>
-          <div class="step anim" style="--d:.26s"><b>4</b><span><strong>Despliegue / retracción</strong>La cubierta se mueve de forma automática.</span></div>
-          <div class="step anim" style="--d:.3s"><b>5</b><span><strong>Protección del espacio</strong>El evento continúa, la infraestructura queda a salvo.</span></div>
+          <div class="step anim" style="--d:.14s"><b>1</b><span><strong>Lluvia o viento</strong>El clima cambia y el
+              sistema lo detecta.</span></div>
+          <div class="step anim" style="--d:.18s"><b>2</b><span><strong>Sensores</strong>Miden viento, lluvia e
+              intensidad lumínica.</span></div>
+          <div class="step anim" style="--d:.22s"><b>3</b><span><strong>Sistema de control</strong>Decide desplegar o
+              retraer la membrana.</span></div>
+          <div class="step anim" style="--d:.26s"><b>4</b><span><strong>Despliegue / retracción</strong>La cubierta se
+              mueve de forma automática.</span></div>
+          <div class="step anim" style="--d:.3s"><b>5</b><span><strong>Protección del espacio</strong>El evento
+              continúa y la infraestructura queda a salvo.</span></div>
         </div>
 
-        <p class="motto anim" style="--d:.36s"><b>Energía:</b> sistema fotovoltaico + almacenamiento energético.</p>
+        <p class="motto anim" style="--d:.36s"><b>Resultado:</b> el evento continúa y la infraestructura queda
+          protegida.</p>
       </div>
     </section>
 
-    <!-- 5 · IMPACTO Y CIERRE -->
-    <section class="sc" data-title="Cierre">
+    <!-- 6 · IMPACTO Y CIERRE -->
+    <section class="sc" data-title="Impacto">
       <div class="wrap">
-        <div class="kicker anim" style="--d:.05s">04 · Impacto</div>
+        <div class="kicker anim" style="--d:.05s">05 · Impacto</div>
         <h1 class="anim" style="--d:.1s">Protegemos<br><span>espacios</span></h1>
 
         <ul class="pts anim" style="--d:.16s">
-          <li><b>PET reciclado:</b> material de la planta de tratamiento universitaria.</li>
-          <li><b>Energía solar:</b> alimentación fotovoltaica con almacenamiento.</li>
-          <li><b>Economía circular:</b> residuos que se convierten en recursos.</li>
+          <li><b>Economía circular:</b> PET reciclado que vuelve a la operación.</li>
+          <li><b>Energía limpia:</b> fotovoltaica con almacenamiento.</li>
+          <li><b>Continuidad:</b> el espacio se usa todo el año.</li>
         </ul>
 
         <p class="quote anim" style="--d:.22s">“Donde la precisión mecánica y la visión digital optimizan el futuro
@@ -612,6 +664,223 @@
       window.addEventListener('resize', progress);
       screens[0].classList.add('in');
       progress();
+    })();
+  </script>
+
+  <script>
+    /* ===== INTRO EPICA (misma animacion de la web principal) ===== */
+    (function () {
+      var intro = document.getElementById('intro');
+      if (!intro) return;
+      var cv = document.getElementById('introFx');
+      var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var skip = reduce || location.search.indexOf('nointro') >= 0;
+
+      function unlock() { document.documentElement.classList.remove('lock'); }
+
+      if (!cv || skip) {
+        if (intro.parentNode) intro.parentNode.removeChild(intro);
+        unlock();
+        return;
+      }
+
+      document.documentElement.classList.add('lock');
+
+      var g = cv.getContext('2d');
+      var W = 0, H = 0, DPR = 1;
+
+      function sz() {
+        DPR = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        cv.width = Math.round(W * DPR);
+        cv.height = Math.round(H * DPR);
+        g.setTransform(DPR, 0, 0, DPR, 0, 0);
+      }
+
+      sz();
+      window.addEventListener('resize', sz);
+
+      var FONT = 'Montserrat, sans-serif';
+      var dust = [];
+      for (var i = 0; i < 80; i++) {
+        dust.push({x: Math.random(), y: Math.random(), s: 0.6 + Math.random() * 1.4,
+          v: 0.0004 + Math.random() * 0.0009, ph: Math.random() * 7});
+      }
+
+      var t0 = 0, raf = 0, started = false;
+      var DUR = 5400;
+      var c01 = function (v) { return v < 0 ? 0 : v > 1 ? 1 : v; };
+      var eO = function (t) { return 1 - Math.pow(1 - t, 3); };
+      var eB = function (t) {
+        var c = 1.70158 * 1.2;
+        return 1 + (c + 1) * Math.pow(t - 1, 3) + c * Math.pow(t - 1, 2);
+      };
+
+      function drawWord(word, fs, wght, y, alpha, spacing) {
+        g.font = wght + ' ' + fs + 'px ' + FONT;
+        g.textAlign = 'left';
+        g.textBaseline = 'middle';
+        var n = word.length, tot = 0, ws = [], i;
+        for (i = 0; i < n; i++) {
+          var w2 = g.measureText(word[i]).width;
+          ws.push(w2);
+          tot += w2;
+        }
+        tot += spacing * (n - 1);
+        var x = W / 2 - tot / 2;
+        g.fillStyle = 'rgba(255,255,255,' + alpha + ')';
+        for (i = 0; i < n; i++) {
+          g.fillText(word[i], x, y);
+          x += ws[i] + spacing;
+        }
+      }
+
+      function frame(now) {
+        var t = (now - t0) / DUR;
+        if (t >= 1) { finish(); return; }
+
+        g.clearRect(0, 0, W, H);
+
+        var grad = g.createLinearGradient(0, 0, 0, H);
+        grad.addColorStop(0, '#020509');
+        grad.addColorStop(0.5, '#010307');
+        grad.addColorStop(1, '#020609');
+        g.fillStyle = grad;
+        g.fillRect(0, 0, W, H);
+
+        g.strokeStyle = 'rgba(110, 175, 255, 0.05)';
+        g.lineWidth = 1;
+        for (var r2 = 1; r2 <= 5; r2++) {
+          g.beginPath();
+          g.arc(W / 2, H * 1.02, Math.min(W, H) * (0.3 + r2 * 0.11), Math.PI * 0.96, Math.PI * 2.04);
+          g.stroke();
+        }
+        g.strokeStyle = 'rgba(120, 190, 255, 0.07)';
+        g.beginPath();
+        g.moveTo(0, H * 0.84);
+        g.lineTo(W, H * 0.84);
+        g.stroke();
+
+        var vg = g.createRadialGradient(W / 2, H * 0.45, Math.min(W, H) * 0.15, W / 2, H * 0.45, Math.max(W, H) * 0.75);
+        vg.addColorStop(0, 'rgba(90, 170, 255, 0.04)');
+        vg.addColorStop(1, 'rgba(0, 0, 0, 0.62)');
+        g.fillStyle = vg;
+        g.fillRect(0, 0, W, H);
+
+        for (var d = 0; d < dust.length; d++) {
+          var p = dust[d];
+          p.y -= p.v;
+          if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
+          var a = 0.14 + 0.12 * Math.sin(now * 0.001 + p.ph);
+          g.fillStyle = 'rgba(150, 210, 255, ' + a + ')';
+          g.fillRect(p.x * W, p.y * H, p.s, p.s);
+        }
+
+        var pA = c01(t / 0.45);
+        var hazA = eO(pA) * H * 0.16;
+        var hg = g.createLinearGradient(0, H, 0, H - hazA * 2);
+        hg.addColorStop(0, 'rgba(110, 190, 255, 0.10)');
+        hg.addColorStop(1, 'rgba(110, 190, 255, 0)');
+        g.fillStyle = hg;
+        g.fillRect(0, H - hazA, W, hazA);
+
+        var fs = Math.max(40, Math.min(W * 0.135, H * 0.105));
+        var cy0 = H * 0.38;
+        var pK = c01((t - 0.3) / 0.55);
+        if (pK > 0) {
+          var spacing = (0.34 - 0.26 * eO(c01(pK * 1.5 - 0.35))) * fs;
+          var n = 7;
+          for (var i2 = 0; i2 < n; i2++) {
+            var pi = c01((pK * 1.6 - i2 * 0.075) / 1.05);
+            if (pi <= 0) continue;
+            var e = eB(pi);
+            var al = c01(pi * 2);
+            var x = W / 2 - (fs * 0.62 * n + spacing * (n - 1)) / 2 + i2 * (fs * 0.62 + spacing) + fs * 0.31;
+            g.font = '900 ' + fs + 'px ' + FONT;
+            g.textAlign = 'center';
+            g.textBaseline = 'middle';
+            g.shadowColor = 'rgba(90, 170, 255, ' + (0.75 * e) + ')';
+            g.shadowBlur = 24 * e;
+            g.fillStyle = 'rgba(238, 246, 255, ' + al + ')';
+            g.fillText('KINETIX'[i2], x, cy0 + (1 - e) * 46);
+            g.shadowBlur = 0;
+          }
+        }
+
+        var pL = c01((t - 0.3) / 0.25);
+        if (pL > 0) {
+          var lw = fs * 3.0 * eO(pL);
+          g.strokeStyle = 'rgba(120, 205, 255, ' + (0.8 * pL) + ')';
+          g.lineWidth = 2;
+          g.beginPath();
+          g.moveTo(W / 2 - lw, cy0 + fs * 1.62);
+          g.lineTo(W / 2 + lw, cy0 + fs * 1.62);
+          g.stroke();
+          g.fillStyle = 'rgba(140, 215, 255, ' + pL + ')';
+          g.fillRect(W / 2 - 1.5, cy0 + fs * 1.62 - 3, 3, 6);
+        }
+
+        var pS = c01((t - 0.4) / 0.3);
+        if (pS > 0) {
+          var sf = Math.min(fs * 0.42, Math.max(20, W * 0.042));
+          var al2 = 0.95 * eO(pS);
+          g.font = '900 ' + sf + 'px ' + FONT;
+          g.textAlign = 'center';
+          g.textBaseline = 'middle';
+          g.shadowColor = 'rgba(90, 170, 255, ' + (0.55 * eO(pS)) + ')';
+          g.shadowBlur = 22 * eO(pS);
+          drawWord('DYNAMIC SYSTEMS', sf, '900', cy0 + fs * 0.55 + sf * 0.6, al2, sf * 0.3);
+          g.shadowBlur = 0;
+          g.font = '500 ' + Math.max(10, Math.min(W * 0.016, H * 0.02)) + 'px ' + FONT;
+          g.fillStyle = 'rgba(160, 205, 255, ' + (0.55 * eO(c01((pS - 0.5) / 0.5))) + ')';
+          g.textAlign = 'center';
+          g.fillText('PRECISION MECANICA / VISION DIGITAL', W / 2, cy0 + fs * 0.55 + sf * 1.9);
+        }
+
+        var pD = c01((t - 0.72) / 0.12);
+        if (pD > 0 && pD < 1) {
+          var bx = eO(pD) * W * 1.35 - W * 0.18;
+          var bw = W * 0.22;
+          var sw = g.createLinearGradient(bx - bw, 0, bx + bw, 0);
+          sw.addColorStop(0, 'rgba(255,255,255,0)');
+          sw.addColorStop(0.5, 'rgba(240, 250, 255, ' + (0.8 * (1 - pD)) + ')');
+          sw.addColorStop(1, 'rgba(255,255,255,0)');
+          g.fillStyle = sw;
+          g.fillRect(bx - bw, 0, bw * 2, H);
+        }
+
+        var pF = c01((t - 0.84) / 0.1);
+        if (pF > 0 && pF < 1) {
+          g.fillStyle = 'rgba(190, 230, 255, ' + (0.06 * (1 - pF)) + ')';
+          g.fillRect(0, 0, W, H);
+        }
+
+        raf = requestAnimationFrame(frame);
+      }
+
+      function finish() {
+        cancelAnimationFrame(raf);
+        intro.classList.add('done');
+        setTimeout(function () {
+          if (intro.parentNode) intro.parentNode.removeChild(intro);
+          unlock();
+        }, 700);
+      }
+
+      function start() {
+        if (started) return;
+        started = true;
+        t0 = performance.now();
+        raf = requestAnimationFrame(frame);
+      }
+
+      if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+        document.fonts.ready.then(start);
+        setTimeout(start, 700);
+      } else {
+        start();
+      }
     })();
   </script>
 </body>
