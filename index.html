@@ -1764,7 +1764,7 @@
     /* boton de pantalla completa: solo el icono, estilo YouTube */
     #m3dFullBtn {
       position: absolute;
-      top: 10px;
+      bottom: 10px;
       right: 10px;
       z-index: 3;
       display: grid;
@@ -1813,9 +1813,9 @@
     #m3dFullBtn::after {
       content: 'Pantalla completa';
       position: absolute;
-      top: 50%;
-      right: calc(100% + 9px);
-      transform: translateY(-50%) translateX(4px);
+      bottom: calc(100% + 9px);
+      right: 0;
+      transform: translateY(4px);
       padding: 6px 10px;
       border: 1px solid rgba(120, 190, 255, 0.24);
       border-radius: 7px;
@@ -1832,7 +1832,7 @@
 
     #m3dFullBtn:hover::after {
       opacity: 1;
-      transform: translateY(-50%) translateX(0);
+      transform: translateY(0);
     }
 
     /* ================= MODELO 3D A PANTALLA COMPLETA ================= */
@@ -2343,7 +2343,7 @@
       }
 
       #m3dFullBtn {
-        top: 8px;
+        bottom: 8px;
         right: 8px;
         width: 38px;
         height: 38px;
@@ -4638,7 +4638,7 @@
       // estos valores de forma continua, asi que los cambios de clima nunca son un
       // salto: se ven como una transicion (luz, niebla, nubes y lluvia a la vez).
       const WX = {
-        despejado: {rain: 0.00, cover: 0.16, cloud: 0x33445e, cloudD: 0x1b2537, skyT: 0x08111f, skyB: 0x24405f, fog: 0x0d1a2c, fogN: 145, fogF: 385, hemi: 0.50, key: 1.60, wind: 0.5, wet: 0.00, exp: 1.22},
+        despejado: {rain: 0.00, cover: 0.16, cloud: 0x33445e, cloudD: 0x1b2537, skyT: 0x08111f, skyB: 0x24405f, fog: 0x24405f, fogN: 145, fogF: 385, hemi: 0.50, key: 1.60, wind: 0.5, wet: 0.00, exp: 1.22},
         nublado: {rain: 0.00, cover: 0.74, cloud: 0x4d5b72, cloudD: 0x2b3547, skyT: 0x151f2f, skyB: 0x36435a, fog: 0x1c2532, fogN: 92, fogF: 275, hemi: 0.68, key: 0.55, wind: 1.7, wet: 0.14, exp: 1.10},
         lluvia: {rain: 0.74, cover: 0.95, cloud: 0x333c4b, cloudD: 0x1b222c, skyT: 0x0c1118, skyB: 0x1f2935, fog: 0x121a24, fogN: 50, fogF: 180, hemi: 0.52, key: 0.28, wind: 2.5, wet: 1.00, exp: 1.00},
         tormenta: {rain: 1.00, cover: 1.00, cloud: 0x212733, cloudD: 0x0d1117, skyT: 0x05080d, skyB: 0x131922, fog: 0x0b1017, fogN: 32, fogF: 130, hemi: 0.46, key: 0.16, wind: 3.9, wet: 1.00, exp: 0.92},
@@ -4957,37 +4957,105 @@
             g.beginPath(); g.moveTo(0, i * 32); g.lineTo(w, i * 32); g.stroke();
           }
         }, 26, 26);
-        const grassTex = canvasTex(512, 512, (g, w, h) => {
-          g.fillStyle = '#2f7d36';
-          g.fillRect(0, 0, w, h);
-          for (let i = 0; i < 26; i++) {
-            const px = Math.random() * w, py = Math.random() * h, pr = 14 + Math.random() * 40;
-            const grd = g.createRadialGradient(px, py, 0, px, py, pr);
-            const light = Math.random() > 0.5;
-            grd.addColorStop(0, light ? 'rgba(74,150,70,0.30)' : 'rgba(22,80,30,0.30)');
-            grd.addColorStop(1, 'rgba(0,0,0,0)');
-            g.fillStyle = grd;
-            g.fillRect(px - pr, py - pr, pr * 2, pr * 2);
+        const grassTex = (function () {
+          const S = 512;
+          const cv = document.createElement('canvas');
+          cv.width = cv.height = S;
+          const g = cv.getContext('2d');
+          const img = g.createImageData(S, S);
+          const dat = img.data;
+          const bumpArr = new Uint8Array(S * S);
+
+          // ruido de valor periodico: asi la textura repite sin costuras
+          function hash(x, y, per) {
+            x = ((x % per) + per) % per;
+            y = ((y % per) + per) % per;
+            let h = (x * 374761393 + y * 668265263 + per * 1442695041) | 0;
+            h = (h ^ (h >>> 13)) * 1274126177 | 0;
+            return ((h ^ (h >>> 16)) >>> 0) / 4294967295;
           }
-          for (let i = 0; i < 3400; i++) {
-            const r = Math.random();
-            g.fillStyle = r > 0.72 ? 'rgba(58,124,54,0.55)' : r > 0.3 ? 'rgba(52,116,52,0.5)' : 'rgba(96,168,82,0.45)';
-            g.fillRect(Math.random() * w, Math.random() * h, 1.6, 1.6);
+          function sm(t) { return t * t * (3 - 2 * t); }
+          function vnoise(x, y, per) {
+            const xi = Math.floor(x), yi = Math.floor(y);
+            const xf = x - xi, yf = y - yi;
+            const u = sm(xf), v = sm(yf);
+            const a = hash(xi, yi, per), b = hash(xi + 1, yi, per);
+            const c = hash(xi, yi + 1, per), d = hash(xi + 1, yi + 1, per);
+            return a + (b - a) * u + (c - a) * v + (a - b - c + d) * u * v;
           }
-          for (let i = 0; i < 240; i++) {
-            g.fillStyle = 'rgba(150,140,60,0.30)';
-            g.fillRect(Math.random() * w, Math.random() * h, 1.2, 1.2);
+          function fbm(u, v, ox, oy) {
+            return 0.55 * vnoise(u * 7 + ox, v * 7 + oy, 7) +
+              0.30 * vnoise(u * 17 + ox * 2, v * 17 + oy * 2, 17) +
+              0.15 * vnoise(u * 41 + ox * 3, v * 41 + oy * 3, 41);
           }
-          for (let i = 0; i < 300; i++) {
-            const x = Math.random() * w, y = Math.random() * h;
-            g.strokeStyle = Math.random() > 0.5 ? 'rgba(64,140,60,0.35)' : 'rgba(40,100,44,0.35)';
+
+          for (let y = 0; y < S; y++) {
+            const v = y / S;
+            for (let x = 0; x < S; x++) {
+              const u = x / S;
+              const n = fbm(u, v, 0.37, 0.61);
+              const n2 = fbm(u, v, 5.13, 2.87);
+              // mancha grande de humedad: unas zonas mas verdes y otras mas secas
+              const n3 = vnoise(u * 3 + 1.7, v * 3 + 4.3, 3);
+              // manchas secas y calvas, como un cesped real
+              const dry = Math.max(0, Math.min(1, (n2 - 0.52) / 0.30));
+              const clump = Math.max(0, Math.min(1, (0.40 - n) / 0.18));
+              const fine = hash(x, y, S) - 0.5;
+              const shade = 0.88 + (n3 - 0.5) * 0.26;
+              const r = (34 + n * 26 + dry * 52 + fine * 18 - clump * 12) * shade;
+              const gg = (74 + n * 44 + dry * 26 + fine * 18 - clump * 18) * shade;
+              const b = (32 + n * 22 + dry * 6 + fine * 12 - clump * 8) * shade;
+              const q = (y * S + x) * 4;
+              dat[q] = r; dat[q + 1] = gg; dat[q + 2] = b; dat[q + 3] = 255;
+              bumpArr[y * S + x] = 92 + n * 92 + fine * 30 + clump * 26;
+            }
+          }
+          g.putImageData(img, 0, 0);
+
+          // briznas sueltas: dan escala y rompen el ruido
+          for (let i = 0; i < 1200; i++) {
+            const x = Math.random() * S, y = Math.random() * S;
+            const len = 2 + Math.random() * 4.5;
+            const lean = (Math.random() - 0.5) * 3.2;
+            g.strokeStyle = Math.random() > 0.42 ? 'rgba(128,172,94,0.28)' : 'rgba(22,58,28,0.30)';
             g.lineWidth = 1;
             g.beginPath();
             g.moveTo(x, y);
-            g.lineTo(x + (Math.random() * 2 - 1) * 3, y - 1.5 - Math.random() * 2.5);
+            g.quadraticCurveTo(x + lean * 0.35, y - len * 0.55, x + lean, y - len);
             g.stroke();
           }
-        }, 34, 34);
+          for (let i = 0; i < 150; i++) {
+            const x = Math.random() * S, y = Math.random() * S;
+            g.strokeStyle = 'rgba(152,140,78,0.24)';
+            g.lineWidth = 1;
+            g.beginPath();
+            g.moveTo(x, y);
+            g.lineTo(x + (Math.random() - 0.5) * 3, y - 2 - Math.random() * 2);
+            g.stroke();
+          }
+
+          // mapa de relieve (bump) a partir del mismo ruido
+          const bc = document.createElement('canvas');
+          bc.width = bc.height = S;
+          const bg = bc.getContext('2d');
+          const bimg = bg.createImageData(S, S);
+          for (let i = 0; i < bumpArr.length; i++) {
+            const val = bumpArr[i], j = i * 4;
+            bimg.data[j] = bimg.data[j + 1] = bimg.data[j + 2] = val;
+            bimg.data[j + 3] = 255;
+          }
+          bg.putImageData(bimg, 0, 0);
+
+          const mk = (canvas) => {
+            const t = new T3.CanvasTexture(canvas);
+            t.wrapS = t.wrapT = T3.RepeatWrapping;
+            t.repeat.set(52, 52);
+            t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+            t.minFilter = t.magFilter = T3.LinearMipmapLinearFilter;
+            return t;
+          };
+          return {color: mk(cv), bump: mk(bc)};
+        })();
         const floorTex = canvasTex(512, 512, (g, w, h) => {
           g.fillStyle = '#8d959f';
           g.fillRect(0, 0, w, h);
@@ -5015,7 +5083,9 @@
         const lampMat = new T3.MeshBasicMaterial({color: 0xffd9a0});
 
         // ---------- SUELO: CESPA -------------
-        const ground = new T3.Mesh(new T3.CircleGeometry(180, 72), new T3.MeshStandardMaterial({map: grassTex, roughness: 1}));
+        const ground = new T3.Mesh(new T3.CircleGeometry(420, 96), new T3.MeshStandardMaterial({
+          map: grassTex.color, bumpMap: grassTex.bump, bumpScale: 0.34, roughness: 0.97
+        }));
         groundMesh = ground;
         gndMat = ground.material;
         ground.rotation.x = -Math.PI / 2;
@@ -7436,9 +7506,11 @@
 
         // el cielo, el sol y las luces se resuelven en updateSky
         updateSky(dt, instant);
-        // la niebla si depende solo del clima
+        // la niebla si depende solo del clima, pero toma el color del horizonte
+        // del cielo para que el cesped se funda con el aire en la distancia
         if (fogL) {
-          fogL.color.setHex(wxCur.fog);
+          fogL.color.setHex(lerpHex(skyMat.uniforms.horizon.value.getHex(), wxCur.fog,
+            0.14 + 0.6 * Math.max(wxCur.cover, wxCur.wet)));
           fogL.near = wxCur.fogN;
           fogL.far = wxCur.fogF;
         }
