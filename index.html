@@ -2582,22 +2582,6 @@
       z-index: 7;
     }
 
-    /* cierre: animacion propia de despedida */
-    #outroFx {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 7;
-      animation: outroIn 0.45s ease both;
-    }
-
-    @keyframes outroIn {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-
     /* ocultos por pedido del usuario */
     #cam-badge,
     #dbg-btn {
@@ -3093,10 +3077,6 @@
       if (hfx0 && n !== 0) {try {hfx0.parentNode.removeChild(hfx0);} catch (errH) { } }
 
       transitionSlides(oldEl, slides[n], dir);
-
-      // en la diapositiva de cierre aparece la animacion epica, como despedida
-      if (n === slides.length - 1) playOutro();
-      else stopOutro();
 
       if (source === 'wheel') showToast(slides[n].dataset.name || 'Diapositiva ' + (n + 1));
       setTimeout(() => {locked = false;}, TRANS_MS + 200);
@@ -4588,231 +4568,6 @@
         tag: 'PRECISION MECANICA / VISION DIGITAL'
       });
     })();
-
-    // ===== CIERRE: animacion propia de despedida (no repite la intro) =====
-    // Un cierre tranquilo: el horizonte se abre, el nombre sube letra a letra con
-    // el tracking abriendose y debajo aparecen EcoTense y las tres promesas,
-    // las mismas ideas de la ultima diapositiva.
-    function closeFx(cv, opt) {
-      if (!cv) return null;
-      opt = opt || {};
-      const g = cv.getContext('2d');
-      const TAU = Math.PI * 2;
-      const FONT = 'Montserrat, sans-serif';
-      let W = 0, H = 0, DPR = 1;
-      function sz() {
-        DPR = Math.min(window.devicePixelRatio || 1, 2);
-        W = window.innerWidth; H = window.innerHeight;
-        cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
-        g.setTransform(DPR, 0, 0, DPR, 0, 0);
-      }
-      sz();
-      window.addEventListener('resize', sz);
-
-      const c01 = (v) => (v < 0 ? 0 : v > 1 ? 1 : v);
-      const eO = (t) => 1 - Math.pow(1 - t, 3);
-      const eIO = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-
-      // brasas que suben muy lento
-      const motes = [];
-      for (let i = 0; i < 54; i++) motes.push({
-        x: Math.random(), y: Math.random(),
-        s: 0.7 + Math.random() * 1.7,
-        v: 0.00005 + Math.random() * 0.00011,
-        ph: Math.random() * 7
-      });
-
-      function trackText(txt, fs, weight, y, alpha, track, rgb) {
-        g.font = weight + ' ' + fs + 'px ' + FONT;
-        g.textAlign = 'left';
-        g.textBaseline = 'middle';
-        let tot = 0;
-        const ws = [];
-        for (let i = 0; i < txt.length; i++) {
-          const w = g.measureText(txt[i]).width;
-          ws.push(w); tot += w;
-        }
-        tot += track * (txt.length - 1);
-        let x = W / 2 - tot / 2;
-        g.fillStyle = 'rgba(' + rgb + ', ' + alpha + ')';
-        for (let i = 0; i < txt.length; i++) {
-          g.fillText(txt[i], x, y);
-          x += ws[i] + track;
-        }
-      }
-
-      const t0 = performance.now();
-      const DUR = opt.dur || 5200;
-      let raf = 0;
-
-      function frame(now) {
-        const t = (now - t0) / DUR;
-        if (t >= 1) {finish(); return;}
-        g.clearRect(0, 0, W, H);
-
-        // fondo: azul profundo que se aclara hacia abajo (el atardecer del cierre)
-        const bg = g.createLinearGradient(0, 0, 0, H);
-        bg.addColorStop(0, '#04080f');
-        bg.addColorStop(0.6, '#03070d');
-        bg.addColorStop(1, '#071427');
-        g.fillStyle = bg;
-        g.fillRect(0, 0, W, H);
-
-        const fs = Math.max(44, Math.min(W * 0.115, H * 0.15));
-        const cy = H * 0.40;
-
-        // A: resplandor que sube desde abajo, como el sol que se va
-        const pG = c01((t - 0.05) / 0.6);
-        if (pG > 0) {
-          const gy = H * (1.12 - 0.16 * eO(pG));
-          const rg = g.createRadialGradient(W / 2, gy, 0, W / 2, gy, Math.max(W, H) * 0.62);
-          rg.addColorStop(0, 'rgba(120, 190, 255, ' + (0.30 * eO(pG)) + ')');
-          rg.addColorStop(0.4, 'rgba(64, 122, 200, ' + (0.12 * eO(pG)) + ')');
-          rg.addColorStop(1, 'rgba(0, 0, 0, 0)');
-          g.fillStyle = rg;
-          g.fillRect(0, 0, W, H);
-        }
-
-        // B: ondas horizontales que se abren desde el centro y se apagan
-        for (let k = 0; k < 3; k++) {
-          const pk = c01((t - 0.10 - k * 0.10) / 0.72);
-          if (pk <= 0) continue;
-          const rx = Math.max(W, H) * 0.10 + Math.min(W, H) * 0.46 * eO(pk);
-          g.strokeStyle = 'rgba(105, 180, 255, ' + (0.20 * (1 - pk)) + ')';
-          g.lineWidth = 1;
-          g.beginPath();
-          g.ellipse(W / 2, cy + fs * 0.15, rx * 1.6, rx * 0.42, 0, 0, TAU);
-          g.stroke();
-        }
-
-        // C: horizonte que se abre desde el centro, arriba del nombre
-        const pA = c01(t / 0.28);
-        if (pA > 0) {
-          const lw = W * 0.46 * eO(pA);
-          const lg = g.createLinearGradient(W / 2 - lw, 0, W / 2 + lw, 0);
-          lg.addColorStop(0, 'rgba(110, 190, 255, 0)');
-          lg.addColorStop(0.5, 'rgba(165, 220, 255, ' + (0.60 * pA) + ')');
-          lg.addColorStop(1, 'rgba(110, 190, 255, 0)');
-          g.strokeStyle = lg;
-          g.lineWidth = 1.4;
-          g.beginPath();
-          g.moveTo(W / 2 - lw, cy - fs * 1.55);
-          g.lineTo(W / 2 + lw, cy - fs * 1.55);
-          g.stroke();
-        }
-
-        // D: KINETIX — cada letra sube desde bajo el horizonte y el tracking se abre
-        const pK = c01((t - 0.14) / 0.46);
-        if (pK > 0) {
-          const track = fs * (0.015 + 0.20 * eIO(pK));
-          g.font = '800 ' + fs + 'px ' + FONT;
-          g.textAlign = 'left';
-          g.textBaseline = 'middle';
-          const word = 'KINETIX';
-          let tot = 0;
-          const ws = [];
-          for (let i = 0; i < word.length; i++) {
-            const w = g.measureText(word[i]).width;
-            ws.push(w); tot += w;
-          }
-          tot += track * (word.length - 1);
-          let x = W / 2 - tot / 2;
-          for (let i = 0; i < word.length; i++) {
-            const pi = c01((pK - i * 0.05) / 0.6);
-            if (pi > 0) {
-              const e = eO(pi);
-              g.globalAlpha = 0.96 * e;
-              g.fillStyle = 'rgb(240, 247, 255)';
-              g.fillText(word[i], x, cy + (1 - e) * fs * 0.34);
-              g.globalAlpha = 1;
-            }
-            x += ws[i] + track;
-          }
-        }
-
-        // E: DYNAMIC SYSTEMS — el tracking se abre y se asienta
-        const pS = c01((t - 0.32) / 0.30);
-        if (pS > 0) {
-          const sf = Math.min(fs * 0.29, Math.max(14, W * 0.026));
-          trackText('DYNAMIC SYSTEMS', sf, '800', cy + fs * 0.86, 0.92 * eO(pS),
-            sf * (0.22 + 0.55 * eO(pS)), '218, 234, 255');
-        }
-
-        // F: EcoTense + las tres promesas, una debajo de otra
-        const pT = c01((t - 0.46) / 0.28);
-        if (pT > 0) {
-          const tf = Math.max(12, Math.min(W * 0.016, H * 0.019));
-          trackText('ECOTENSE', tf, '600', cy + fs * 1.52, 0.80 * eO(pT),
-            tf * (0.3 + 0.45 * eO(pT)), '135, 200, 255');
-        }
-        const lines = ['PROTEGEMOS ESPACIOS', 'AUTOMATIZAMOS SOLUCIONES', 'CONSTRUIMOS FUTURO SOSTENIBLE'];
-        const pf = Math.max(10, Math.min(W * 0.0125, H * 0.016));
-        for (let i = 0; i < lines.length; i++) {
-          const pl = c01((t - 0.52 - i * 0.06) / 0.24);
-          if (pl <= 0) continue;
-          g.font = '500 ' + pf + 'px ' + FONT;
-          g.textAlign = 'center';
-          g.textBaseline = 'middle';
-          g.fillStyle = 'rgba(178, 206, 236, ' + (0.66 * eO(pl)) + ')';
-          g.fillText(lines[i], W / 2, cy + fs * 1.52 + pf * 2.8 + i * pf * 1.9);
-        }
-
-        // G: brasas que suben
-        for (let i = 0; i < motes.length; i++) {
-          const m = motes[i];
-          m.y -= m.v * 16.7;
-          if (m.y < -0.02) {m.y = 1.02; m.x = Math.random();}
-          const a = 0.10 + 0.10 * Math.sin(now * 0.0011 + m.ph);
-          g.fillStyle = 'rgba(160, 215, 255, ' + a + ')';
-          g.fillRect(m.x * W, m.y * H, m.s, m.s);
-        }
-
-        // H: el conjunto respira antes de despedirse
-        const pB = c01((t - 0.80) / 0.2);
-        if (pB > 0) {
-          g.fillStyle = 'rgba(150, 205, 255, ' + (0.05 * (1 - pB)) + ')';
-          g.fillRect(0, 0, W, H);
-        }
-
-        raf = requestAnimationFrame(frame);
-      }
-      function finish() {
-        cancelAnimationFrame(raf);
-        const fade = opt.fade || 0.8;
-        cv.style.transition = 'opacity ' + fade + 's ease';
-        cv.style.opacity = '0';
-        setTimeout(() => {if (cv.parentNode) cv.parentNode.removeChild(cv);}, fade * 1000 + 80);
-        if (opt.onEnd) opt.onEnd();
-      }
-      const handle = {
-        stop: function () {
-          cancelAnimationFrame(raf);
-          cv.style.opacity = '0';
-          if (cv.parentNode) cv.parentNode.removeChild(cv);
-        }
-      };
-      raf = requestAnimationFrame(frame);
-      return handle;
-    }
-
-    let outroFx = null;
-    function stopOutro() {
-      if (outroFx) {try {outroFx.stop();} catch (errO) { } outroFx = null;}
-      const old = document.getElementById('outroFx');
-      if (old && old.parentNode) old.parentNode.removeChild(old);
-    }
-    function playOutro() {
-      stopOutro();
-      const cv = document.createElement('canvas');
-      cv.id = 'outroFx';
-      cv.setAttribute('aria-hidden', 'true');
-      document.body.appendChild(cv);
-      outroFx = closeFx(cv, {
-        dur: 5200,
-        fade: 0.9,
-        onEnd: function () {outroFx = null;}
-      });
-    }
 
     /* =================================================================
        MODELO 3D: CONCHA ACUSTICA UMNG + CUBIERTA DESPLEGABLE (Three.js)
@@ -7199,6 +6954,291 @@
           q.visible = false;
           scene.add(q);
           roofSplashes.push({m: q, mat: m, t: 0, dur: 1});
+        }
+
+        // =================================================================
+        // CAMPUS UMNG - CAJICA
+        // Se agregan unicamente los edificios que rodean la concha: la concha,
+        // la tarima, las graderias y los bloques de ladrillo quedan intactos.
+        // Colores tomados de fotos del campus: muros arena/crema, vidrio
+        // azulado, concreto crudo, ladrillo y cubiertas gris oscuro.
+        // =================================================================
+        {
+          const CC = {
+            arena: 0xcfc2a6, arena2: 0xd9cfb9, crema: 0xe2dac8,
+            ladrillo: 0xc19a74, concreto: 0xaba59b, blanco: 0xe8e5dd,
+            vidrio: 0x3d6288, vidrioClaro: 0x547fa6, bronce: 0x6b5747,
+            techo: 0x4b5157, anden: 0xb5b0a5, verde: 0x2f6b4f,
+            metal: 0x8e959c
+          };
+          const camp = new T3.Group();
+          camp.name = 'campusUMNG';
+          scene.add(camp);
+
+          const cM = {};
+          function cmat(hex, rough, metal) {
+            const r = rough == null ? 0.88 : rough;
+            const k = hex + ':' + r + ':' + (metal || 0);
+            if (!cM[k]) cM[k] = mat({color: hex, roughness: r, metalness: metal || 0.05});
+            return cM[k];
+          }
+
+          function addMerged(g, P, I, material) {
+            const geo = new T3.BufferGeometry();
+            geo.setAttribute('position', new T3.Float32BufferAttribute(P, 3));
+            geo.setIndex(I);
+            geo.computeVertexNormals();
+            const m = new T3.Mesh(geo, material);
+            m.castShadow = true;
+            m.receiveShadow = true;
+            g.add(m);
+          }
+
+          // edificio generico: cuerpo + bandas de ventanas + remate + acceso
+          function house(o) {
+            const g = new T3.Group();
+            g.position.set(o.x, 0, o.z);
+            g.rotation.y = o.rot || 0;
+            camp.add(g);
+
+            const w = o.w, d = o.d, h = o.h;
+            // los edificios lejanos pierden un poco de color, como en una foto
+            const ds = Math.sqrt(o.x * o.x + o.z * o.z);
+            const air = Math.max(0, Math.min(0.17, (ds - 120) / 900));
+            const wallM = cmat(lerpHex(o.wall, 0xb7cbde, air), 0.92, 0.02);
+            const roofM = cmat(lerpHex(o.roof || CC.techo, 0xb7cbde, air * 0.8), 0.86, 0.1);
+            const glassM = cmat(lerpHex(o.glass || CC.vidrio, 0x9fc0dd, air * 0.5), 0.16, 0.6);
+            const whiteM = cmat(CC.blanco, 0.8, 0.04);
+
+            const ap = new T3.Mesh(new T3.BoxGeometry(w + 7, 0.6, d + 7), cmat(CC.anden, 0.95, 0.02));
+            ap.position.y = 0.3;
+            ap.receiveShadow = true;
+            g.add(ap);
+
+            const body = new T3.Mesh(new T3.BoxGeometry(w, h, d), wallM);
+            body.position.y = 0.6 + h / 2;
+            body.castShadow = true;
+            body.receiveShadow = true;
+            g.add(body);
+
+            const fl = o.floors || Math.max(2, Math.round(h / 4.2));
+            const fh = h / fl;
+            const bh = Math.min(1.5, fh * 0.46);
+            const P = [], I = [];
+            for (let f = 0; f < fl; f++) {
+              const y = 0.6 + f * fh + fh * 0.55;
+              pushBox(P, I, 0, y, d / 2 + 0.05, w * 0.9, bh, 0.12, 0);
+              pushBox(P, I, 0, y, -d / 2 - 0.05, w * 0.9, bh, 0.12, 0);
+              pushBox(P, I, w / 2 + 0.05, y, 0, 0.12, bh, d * 0.86, 0);
+              pushBox(P, I, -w / 2 - 0.05, y, 0, 0.12, bh, d * 0.86, 0);
+            }
+            addMerged(g, P, I, glassM);
+
+            const cap = new T3.Mesh(new T3.BoxGeometry(w + 1.5, 0.55, d + 1.5), roofM);
+            cap.position.y = 0.6 + h + 0.27;
+            cap.castShadow = true;
+            g.add(cap);
+
+            // palas de bronce, como en el edificio Eloy Valenzuela
+            if (o.bronce) {
+              for (let i = -1; i <= 1; i++) {
+                const fin = new T3.Mesh(new T3.BoxGeometry(1.5, h * 0.92, 0.5), cmat(CC.bronce, 0.65, 0.15));
+                fin.position.set(i * w * 0.26, 0.6 + h * 0.46, d / 2 + 0.25);
+                fin.castShadow = true;
+                g.add(fin);
+              }
+            }
+
+            // torre de circulacion en vidrio
+            if (o.tower) {
+              const tw = new T3.Mesh(new T3.BoxGeometry(6.5, h * 0.98, 5), glassM);
+              tw.position.set(w / 2 + 0.2, 0.6 + h * 0.49, d * 0.18);
+              tw.castShadow = true;
+              g.add(tw);
+            }
+
+            // losa volada (auditorio)
+            if (o.slab) {
+              const sb = new T3.Mesh(new T3.BoxGeometry(w + 5, 0.7, d * 0.55), whiteM);
+              sb.position.set(0, 0.6 + h * 0.72, d / 2 + 1.2);
+              sb.castShadow = true;
+              g.add(sb);
+            }
+
+            // acceso: losa blanca sobre dos columnas
+            if (o.entry !== false) {
+              const cw = Math.min(w * 0.44, 20);
+              const can = new T3.Mesh(new T3.BoxGeometry(cw, 0.45, 3.6), whiteM);
+              can.position.set(0, 4.3, d / 2 + 1.6);
+              can.castShadow = true;
+              g.add(can);
+              [-cw / 2 + 1, cw / 2 - 1].forEach((cx) => {
+                const col = new T3.Mesh(new T3.BoxGeometry(0.55, 4.1, 0.55), whiteM);
+                col.position.set(cx, 2.05, d / 2 + 2.9);
+                col.castShadow = true;
+                g.add(col);
+              });
+            }
+
+            // equipos de cubierta
+            if (o.gear) {
+              [-w * 0.22, w * 0.18].forEach((gx, i) => {
+                const ac = new T3.Mesh(new T3.BoxGeometry(3.4, 1.2, 2.4), cmat(CC.metal, 0.55, 0.4));
+                ac.position.set(gx, 0.6 + h + 0.9, -d * 0.2 + i * 3);
+                ac.castShadow = true;
+                g.add(ac);
+              });
+            }
+            return g;
+          }
+
+          // cafeteria: volumen bajo de ladrillo, losa blanca y sombrillas verdes
+          function cafe(o) {
+            const g = new T3.Group();
+            g.position.set(o.x, 0, o.z);
+            g.rotation.y = o.rot || 0;
+            camp.add(g);
+            const w = 24, d = 16, h = 4.8;
+            const ap = new T3.Mesh(new T3.BoxGeometry(w + 10, 0.55, d + 14), cmat(CC.anden, 0.95, 0.02));
+            ap.position.set(0, 0.28, 3);
+            ap.receiveShadow = true;
+            g.add(ap);
+            const body = new T3.Mesh(new T3.BoxGeometry(w, h, d), cmat(CC.ladrillo, 0.94, 0.02));
+            body.position.y = 0.55 + h / 2;
+            body.castShadow = true;
+            body.receiveShadow = true;
+            g.add(body);
+            const glass = new T3.Mesh(new T3.BoxGeometry(w * 0.86, 2.4, 0.16), cmat(CC.vidrioClaro, 0.16, 0.6));
+            glass.position.set(0, 3.1, d / 2 + 0.05);
+            g.add(glass);
+            const slab = new T3.Mesh(new T3.BoxGeometry(w + 9, 0.6, d + 13), cmat(CC.blanco, 0.82, 0.03));
+            slab.position.set(0, 0.55 + h + 0.3, 2);
+            slab.castShadow = true;
+            g.add(slab);
+            [-1, 1].forEach((s) => {
+              const col = new T3.Mesh(new T3.CylinderGeometry(0.36, 0.36, 0.55 + h, 10), cmat(CC.blanco, 0.82, 0.03));
+              col.position.set(s * (w / 2 + 2.6), (0.55 + h) / 2, d / 2 + 4);
+              col.castShadow = true;
+              g.add(col);
+            });
+            for (let i = 0; i < 5; i++) {
+              const ux = -13 + i * 6.5, uz = d + 6 + (i % 2) * 3;
+              const pole = new T3.Mesh(new T3.CylinderGeometry(0.1, 0.1, 2.6, 6), cmat(CC.metal, 0.5, 0.4));
+              pole.position.set(ux, 1.9, uz);
+              g.add(pole);
+              const top = new T3.Mesh(new T3.ConeGeometry(2.3, 0.85, 10), cmat(CC.verde, 0.9, 0.02));
+              top.position.set(ux, 3.4, uz);
+              top.castShadow = true;
+              g.add(top);
+            }
+          }
+
+          // casa de oracion: volumen blanco pequeno con torre y cruz
+          function chapel(o) {
+            const g = new T3.Group();
+            g.position.set(o.x, 0, o.z);
+            g.rotation.y = o.rot || 0;
+            camp.add(g);
+            const w = 13, d = 11, h = 7.6;
+            const whiteM = cmat(CC.blanco, 0.85, 0.03);
+            const ap = new T3.Mesh(new T3.BoxGeometry(w + 9, 0.55, d + 9), cmat(CC.anden, 0.95, 0.02));
+            ap.position.y = 0.28;
+            ap.receiveShadow = true;
+            g.add(ap);
+            const body = new T3.Mesh(new T3.BoxGeometry(w, h, d), whiteM);
+            body.position.y = 0.55 + h / 2;
+            body.castShadow = true;
+            body.receiveShadow = true;
+            g.add(body);
+            const roof = new T3.Mesh(new T3.BoxGeometry(w + 1.6, 0.5, d + 1.6), cmat(CC.techo, 0.86, 0.1));
+            roof.position.y = 0.55 + h + 0.2;
+            roof.rotation.z = 0.06;
+            roof.castShadow = true;
+            g.add(roof);
+            const door = new T3.Mesh(new T3.BoxGeometry(2.6, 4.6, 0.2), cmat(CC.bronce, 0.6, 0.2));
+            door.position.set(0, 2.85, d / 2 + 0.06);
+            g.add(door);
+            const tw = 3.6;
+            const tower = new T3.Mesh(new T3.BoxGeometry(tw, 13, tw), whiteM);
+            tower.position.set(-w / 2 - 0.4, 6.5, -d / 4);
+            tower.castShadow = true;
+            g.add(tower);
+            const crossV = new T3.Mesh(new T3.BoxGeometry(0.32, 2.4, 0.32), cmat(CC.bronce, 0.5, 0.4));
+            crossV.position.set(-w / 2 - 0.4, 14.2, -d / 4);
+            g.add(crossV);
+            const crossH = new T3.Mesh(new T3.BoxGeometry(1.5, 0.32, 0.32), cmat(CC.bronce, 0.5, 0.4));
+            crossH.position.set(-w / 2 - 0.4, 14.4, -d / 4);
+            g.add(crossH);
+          }
+
+          // polideportivo: nave larga con cubierta en boveda
+          function gym(o) {
+            const g = new T3.Group();
+            g.position.set(o.x, 0, o.z);
+            g.rotation.y = o.rot || 0;
+            camp.add(g);
+            const w = 46, d = 26, h = 8.5;
+            const ap = new T3.Mesh(new T3.BoxGeometry(w + 8, 0.55, d + 8), cmat(CC.anden, 0.95, 0.02));
+            ap.position.y = 0.28;
+            ap.receiveShadow = true;
+            g.add(ap);
+            const body = new T3.Mesh(new T3.BoxGeometry(w, h, d), cmat(0xd6d2c8, 0.9, 0.03));
+            body.position.y = 0.55 + h / 2;
+            body.castShadow = true;
+            body.receiveShadow = true;
+            g.add(body);
+            const roof = new T3.Mesh(new T3.CylinderGeometry(d * 0.5, d * 0.5, w - 1, 18, 1, false, 0, Math.PI),
+              cmat(0x5a6663, 0.82, 0.15));
+            roof.rotation.z = Math.PI / 2;
+            roof.position.y = 0.55 + h;
+            roof.castShadow = true;
+            g.add(roof);
+            const band = new T3.Mesh(new T3.BoxGeometry(w * 0.9, 2.2, 0.14), cmat(CC.vidrioClaro, 0.18, 0.55));
+            band.position.set(0, 0.55 + h * 0.72, d / 2 + 0.05);
+            g.add(band);
+          }
+
+          // 1 y 2: hemiciclos de aulas, a los lados de la concha
+          house({x: -96, z: -178, rot: 0.10, w: 44, d: 22, h: 15.5, wall: CC.arena, glass: CC.vidrio, floors: 4, gear: true});
+          house({x: 102, z: -186, rot: -0.12, w: 44, d: 22, h: 15.5, wall: CC.arena2, glass: CC.vidrio, floors: 4, gear: true});
+          // 3: edificio Eloy Valenzuela (aulas y posgrados): crema, vidrio y bronce
+          house({x: 2, z: -240, rot: 0.02, w: 54, d: 26, h: 18, wall: CC.crema, glass: CC.vidrioClaro, floors: 4, bronce: true, tower: true, gear: true});
+          // 4: biblioteca
+          house({x: -162, z: -214, rot: 0.22, w: 46, d: 26, h: 17, wall: CC.arena2, glass: CC.vidrio, floors: 3});
+          // 5: auditorio / aula maxima: concreto crudo con losa volada
+          house({x: 160, z: -170, rot: -0.30, w: 34, d: 30, h: 15, wall: CC.concreto, glass: CC.vidrio, roof: 0x8f8b84, floors: 2, slab: true});
+          // 6: cafeteria
+          cafe({x: -126, z: -120, rot: 0.18});
+          // 7: casa de oracion
+          chapel({x: 176, z: -242, rot: -0.18});
+          // 8: polideportivo
+          gym({x: -208, z: -148, rot: 0.12});
+          // 9: complejo acuatico
+          house({x: 206, z: -294, rot: 0.10, w: 34, d: 22, h: 10.5, wall: CC.blanco, glass: 0x3f6f96, floors: 2});
+
+          // explanada que une el conjunto
+          const esp = new T3.Mesh(new T3.BoxGeometry(250, 0.14, 78), cmat(CC.anden, 0.95, 0.02));
+          esp.position.set(-6, 0.07, -206);
+          esp.receiveShadow = true;
+          camp.add(esp);
+
+          // luminarias de la explanada
+          const lampM = cmat(CC.metal, 0.5, 0.45);
+          for (let i = -4; i <= 4; i++) {
+            const lx = i * 26 - 6;
+            const pole = new T3.Mesh(new T3.CylinderGeometry(0.14, 0.2, 6.6, 6), lampM);
+            pole.position.set(lx, 3.3, -166);
+            pole.castShadow = true;
+            camp.add(pole);
+            const head = new T3.Mesh(new T3.BoxGeometry(1.4, 0.3, 0.5), lampM);
+            head.position.set(lx, 6.6, -166);
+            camp.add(head);
+          }
+
+          // arboles que rematan los costados del campus
+          [[-58, -212], [62, -216], [-150, -140], [156, -128], [-196, -196]].forEach((p, i) => {
+            addTree(p[0], p[1], 1.0 + (i % 3) * 0.18, i % 3);
+          });
         }
 
         // sombras para todo lo opaco
