@@ -2102,6 +2102,42 @@
       pointer-events: none;
     }
 
+    /* ================= VIDEO EDIT (tecla N) ================= */
+    #editVideoOverlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5vh 5vw;
+      /* Mantiene visible el fondo azul oscuro característico de KINETIX */
+      background: radial-gradient(ellipse 120% 90% at 70% 20%, #0a1630 0%, #060d1f 40%, #02060f 75%, #01040c 100%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.3s ease, visibility 0s 0.3s;
+    }
+
+    #editVideoOverlay.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.3s ease, visibility 0s;
+    }
+
+    #editVideoOverlay video {
+      display: block;
+      max-width: 92vw;
+      max-height: 90vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      box-shadow: 0 0 55px rgba(90, 170, 255, 0.18);
+      border: 1px solid rgba(90, 170, 255, 0.28);
+      border-radius: 12px;
+    }
+
     /* ================= PANTALLA DE MARCA (tecla M) ================= */
     #brandScreen {
       position: fixed;
@@ -2969,7 +3005,11 @@
   <!-- PANTALLA DE MARCA (tecla M) -->
   <div id="brandScreen" aria-hidden="true">
     <canvas id="brandFx" aria-hidden="true"></canvas>
-    <div class="brand-hint"><b>M</b> volver a la presentación</div>
+  </div>
+
+  <!-- VIDEO MP4 (tecla N) -->
+  <div id="editVideoOverlay" aria-hidden="true">
+    <video id="editVideo" src="edit.mp4" preload="auto" playsinline></video>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -3124,14 +3164,66 @@
       wheelLockUntil = now + 900;         // la inercia del scroll suave no vuelve a disparar
     }, {passive: false});
 
+    /* ---------- VIDEO MP4 (tecla N) ---------- */
+    const editVideoOverlay = document.getElementById('editVideoOverlay');
+    const editVideo = document.getElementById('editVideo');
+
+    function isEditVideoOpen() {
+      return !!(editVideoOverlay && editVideoOverlay.classList.contains('open'));
+    }
+
+    function closeEditVideo() {
+      if (!editVideo || !editVideoOverlay) return;
+      editVideo.pause();
+      editVideo.currentTime = 0;
+      editVideoOverlay.classList.remove('open');
+      editVideoOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    async function openEditVideo() {
+      if (!editVideo || !editVideoOverlay) return;
+      editVideoOverlay.classList.add('open');
+      editVideoOverlay.setAttribute('aria-hidden', 'false');
+      try {
+        editVideo.currentTime = 0;
+        await editVideo.play();
+      } catch (err) {
+        // Si el navegador no puede iniciar el video, deja visible el reproductor.
+        console.warn('[VIDEO] No se pudo reproducir edit.mp4:', err);
+      }
+    }
+
+    function toggleEditVideo() {
+      if (isEditVideoOpen()) closeEditVideo();
+      else openEditVideo();
+    }
+
+    if (editVideo) {
+      editVideo.addEventListener('ended', closeEditVideo);
+      editVideo.addEventListener('error', () => {
+        console.error('[VIDEO] No se pudo cargar edit.mp4. Comprueba que esté junto al HTML.');
+      });
+    }
+
     /* ---------- TECLADO (bonus) ---------- */
     window.addEventListener('keydown', (e) => {
       if (e.repeat) return;   // una pulsacion sostenida NO repite diapositivas
       if (e.ctrlKey || e.metaKey || e.altKey) return;
-      // M: pantalla de marca que oculta la diapositiva (se alterna)
+
+      // N: reproduce/oculta edit.mp4; se cierra con N o al terminar.
+      if (e.key === 'n' || e.key === 'N') {e.preventDefault(); toggleEditVideo(); return;}
+
+      // M: pantalla de marca que oculta la diapositiva (se alterna).
       if (e.key === 'm' || e.key === 'M') {e.preventDefault(); toggleBrandScreen(); return;}
-      if (isBrandScreenOpen()) {
-        if (e.key === 'Escape') {e.preventDefault(); closeBrandScreen();}
+
+      if (isBrandScreenOpen() && e.key === 'Escape') {
+        e.preventDefault();
+        closeBrandScreen();
+        return;
+      }
+      if (isEditVideoOpen() && e.key === 'Escape') {
+        e.preventDefault();
+        closeEditVideo();
         return;
       }
       // con el modelo a pantalla completa el teclado no cambia de diapositiva
