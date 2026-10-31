@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -2855,7 +2855,31 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 10 : CIERRE (con animacion de despedida) -->
+    <!-- DIAPOSITIVA 10 : COSTOS Y PRESUPUESTO -->
+    <section class="slide img-slide" id="slideCostos">
+      <div class="slide-inner img-only">
+        <img class="big-img" src="Costos-y-presupuesto.png"
+          alt="Costos y presupuesto de EcoTense" decoding="async">
+      </div>
+    </section>
+
+    <!-- DIAPOSITIVA 11 : FENOGE -->
+    <section class="slide img-slide" id="slideFenoge">
+      <div class="slide-inner img-only">
+        <img class="big-img" src="fenoge.png"
+          alt="FENOGE — Fondo de Energías No Convencionales y Gestión Eficiente de la Energía" decoding="async">
+      </div>
+    </section>
+
+    <!-- DIAPOSITIVA 12 : ECOTENSE -->
+    <section class="slide img-slide" id="slideEcoTense">
+      <div class="slide-inner img-only">
+        <img class="big-img" src="ecotense.png"
+          alt="EcoTense — un espacio para todos" decoding="async">
+      </div>
+    </section>
+
+    <!-- DIAPOSITIVA 13 : CIERRE (con animacion de despedida) -->
     <section class="slide compact" id="slideEnd">
       <div class="slide-inner">
         <div class="slide-label">Cierre</div>
@@ -2870,7 +2894,7 @@
 
   <!-- indicadores -->
   <nav class="dots" id="dots"></nav>
-  <div class="counter"><span id="cur-num">01</span> / <span id="tot-num">12</span></div>
+  <div class="counter"><span id="cur-num">01</span> / <span id="tot-num">14</span></div>
 
   <!-- efecto barrido -->
   <div class="scan" id="scan"></div>
@@ -4665,20 +4689,24 @@
       const FOLD_Y = 0;
 
       const assets = [
-        'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js',
-        'https://unpkg.com/three@0.152.2/build/three.min.js',
-        'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'
+        'https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.js',
+        'https://unpkg.com/three@0.152.2/build/three.module.js'
       ];
 
-      function loadThree(cb) {
+      async function loadThree(cb) {
         if (isOn(window.THREE)) {cb(); return;}
-        if (tried >= assets.length) {console.error('[3D] Three.js no pudo cargarse'); return;}
-        const s = document.createElement('script');
-        s.src = assets[tried];
-        tried++;
-        s.onload = () => {if (isOn(window.THREE)) {cb();} else {loadThree(cb);} };
-        s.onerror = () => loadThree(cb);
-        document.head.appendChild(s);
+        if (tried >= assets.length) {console.error('[3D] Three.js no pudo cargarse'); building = false; return;}
+        const url = assets[tried++];
+        try {
+          // Three.js se carga como módulo ES; se conserva window.THREE para
+          // mantener compatibles las funciones existentes del modelo 3D.
+          const THREE_MODULE = await import(url);
+          window.THREE = THREE_MODULE;
+          cb();
+        } catch (error) {
+          console.warn('[3D] No se pudo cargar Three.js desde', url, error);
+          await loadThree(cb);
+        }
       }
 
       function mat(o) {return new THREE.MeshStandardMaterial(Object.assign({roughness: 0.86, metalness: 0.05}, o));}
@@ -4854,7 +4882,8 @@
           t.wrapS = t.wrapT = T3.RepeatWrapping;
           t.repeat.set(rx, ry);
           t.anisotropy = renderer.capabilities.getMaxAnisotropy();
-          t.minFilter = t.magFilter = T3.LinearMipmapLinearFilter;
+          t.minFilter = T3.LinearMipmapLinearFilter;
+          t.magFilter = T3.LinearFilter;
           return t;
         }
         const brickTex = canvasTex(256, 128, (g, w, h) => {
