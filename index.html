@@ -7268,6 +7268,10 @@
           [[-58, -212], [62, -216], [-150, -140], [156, -128], [-196, -196]].forEach((p, i) => {
             addTree(p[0], p[1], 1.0 + (i % 3) * 0.18, i % 3);
           });
+
+          // Se oculta el conjunto de edificios del fondo y sus superficies de suelo.
+          // La concha acustica, tarima, graderias y elementos propios permanecen intactos.
+          camp.visible = false;
         }
 
         // sombras para todo lo opaco
