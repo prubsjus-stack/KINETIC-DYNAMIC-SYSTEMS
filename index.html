@@ -4282,7 +4282,22 @@
         [13, 17], [17, 18], [18, 19], [19, 20],
         [0, 17]
       ];
-      const pts = lm.map(p => ({x: (1 - p.x) * w, y: p.y * h}));
+      // En la pantalla V el video usa object-fit:contain. Calculamos el
+      // rectangulo real del video dentro del escenario para que los puntos
+      // no se estiren ni se desplacen cuando la proporcion de la camara cambia.
+      let drawW = w, drawH = h, offX = 0, offY = 0;
+      if (vOpen && cam.videoWidth && cam.videoHeight) {
+        const videoAR = cam.videoWidth / cam.videoHeight;
+        const boxAR = w / h;
+        if (videoAR > boxAR) {
+          drawH = w / videoAR;
+          offY = (h - drawH) / 2;
+        } else {
+          drawW = h * videoAR;
+          offX = (w - drawW) / 2;
+        }
+      }
+      const pts = lm.map(p => ({x: offX + (1 - p.x) * drawW, y: offY + p.y * drawH}));
       const TIP = new Set([4, 8, 12, 16, 20]);
 
       octx.strokeStyle = 'rgba(90, 255, 190, 0.85)';
@@ -4825,29 +4840,119 @@
       if (!vOpen || !vFrozen || !vFrozenLandmarks) return;
       const W=vCanvas.width,H=vCanvas.height, elapsed=performance.now()-vAnimStart;
       vCtx.clearRect(0,0,W,H);
-      // Siempre se redibuja la misma foto capturada; nunca el video en vivo.
       vCtx.drawImage(vPhotoCanvas,0,0,W,H);
-      const reveal=Math.min(21,Math.max(0,Math.floor(elapsed/300)));
-      const labels=[];
-      for(let i=0;i<reveal;i++){
-        const p=vFrozenLandmarks[i], right=i%2===0, row=Math.floor(i/2);
-        const ex=right?W-145:145, ey=24+row*(H-48)/10;
-        labels.push({i,p,ex,ey,right});
+      const scale=Math.max(.72,Math.min(1.6,W/1100));
+      const pts=vFrozenLandmarks;
+      const ease=t=>{t=Math.max(0,Math.min(1,t));return 1-Math.pow(1-t,3);};
+      const revealBones=Math.min(vLinks.length,Math.max(0,Math.floor(elapsed/125)));
+
+      // Capa cinematográfica ligera: mejora el contraste sin ocultar la mano.
+      vCtx.save();
+      const shade=vCtx.createLinearGradient(0,0,W,H);
+      shade.addColorStop(0,'rgba(2,10,24,.24)');
+      shade.addColorStop(.5,'rgba(2,10,24,.06)');
+      shade.addColorStop(1,'rgba(2,10,24,.30)');
+      vCtx.fillStyle=shade;vCtx.fillRect(0,0,W,H);
+      // Retícula técnica muy sutil.
+      vCtx.strokeStyle='rgba(110,205,255,.075)';vCtx.lineWidth=1*scale;
+      const step=Math.max(34,Math.round(48*scale));
+      for(let x=0;x<W;x+=step){vCtx.beginPath();vCtx.moveTo(x,0);vCtx.lineTo(x,H);vCtx.stroke();}
+      for(let y=0;y<H;y+=step){vCtx.beginPath();vCtx.moveTo(0,y);vCtx.lineTo(W,y);vCtx.stroke();}
+      vCtx.restore();
+
+      // Cabecera técnica integrada en la imagen congelada.
+      vCtx.save();
+      vCtx.fillStyle='rgba(3,12,27,.78)';vCtx.fillRect(0,0,W,Math.max(34,H*.085));
+      vCtx.fillStyle='#8ceaff';vCtx.font=`800 ${Math.max(10,13*scale)}px Arial`;
+      vCtx.textAlign='left';vCtx.textBaseline='middle';
+      vCtx.fillText('KINETIX  /  HAND ANALYSIS',W*.025,H*.035);
+      vCtx.textAlign='right';vCtx.fillStyle='#d8efff';
+      vCtx.fillText('21 LANDMARKS  ·  LIVE CAPTURE',W*.975,H*.035);
+      vCtx.restore();
+
+      // Conexiones anatómicas: trazado progresivo con halo y núcleo brillante.
+      vCtx.save();vCtx.lineCap='round';vCtx.lineJoin='round';
+      for(let k=0;k<revealBones;k++){
+        const [a,b]=vLinks[k],p=pts[a],q=pts[b];
+        const t=ease((elapsed-k*125)/420);
+        const ex=p.x+(q.x-p.x)*t,ey=p.y+(q.y-p.y)*t;
+        vCtx.globalAlpha=t;
+        vCtx.strokeStyle='rgba(35,190,255,.32)';vCtx.lineWidth=8*scale;
+        vCtx.beginPath();vCtx.moveTo(p.x,p.y);vCtx.lineTo(ex,ey);vCtx.stroke();
+        vCtx.strokeStyle='#8cecff';vCtx.lineWidth=2*scale;
+        vCtx.beginPath();vCtx.moveTo(p.x,p.y);vCtx.lineTo(ex,ey);vCtx.stroke();
       }
-      vCtx.lineWidth=Math.max(1,W/700);
-      labels.forEach(({i,p,ex,ey,right},k)=>{
-        const local=elapsed-k*300, progress=Math.max(0,Math.min(1,local/520));
-        if(progress<=0)return;
-        const x=p.x+(ex-p.x)*progress, y=p.y+(ey-p.y)*progress;
-        vCtx.strokeStyle='rgba(90,170,255,.9)'; vCtx.beginPath(); vCtx.moveTo(p.x,p.y); vCtx.lineTo(x,y); vCtx.lineTo(ex,ey); vCtx.stroke();
-        vCtx.fillStyle='#9ff0b0'; vCtx.beginPath(); vCtx.arc(p.x,p.y,Math.max(3,W/190),0,Math.PI*2); vCtx.fill();
-        vCtx.fillStyle='#ffffff'; vCtx.font=`700 ${Math.max(11,W/58)}px Montserrat, sans-serif`; vCtx.textAlign=right?'right':'left';
-        const tx=right?ex-5:ex+5;
-        vCtx.fillText(String(i),tx,ey-3);
-        vCtx.fillStyle='#cfe5ff'; vCtx.font=`600 ${Math.max(9,W/82)}px Montserrat, sans-serif`;
-        vCtx.fillText(vNames[i].trim(),tx,ey+Math.max(12,W/65));
-      });
-      if(reveal<21 || elapsed<9000) vAnimFrame=requestAnimationFrame(animateVLabels);
+      vCtx.restore();
+
+      // Marcadores numerados con doble anillo y pulso breve.
+      const revealPoints=Math.min(21,Math.max(0,Math.floor((elapsed-550)/105)));
+      for(let i=0;i<revealPoints;i++){
+        const p=pts[i],age=elapsed-550-i*105,t=ease(age/300);
+        const pulse=1+Math.max(0,1-age/900)*.65;
+        vCtx.save();vCtx.globalAlpha=t;
+        vCtx.strokeStyle='rgba(120,235,255,.9)';vCtx.lineWidth=1.25*scale;
+        vCtx.beginPath();vCtx.arc(p.x,p.y,7*scale*pulse,0,Math.PI*2);vCtx.stroke();
+        vCtx.fillStyle=i===0?'#ffd27a':'#a5f4ff';
+        vCtx.beginPath();vCtx.arc(p.x,p.y,3.1*scale,0,Math.PI*2);vCtx.fill();
+        vCtx.fillStyle='#03101e';vCtx.font=`900 ${Math.max(8,9*scale)}px Arial`;
+        vCtx.textAlign='center';vCtx.textBaseline='middle';vCtx.fillText(String(i),p.x,p.y+.3*scale);
+        vCtx.restore();
+      }
+
+      // Dos paneles simétricos: filas equidistantes, tarjetas legibles y líneas sin cruces.
+      const left=[],right=[];
+      pts.forEach((p,i)=>(p.x<W*.5?left:right).push({i,p}));
+      left.sort((a,b)=>a.p.y-b.p.y);right.sort((a,b)=>a.p.y-b.p.y);
+      const panelW=Math.max(104,W*.205), panelH=Math.max(25,H*.058);
+      const top=H*.135,bottom=H*.925,margin=Math.max(10,W*.018);
+      const labelStart=1450;
+      function drawColumn(items,isLeft){
+        items.forEach((item,slot)=>{
+          const {i,p}=item,delay=labelStart+i*76;
+          const t=ease((elapsed-delay)/560);if(t<=0)return;
+          const cy=items.length<=1?H*.53:top+slot*(bottom-top)/(items.length-1);
+          const x=isLeft?margin:W-margin-panelW;
+          const edge=isLeft?x+panelW:x;
+          const jointX=p.x+(edge-p.x)*t,jointY=p.y+(cy-p.y)*t;
+          vCtx.save();vCtx.globalAlpha=t;
+          // Conector con punto de anclaje luminoso.
+          vCtx.strokeStyle='rgba(105,220,255,.92)';vCtx.lineWidth=1.35*scale;
+          vCtx.beginPath();vCtx.moveTo(p.x,p.y);vCtx.lineTo(jointX,jointY);vCtx.lineTo(edge,cy);vCtx.stroke();
+          vCtx.fillStyle='#baf6ff';vCtx.beginPath();vCtx.arc(p.x,p.y,2.4*scale,0,Math.PI*2);vCtx.fill();
+          // Tarjeta de identificación.
+          vCtx.fillStyle='rgba(3,13,29,.88)';
+          vCtx.strokeStyle='rgba(90,195,245,.52)';vCtx.lineWidth=1*scale;
+          const radius=5*scale;
+          vCtx.beginPath();
+          if(vCtx.roundRect)vCtx.roundRect(x,cy-panelH/2,panelW,panelH,radius);
+          else vCtx.rect(x,cy-panelH/2,panelW,panelH);
+          vCtx.fill();vCtx.stroke();
+          const tx=isLeft?x+8*scale:x+panelW-8*scale;
+          vCtx.textAlign=isLeft?'left':'right';vCtx.textBaseline='middle';
+          vCtx.fillStyle='#8ceaff';vCtx.font=`900 ${Math.max(9,10*scale)}px Arial`;
+          vCtx.fillText(String(i).padStart(2,'0'),tx,cy-5*scale);
+          vCtx.fillStyle='#f0f8ff';vCtx.font=`700 ${Math.max(8,9.5*scale)}px Arial`;
+          vCtx.fillText(vNames[i],tx,cy+6*scale);
+          vCtx.restore();
+        });
+      }
+      drawColumn(left,true);drawColumn(right,false);
+
+      // Línea de escaneo que recorre el análisis una sola vez.
+      if(elapsed<5200){
+        const scanY=H*.10+(H*.84)*Math.max(0,Math.min(1,(elapsed-900)/3900));
+        vCtx.save();vCtx.globalAlpha=.5;
+        const glow=vCtx.createLinearGradient(0,scanY-7*scale,0,scanY+7*scale);
+        glow.addColorStop(0,'rgba(80,210,255,0)');glow.addColorStop(.5,'rgba(80,210,255,.32)');glow.addColorStop(1,'rgba(80,210,255,0)');
+        vCtx.fillStyle=glow;vCtx.fillRect(0,scanY-7*scale,W,14*scale);vCtx.restore();
+      }
+      // Pie de análisis con progreso completo.
+      vCtx.save();vCtx.fillStyle='rgba(3,12,27,.78)';vCtx.fillRect(0,H-Math.max(25,H*.055),W,Math.max(25,H*.055));
+      vCtx.fillStyle='#9bdcf5';vCtx.font=`800 ${Math.max(8,10*scale)}px Arial`;
+      vCtx.textAlign='left';vCtx.textBaseline='middle';vCtx.fillText('KINETIX · SKELETAL MAPPING',W*.025,H-H*.027);
+      vCtx.textAlign='right';vCtx.fillStyle='#d8efff';vCtx.fillText(`${revealPoints}/21 POINTS  ·  ${revealBones}/${vLinks.length} CONNECTIONS`,W*.975,H-H*.027);
+      vCtx.restore();
+      if(elapsed<9000)vAnimFrame=requestAnimationFrame(animateVLabels);
     }
     let vPhotoCanvas=null, vPhotoReady=false;
 
