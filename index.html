@@ -1224,6 +1224,86 @@
       pointer-events: none;
     }
 
+    /* capa de aviso/recarga sobre cada panel (camara y modelo 3D) */
+    .gx-msg {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 22px;
+      text-align: center;
+      background: rgba(2, 6, 15, 0.82);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0s 0.25s;
+    }
+
+    .gx-msg.show {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.25s ease, visibility 0s;
+    }
+
+    .gx-msg .gx-spin {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid rgba(90, 170, 255, 0.2);
+      border-top-color: var(--blue);
+      animation: gxspin 0.9s linear infinite;
+    }
+
+    .gx-msg.ready .gx-spin {
+      display: none;
+    }
+
+    .gx-msg p {
+      margin: 0;
+      max-width: 34ch;
+      font-size: 11px;
+      line-height: 1.6;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #cfdcef;
+    }
+
+    .gx-msg button {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(90, 170, 255, 0.55);
+      background: rgba(12, 30, 62, 0.92);
+      color: #eaf4ff;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .gx-msg button:hover {
+      border-color: var(--blue);
+      box-shadow: 0 0 20px rgba(90, 170, 255, 0.35);
+    }
+
+    .gx-msg button[hidden] {
+      display: none;
+    }
+
+    @keyframes gxspin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
     .gx-legend {
       list-style: none;
       display: flex;
@@ -3202,10 +3282,20 @@
     <div class="gx-grid">
       <div class="gx-cam">
         <div id="gxCamStage"></div>
+        <div class="gx-msg" id="gxCamMsg">
+          <div class="gx-spin"></div>
+          <p id="gxCamText">Activando cámara…</p>
+          <button id="gxCamRetry" type="button" hidden>Reintentar cámara</button>
+        </div>
         <div class="gx-tag">Pon la mano frente a la cámara</div>
       </div>
       <div class="gx-3d">
         <div id="gx3dStage"></div>
+        <div class="gx-msg" id="gx3dMsg">
+          <div class="gx-spin"></div>
+          <p id="gx3dText">Cargando modelo 3D…</p>
+          <button id="gx3dRetry" type="button" hidden>Reintentar modelo</button>
+        </div>
         <div class="gx-tag">El modelo responde en vivo</div>
       </div>
     </div>
@@ -4569,8 +4659,15 @@
     const gxCamStage = document.getElementById('gxCamStage');
     const gx3dStage = document.getElementById('gx3dStage');
     const gxState = document.getElementById('gx-state');
+    const gxCamMsg = document.getElementById('gxCamMsg');
+    const gxCamText = document.getElementById('gxCamText');
+    const gxCamRetry = document.getElementById('gxCamRetry');
+    const gx3dMsg = document.getElementById('gx3dMsg');
+    const gx3dText = document.getElementById('gx3dText');
+    const gx3dRetry = document.getElementById('gx3dRetry');
     const gxCloseBtn = document.getElementById('gx-close');
     let gxOpen = false, gxWasTracking = false, gxPrevSlide = 0, gxPrevDebug = true, gxCamAskedAt = 0;
+    let gxCamBusy = false, gxCamTimer = 0, gxMpTimer = 0, gxMpTries = 0, gx3dTimer = 0;
 
     function isGestureScreenOpen() {return gxOpen;}
 
@@ -4578,6 +4675,27 @@
       if (!gxState) return;
       if (gxState.textContent !== text) gxState.textContent = text;
       gxState.classList.toggle('on', !!on);
+    }
+
+    // capa de aviso sobre un panel: texto + boton de reintento opcional
+    function setGxMsg(box, textEl, text, retryBtn, showRetry) {
+      if (!box) return;
+      if (!text) {
+        box.classList.remove('show');
+        return;
+      }
+      if (textEl && textEl.textContent !== text) textEl.textContent = text;
+      if (retryBtn) retryBtn.hidden = !showRetry;
+      box.classList.toggle('ready', !!showRetry);
+      box.classList.add('show');
+    }
+
+    function setGxCamMsg(text, showRetry) {
+      setGxMsg(gxCamMsg, gxCamText, text, gxCamRetry, showRetry);
+    }
+
+    function setGx3dMsg(text, showRetry) {
+      setGxMsg(gx3dMsg, gx3dText, text, gx3dRetry, showRetry);
     }
 
     function refreshGxState() {
@@ -4591,6 +4709,91 @@
         const g = gesture.info.gesture;
         setGxState(g && g !== 'NONE' ? g : 'MANO DETECTADA', true);
       }
+    }
+
+    // enciende la camara y, si falla, deja el boton para reintentar
+    async function startGxCamera(force) {
+      if (!gxOpen) return;
+      if (tracking) {setGxCamMsg(null); return;}
+      if (gxCamBusy) return;
+      const now = performance.now();
+      if (!force && gxCamAskedAt && now - gxCamAskedAt < 5500) return;
+
+      gxCamBusy = true;
+      gxCamAskedAt = now;
+      setGxState('ACTIVANDO CÁMARA…', false);
+      setGxCamMsg('Activando cámara…', false);
+      try {await toggleCamera();} catch (e) {}
+      gxCamBusy = false;
+
+      if (!gxOpen) {
+        // la pantalla se cerro mientras se abria la camara
+        if (!gxWasTracking) stopCamera();
+        return;
+      }
+
+      if (tracking) {
+        setGxCamMsg(null);
+        ensureGxMediaPipe(true);
+      } else {
+        setGxCamMsg('No se pudo abrir la cámara. Revisa el permiso del navegador y vuelve a intentar.', true);
+        setGxState('CÁMARA NO DISPONIBLE', false);
+      }
+    }
+
+    // asegura que MediaPipe cargue y se reintente si el primer intento falla
+    function ensureGxMediaPipe(force) {
+      if (!gxOpen || !tracking) return;
+      if (handLandmarker && mode === 'mp') return;
+
+      if (force) {
+        mpFailed = false;
+        mpAttempt = 0;
+        gxMpTries = 0;
+      }
+      initMediaPipe();
+
+      clearTimeout(gxMpTimer);
+      const retry = () => {
+        if (!gxOpen || !tracking) return;
+        if (handLandmarker && mode === 'mp') return;
+        if (gxMpTries >= 3) return;
+        gxMpTries++;
+        mpFailed = false;
+        mpAttempt = 0;
+        initMediaPipe();
+        gxMpTimer = setTimeout(retry, 9000);
+      };
+      gxMpTimer = setTimeout(retry, 9000);
+    }
+
+    // asegura que el modelo 3D se construya; si tarda o falla, ofrece reintentar
+    function watchGx3D() {
+      clearTimeout(gx3dTimer);
+      if (!gxOpen) return;
+      if (typeof viewer3d === 'undefined') {
+        setGx3dMsg('El modelo 3D no está disponible en este navegador.', true);
+        return;
+      }
+      try {
+        if (!viewer3d.isReady()) {
+          if (viewer3d.retry) viewer3d.retry();
+          else viewer3d.init();
+        }
+      } catch (e) {}
+
+      const started = performance.now();
+      setGx3dMsg('Cargando modelo 3D…', false);
+      const tick = () => {
+        if (!gxOpen) return;
+        if (viewer3d.isReady()) {setGx3dMsg(null); return;}
+        if (performance.now() - started > 15000) {
+          setGx3dMsg('El modelo 3D no cargó. Revisa la conexión y vuelve a intentar.', true);
+          return;
+        }
+        gx3dTimer = setTimeout(tick, 500);
+      };
+      tick();
     }
 
     // la camara mantiene su proporcion 4:3 para que el esqueleto coincida
@@ -4620,6 +4823,7 @@
       gxWasTracking = tracking;
       gxPrevDebug = debugSkin;
       gxPrevSlide = current;
+      gxMpTries = 0;
 
       // la diapositiva 3D queda activa para que la mano controle el modelo
       if (!is3DSlide(current)) goTo(5, 'gesture');
@@ -4633,13 +4837,33 @@
       gestureScreenEl.setAttribute('aria-hidden', 'false');
       document.body.classList.add('gx-open');
       debugSkin = true;
-      refreshGxState();
-      if (!tracking) {
-        gxCamAskedAt = performance.now();
-        toggleCamera();
+
+      // si antes la IA se quedo sin intentos, vuelve a empezar
+      if (!handLandmarker) {
+        mpFailed = false;
+        mpAttempt = 0;
       }
 
+      setGxCamMsg(tracking ? null : 'Activando cámara…', false);
+      setGx3dMsg('Cargando modelo 3D…', false);
+      refreshGxState();
+
+      if (!tracking) {
+        gxCamAskedAt = performance.now();
+        startGxCamera(true);
+      } else {
+        ensureGxMediaPipe(false);
+      }
+
+      // si la camara no arranca sola, se reintenta una vez
+      clearTimeout(gxCamTimer);
+      gxCamTimer = setTimeout(() => {
+        if (gxOpen && !tracking && !gxCamBusy) startGxCamera(true);
+      }, 7000);
+
       if (typeof viewer3d !== 'undefined' && viewer3d.setWide) viewer3d.setWide(false);
+      watchGx3D();
+
       requestAnimationFrame(() => {
         fitGxCam();
         window.dispatchEvent(new Event('resize'));
@@ -4654,6 +4878,12 @@
     function closeGestureScreen() {
       if (!gxOpen) return;
       gxOpen = false;
+      clearTimeout(gxCamTimer);
+      clearTimeout(gxMpTimer);
+      clearTimeout(gx3dTimer);
+      setGxCamMsg(null);
+      setGx3dMsg(null);
+
       gestureScreenEl.classList.remove('open');
       gestureScreenEl.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('gx-open');
@@ -4680,6 +4910,17 @@
     }
 
     if (gxCloseBtn) gxCloseBtn.addEventListener('click', closeGestureScreen);
+    if (gxCamRetry) gxCamRetry.addEventListener('click', () => startGxCamera(true));
+    if (gx3dRetry) gx3dRetry.addEventListener('click', () => {
+      setGx3dMsg('Reintentando modelo…', false);
+      try {
+        if (typeof viewer3d !== 'undefined') {
+          if (viewer3d.retry) viewer3d.retry();
+          else viewer3d.init();
+        }
+      } catch (e) {}
+      watchGx3D();
+    });
 
     // toggle de debug: oculta/muestra el esqueleto y el panel de estado
     document.getElementById('dbg-btn').addEventListener('click', () => {
@@ -8415,6 +8656,16 @@
         });
       }
 
+      // reintento limpio: vuelve a intentar cargar Three.js y construir el modelo
+      function retryViewer3D() {
+        if (ready || building) return;
+        tried = 0;
+        if (renderer && renderer.domElement && renderer.domElement.parentNode) {
+          try {renderer.domElement.parentNode.removeChild(renderer.domElement);} catch (e) {}
+        }
+        initViewer3D();
+      }
+
       function control(f) {
         // la mano gira y levanta la camara: moverla a la derecha gira a la derecha, a la izquierda gira a la izquierda
         if (!f) return;
@@ -8468,6 +8719,7 @@
 
       return {
         init: initViewer3D,
+        retry: retryViewer3D,
         isReady: isReady,
         control: control,
         controlFb: controlFb,
