@@ -1531,6 +1531,37 @@
       filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.5));
     }
 
+
+    /* ================= NUEVA DIAPOSITIVA V: ANATOMIA DE LA MANO ================= */
+    #vHandScreen {
+      position: fixed; inset: 0; z-index: 120;
+      display: flex; flex-direction: column;
+      padding: clamp(14px, 2.4vh, 28px) clamp(14px, 3vw, 42px);
+      gap: 14px;
+      background: radial-gradient(ellipse 120% 90% at 70% 15%, #0a1630 0%, #060d1f 42%, #02060f 78%, #01040c 100%);
+      opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity .35s ease, visibility 0s .35s;
+    }
+    #vHandScreen.open { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity .35s ease, visibility 0s; }
+    .v-head { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .v-kicker { color:var(--blue); font-size:10px; font-weight:800; letter-spacing:4px; text-transform:uppercase; }
+    .v-head h2 { margin:4px 0 0; font-size:clamp(20px,2.5vw,34px); letter-spacing:1px; }
+    .v-head h2 em { color:var(--blue); font-style:normal; }
+    #vStatus { margin-left:auto; color:#9ff0b0; border:1px solid rgba(159,240,176,.45); border-radius:99px; padding:9px 15px; font-size:10px; font-weight:800; letter-spacing:2px; }
+    #vClose { border:1px solid rgba(150,200,245,.3); background:rgba(8,18,38,.75); color:#d7e8ff; border-radius:99px; padding:10px 16px; font:700 10px Montserrat,sans-serif; letter-spacing:1.5px; cursor:pointer; }
+    .v-stage { position:relative; flex:1; min-height:0; overflow:hidden; border:1px solid rgba(90,170,255,.35); border-radius:18px; background:#030811; box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 50px rgba(90,170,255,.08); }
+    #vCamStage, #vFrozenCanvas { position:absolute; inset:0; width:100%; height:100%; }
+    #vHandScreen #cam { position:absolute; width:100%; height:100%; object-fit:contain; transform:scaleX(-1); background:#02050b; }
+    #vHandScreen #cam-overlay { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; }
+    #vFrozenCanvas { display:none; object-fit:contain; }
+    #vHandScreen.frozen #cam, #vHandScreen.frozen #cam-overlay { display:none; }
+    #vHandScreen.frozen #vFrozenCanvas { display:block; }
+    .v-instruction { position:absolute; left:50%; bottom:20px; transform:translateX(-50%); max-width:90%; text-align:center; padding:12px 20px; border:1px solid rgba(90,170,255,.35); border-radius:99px; background:rgba(2,6,15,.78); color:#dcecff; font-size:clamp(10px,1vw,13px); letter-spacing:1.5px; }
+    .v-instruction strong { color:#9ff0b0; }
+    #vHandScreen.frozen .v-instruction { display:none; }
+    .v-foot { text-align:center; color:#7f9ab9; font-size:9px; letter-spacing:2px; text-transform:uppercase; }
+    @media(max-width:700px) { .v-head { gap:9px; } #vStatus { margin-left:0; } .v-stage { min-height:260px; } }
+
     /* ================= RESPONSIVE ================= */
     @media (max-width: 768px) {
 
@@ -3309,6 +3340,25 @@
     </ul>
   </section>
 
+
+  <!-- NUEVA DIAPOSITIVA V: CAPTURA Y ANATOMIA DE LA MANO -->
+  <section id="vHandScreen" aria-hidden="true">
+    <header class="v-head">
+      <div>
+        <div class="v-kicker">MediaPipe · 21 puntos de la mano</div>
+        <h2>Anatomía de <em>la mano</em></h2>
+      </div>
+      <div id="vStatus">PREPARANDO CÁMARA</div>
+      <button id="vClose" type="button">Cerrar · V / ESC</button>
+    </header>
+    <div class="v-stage" id="vStage">
+      <div id="vCamStage"></div>
+      <canvas id="vFrozenCanvas"></canvas>
+      <div class="v-instruction" id="vInstruction">Coloca la mano frente a la cámara y mantenla <strong>quieta durante 5 segundos</strong>.</div>
+    </div>
+    <div class="v-foot">KINETIX DYNAMIC SYSTEMS · ANÁLISIS DE ARTICULACIONES</div>
+  </section>
+
   <!-- MODELO 3D A PANTALLA COMPLETA -->
   <div id="m3dFull" aria-hidden="true">
     <div class="m3d-full-head">
@@ -3564,11 +3614,20 @@
       if (e.repeat) return;   // una pulsacion sostenida NO repite diapositivas
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
+      // La nueva pantalla V controla el teclado mientras esta abierta.
+      if (isVHandScreenOpen()) {
+        if (e.key === 'Escape' || e.key === 'v' || e.key === 'V') {e.preventDefault(); closeVHandScreen();}
+        return;
+      }
+
       // N: reproduce/oculta edit.mp4; se cierra con N o al terminar.
       if (e.key === 'n' || e.key === 'N') {e.preventDefault(); toggleEditVideo(); return;}
 
       // M: pantalla de marca que oculta la diapositiva (se alterna).
       if (e.key === 'm' || e.key === 'M') {e.preventDefault(); toggleBrandScreen(); return;}
+
+      // V: nueva diapositiva anatomica de la mano (adicion independiente).
+      if (e.key === 'v' || e.key === 'V') {e.preventDefault(); toggleVHandScreen(); return;}
 
       // B: modo gestos (camara en vivo + esqueleto de la mano sobre el 3D).
       if (e.key === 'b' || e.key === 'B') {e.preventDefault(); toggleGestureScreen(); return;}
@@ -4039,6 +4098,7 @@
 
           if (results.landmarks && results.landmarks.length) {
             const lm = results.landmarks[0];
+            if (vOpen) updateVHandCapture(lm);
             lastHandRaw = {x: lm[9].x, y: lm[9].y};   // pos. mano (sin espejo)
             const xDisp = 1 - lm[9].x;   // nudillo del dedo medio, espejo
             const yNorm = lm[9].y;
@@ -4171,6 +4231,7 @@
               octx.fillRect(bx + (p < 0 ? bw / 2 + p * bw / 2 : bw / 2), by, Math.abs(p) * bw / 2, bh);
             }
           } else {
+            if (vOpen) resetVHandStability();
             if (handTracked && performance.now() - lastActive > 400) {
               handTracked = false;
               handLost = true;
@@ -4202,6 +4263,7 @@
         }
       } else {
         // respaldo de movimiento+piel DESACTIVADO: solo se interpreta la mano (MediaPipe)
+        if (vOpen) setVStatus('CARGANDO MEDIAPIPE…');
       }
 
       if (gxOpen) refreshGxState();
@@ -4627,10 +4689,23 @@
       }
 
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: {facingMode: 'user', width: {ideal: 640}, height: {ideal: 480}},
-          audio: false
-        });
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error('El navegador no ofrece acceso a la cámara. Abre KINETIX desde una dirección HTTPS o desde localhost.');
+        }
+        let stream;
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: {facingMode: 'user', width: {ideal: 640}, height: {ideal: 480}},
+            audio: false
+          });
+        } catch (firstError) {
+          // Si el navegador no acepta las preferencias de cámara, probar sin restricciones.
+          if (firstError && firstError.name === 'OverconstrainedError') {
+            stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
+          } else {
+            throw firstError;
+          }
+        }
         cam.srcObject = stream;
         await cam.play();
         camPip.classList.remove('hidden');
@@ -4646,7 +4721,18 @@
         syncCamUI();
         initMediaPipe();              // si carga, pasa a modo IA
       } catch (err) {
-        showToast('No se pudo acceder a la cámara');
+        console.error('KINETIX camera error:', err);
+        const reason = err && err.name ? err.name : 'Error desconocido';
+        const details = err && err.message ? err.message : 'El navegador no dio más detalles.';
+        let friendly = details;
+        if (reason === 'NotAllowedError' || reason === 'PermissionDeniedError') friendly = 'El navegador bloqueó el permiso. Revisa el permiso de cámara para este sitio.';
+        else if (reason === 'NotFoundError' || reason === 'DevicesNotFoundError') friendly = 'No se encontró ninguna cámara conectada.';
+        else if (reason === 'NotReadableError' || reason === 'TrackStartError') friendly = 'La cámara está ocupada por otra aplicación o no pudo iniciarse. Cierra otras aplicaciones que la estén usando.';
+        else if (reason === 'SecurityError') friendly = 'El navegador bloqueó la cámara por seguridad. Abre la página mediante HTTPS.';
+        else if (reason === 'OverconstrainedError') friendly = 'La cámara no acepta la configuración solicitada.';
+        const message = 'CÁMARA: ' + reason + ' — ' + friendly;
+        showToast(message);
+        if (typeof vOpen !== 'undefined' && vOpen) setVStatus(message);
       }
     }
 
@@ -4668,6 +4754,131 @@
     const gxCloseBtn = document.getElementById('gx-close');
     let gxOpen = false, gxWasTracking = false, gxPrevSlide = 0, gxPrevDebug = true, gxCamAskedAt = 0;
     let gxCamBusy = false, gxCamTimer = 0, gxMpTimer = 0, gxMpTries = 0, gx3dTimer = 0;
+
+    /* ================= NUEVA DIAPOSITIVA V: CAPTURA 5s + 21 LANDMARKS ================= */
+    const vScreen = document.getElementById('vHandScreen');
+    const vCamStage = document.getElementById('vCamStage');
+    const vCanvas = document.getElementById('vFrozenCanvas');
+    const vCtx = vCanvas.getContext('2d');
+    const vStatus = document.getElementById('vStatus');
+    const vClose = document.getElementById('vClose');
+    const vNames = [
+      'Muñeca','CMC pulgar','MCP pulgar','IP pulgar','Punta pulgar',
+      'MCP índice','PIP índice','DIP índice','Punta índice',
+      'MCP medio','PIP medio','DIP medio','Punta medio',
+      'MCP anular','PIP anular','DIP anular','Punta anular',
+      'MCP meñique','PIP meñique','DIP meñique','Punta meñique'
+    ];
+    const vLinks = [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[17,18],[18,19],[19,20],[0,17]];
+    let vOpen = false, vWasTracking = false, vStableSince = 0, vAnchor = null;
+    let vLastLandmarks = null, vFrozen = false, vAnimStart = 0, vAnimFrame = 0;
+
+    function isVHandScreenOpen() { return vOpen; }
+    function setVStatus(t) { if (vStatus && vStatus.textContent !== t) vStatus.textContent = t; }
+    function resetVHandStability() {
+      if (!vOpen || vFrozen) return;
+      vStableSince = 0; vAnchor = null; vLastLandmarks = null;
+      setVStatus(mode === 'mp' ? 'MUESTRA LA MANO' : 'CARGANDO MEDIAPIPE…');
+    }
+    function updateVHandCapture(lm) {
+      if (!vOpen || vFrozen) return;
+      const now = performance.now();
+      const sample = lm.map(p => ({x:p.x, y:p.y}));
+      const center = {x:lm[9].x, y:lm[9].y};
+      if (!vAnchor) {
+        vAnchor = {center, points:sample};
+        vStableSince = now;
+        setVStatus('MANTÉN LA MANO QUIETA · 5s');
+        vLastLandmarks = sample;
+        return;
+      }
+      let drift = Math.hypot(center.x-vAnchor.center.x, center.y-vAnchor.center.y);
+      for (let i=0;i<21;i++) drift = Math.max(drift, Math.hypot(sample[i].x-vAnchor.points[i].x, sample[i].y-vAnchor.points[i].y)*0.55);
+      if (drift > 0.035) {
+        vAnchor = {center, points:sample}; vStableSince = now;
+        setVStatus('QUIETUD REINICIADA · 5s');
+      } else {
+        const elapsed = now-vStableSince;
+        setVStatus('CAPTURANDO · '+Math.max(0,5-Math.floor(elapsed/1000))+'s');
+        if (elapsed >= 5000) freezeVHand(sample);
+      }
+      vLastLandmarks = sample;
+    }
+    function freezeVHand(lm) {
+      if (vFrozen || !cam.videoWidth || !cam.videoHeight) return;
+      vFrozen = true;
+      vScreen.classList.add('frozen');
+      const W=cam.videoWidth, H=cam.videoHeight;
+      vCanvas.width=W; vCanvas.height=H;
+      vCtx.save(); vCtx.translate(W,0); vCtx.scale(-1,1);
+      vCtx.drawImage(cam,0,0,W,H); vCtx.restore();
+      vPhotoCanvas=document.createElement('canvas'); vPhotoCanvas.width=W; vPhotoCanvas.height=H;
+      vPhotoCanvas.getContext('2d').drawImage(vCanvas,0,0); vPhotoReady=true;
+      vFrozenLandmarks = lm.map(p=>({x:(1-p.x)*W,y:p.y*H}));
+      setVStatus('IMAGEN CONGELADA · 21 PUNTOS');
+      vAnimStart = performance.now();
+      cancelAnimationFrame(vAnimFrame);
+      animateVLabels();
+    }
+    let vFrozenLandmarks = null;
+    function animateVLabels() {
+      if (!vOpen || !vFrozen || !vFrozenLandmarks) return;
+      const W=vCanvas.width,H=vCanvas.height, elapsed=performance.now()-vAnimStart;
+      vCtx.clearRect(0,0,W,H);
+      // Siempre se redibuja la misma foto capturada; nunca el video en vivo.
+      vCtx.drawImage(vPhotoCanvas,0,0,W,H);
+      const reveal=Math.min(21,Math.max(0,Math.floor(elapsed/300)));
+      const labels=[];
+      for(let i=0;i<reveal;i++){
+        const p=vFrozenLandmarks[i], right=i%2===0, row=Math.floor(i/2);
+        const ex=right?W-145:145, ey=24+row*(H-48)/10;
+        labels.push({i,p,ex,ey,right});
+      }
+      vCtx.lineWidth=Math.max(1,W/700);
+      labels.forEach(({i,p,ex,ey,right},k)=>{
+        const local=elapsed-k*300, progress=Math.max(0,Math.min(1,local/520));
+        if(progress<=0)return;
+        const x=p.x+(ex-p.x)*progress, y=p.y+(ey-p.y)*progress;
+        vCtx.strokeStyle='rgba(90,170,255,.9)'; vCtx.beginPath(); vCtx.moveTo(p.x,p.y); vCtx.lineTo(x,y); vCtx.lineTo(ex,ey); vCtx.stroke();
+        vCtx.fillStyle='#9ff0b0'; vCtx.beginPath(); vCtx.arc(p.x,p.y,Math.max(3,W/190),0,Math.PI*2); vCtx.fill();
+        vCtx.fillStyle='#ffffff'; vCtx.font=`700 ${Math.max(11,W/58)}px Montserrat, sans-serif`; vCtx.textAlign=right?'right':'left';
+        const tx=right?ex-5:ex+5;
+        vCtx.fillText(String(i),tx,ey-3);
+        vCtx.fillStyle='#cfe5ff'; vCtx.font=`600 ${Math.max(9,W/82)}px Montserrat, sans-serif`;
+        vCtx.fillText(vNames[i].trim(),tx,ey+Math.max(12,W/65));
+      });
+      if(reveal<21 || elapsed<9000) vAnimFrame=requestAnimationFrame(animateVLabels);
+    }
+    let vPhotoCanvas=null, vPhotoReady=false;
+
+    async function openVHandScreen() {
+      if(vOpen)return;
+      if(isEditVideoOpen())closeEditVideo();
+      if(isBrandScreenOpen())closeBrandScreen();
+      if(isM3dFsOpen())closeM3dFullscreen();
+      if(gxOpen)closeGestureScreen();
+      vOpen=true; vWasTracking=tracking; vFrozen=false; vAnchor=null; vStableSince=0;
+      vPhotoCanvas=null; vPhotoReady=false; vFrozenLandmarks=null;
+      vScreen.classList.remove('frozen');
+      vScreen.classList.add('open'); vScreen.setAttribute('aria-hidden','false');
+      vCamStage.appendChild(cam); vCamStage.appendChild(camOverlay);
+      setVStatus('ACTIVANDO CÁMARA');
+      if(!tracking) await toggleCamera();
+      if(!tracking) setVStatus('NO SE PUDO ACCEDER A LA CÁMARA');
+      else if(mode==='mp') setVStatus('MUESTRA LA MANO');
+      else setVStatus('CARGANDO MEDIAPIPE…');
+    }
+    function closeVHandScreen() {
+      if(!vOpen)return;
+      vOpen=false; cancelAnimationFrame(vAnimFrame);
+      vScreen.classList.remove('open','frozen'); vScreen.setAttribute('aria-hidden','true');
+      camPip.prepend(camOverlay); camPip.prepend(cam);
+      if(!vWasTracking) stopCamera();
+      fitOverlay();
+      vAnchor=null; vStableSince=0; vFrozen=false; vPhotoCanvas=null; vPhotoReady=false;
+    }
+    function toggleVHandScreen() { if(vOpen)closeVHandScreen(); else openVHandScreen(); }
+    if(vClose)vClose.addEventListener('click',closeVHandScreen);
 
     function isGestureScreenOpen() {return gxOpen;}
 
