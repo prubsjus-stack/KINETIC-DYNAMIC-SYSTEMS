@@ -1050,6 +1050,221 @@
       border-left: 1px dashed currentColor;
     }
 
+    /* ================= MODO GESTOS (tecla B) ================= */
+    #gestureScreen {
+      position: fixed;
+      inset: 0;
+      z-index: 108;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(10px, 1.6vh, 18px);
+      padding: clamp(14px, 2.6vh, 30px) clamp(14px, 3vw, 44px);
+      background: radial-gradient(ellipse 120% 90% at 70% 15%, #0a1630 0%, #060d1f 42%, #02060f 78%, #01040c 100%);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.35s ease, visibility 0s 0.35s;
+    }
+
+    #gestureScreen.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 0.35s ease, visibility 0s;
+    }
+
+    .gx-head {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .gx-eyebrow {
+      font-size: clamp(9px, 0.8vw, 11px);
+      font-weight: 700;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--blue);
+    }
+
+    .gx-head h2 {
+      margin: 3px 0 0;
+      font-size: clamp(20px, 2.4vw, 34px);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .gx-head h2 em {
+      color: var(--blue);
+      font-style: normal;
+    }
+
+    .gx-status {
+      margin-left: auto;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(139, 148, 166, 0.45);
+      color: #8b94a6;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+    }
+
+    .gx-status.on {
+      color: #9ff0b0;
+      border-color: rgba(159, 240, 176, 0.6);
+      box-shadow: 0 0 18px rgba(159, 240, 176, 0.18);
+    }
+
+    #gx-close {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 15px;
+      border-radius: 999px;
+      border: 1px solid rgba(150, 200, 245, 0.25);
+      background: rgba(8, 18, 38, 0.7);
+      color: #cfe3ff;
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    #gx-close:hover {
+      border-color: rgba(90, 170, 255, 0.6);
+      color: #ffffff;
+    }
+
+    #gx-close em {
+      font-style: normal;
+      font-size: 9px;
+      color: #8b94a6;
+      border: 1px solid rgba(139, 148, 166, 0.4);
+      border-radius: 5px;
+      padding: 2px 5px;
+    }
+
+    .gx-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: clamp(10px, 1.4vw, 20px);
+      min-height: 0;
+    }
+
+    .gx-cam,
+    .gx-3d {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(90, 170, 255, 0.3);
+      background: #04070e;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55), inset 0 0 60px rgba(90, 170, 255, 0.05);
+    }
+
+    #gxCamStage {
+      position: absolute;
+    }
+
+    #gx3dStage {
+      position: absolute;
+      inset: 0;
+    }
+
+    /* al entrar en modo gestos, la camara y el esqueleto si se muestran */
+    #gestureScreen #cam,
+    #gestureScreen #cam-overlay {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #gestureScreen #cam {
+      object-fit: fill;
+      transform: scaleX(-1);
+      background: #000;
+    }
+
+    #gestureScreen #cam-overlay {
+      position: absolute;
+      inset: 0;
+    }
+
+    #gestureScreen #viewer {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .gx-tag {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      z-index: 2;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(2, 6, 15, 0.72);
+      border: 1px solid rgba(90, 170, 255, 0.28);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: #b9c6db;
+      pointer-events: none;
+    }
+
+    .gx-legend {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 10px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .gx-legend li {
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(90, 170, 255, 0.22);
+      background: rgba(8, 18, 38, 0.6);
+      font-size: clamp(9px, 0.82vw, 11px);
+      color: #b9c6db;
+    }
+
+    .gx-legend b {
+      margin-right: 5px;
+      font-size: 0.92em;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #ffffff;
+    }
+
+    body.gx-open #cam-pip {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .gx-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1fr;
+      }
+
+      .gx-status {
+        margin-left: 0;
+      }
+    }
+
     @keyframes pulse {
 
       0%,
@@ -2971,6 +3186,39 @@
     </button>
   </div>
 
+  <!-- MODO GESTOS (tecla B) -->
+  <section id="gestureScreen" aria-hidden="true">
+    <header class="gx-head">
+      <div>
+        <div class="gx-eyebrow">MediaPipe · 21 puntos de la mano</div>
+        <h2>Control por <em>gestos</em></h2>
+      </div>
+      <div class="gx-status" id="gx-state">ACERCA LA MANO</div>
+      <button id="gx-close" type="button" aria-label="Cerrar modo gestos">
+        <span>Cerrar</span><em>B / ESC</em>
+      </button>
+    </header>
+
+    <div class="gx-grid">
+      <div class="gx-cam">
+        <div id="gxCamStage"></div>
+        <div class="gx-tag">Pon la mano frente a la cámara</div>
+      </div>
+      <div class="gx-3d">
+        <div id="gx3dStage"></div>
+        <div class="gx-tag">El modelo responde en vivo</div>
+      </div>
+    </div>
+
+    <ul class="gx-legend">
+      <li><b>Mano</b> gira e inclina</li>
+      <li><b>1 dedo</b> abre / cierra techo</li>
+      <li><b>2 dedos</b> lluvia</li>
+      <li><b>Pellizco</b> zoom</li>
+      <li><b>B</b> salir</li>
+    </ul>
+  </section>
+
   <!-- MODELO 3D A PANTALLA COMPLETA -->
   <div id="m3dFull" aria-hidden="true">
     <div class="m3d-full-head">
@@ -2978,7 +3226,7 @@
         <span class="m3d-full-eyebrow">EcoTense</span>
         <span class="m3d-full-sub">Cubierta retráctil inteligente</span>
       </div>
-      <div class="m3d-full-tip">Arrastra para girar · rueda para acercar · M oculta la pantalla</div>
+      <div class="m3d-full-tip">Arrastra para girar · rueda para acercar · B gestos · M oculta la pantalla</div>
       <button id="m3dClose" type="button" aria-label="Cerrar pantalla completa">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M6 6l12 12M18 6L6 18"></path>
@@ -3232,6 +3480,14 @@
       // M: pantalla de marca que oculta la diapositiva (se alterna).
       if (e.key === 'm' || e.key === 'M') {e.preventDefault(); toggleBrandScreen(); return;}
 
+      // B: modo gestos (camara en vivo + esqueleto de la mano sobre el 3D).
+      if (e.key === 'b' || e.key === 'B') {e.preventDefault(); toggleGestureScreen(); return;}
+
+      if (isGestureScreenOpen()) {
+        if (e.key === 'Escape') {e.preventDefault(); closeGestureScreen();}
+        return;
+      }
+
       if (isBrandScreenOpen() && e.key === 'Escape') {
         e.preventDefault();
         closeBrandScreen();
@@ -3268,7 +3524,7 @@
     }, {passive: true});
 
     window.addEventListener('touchend', (e) => {
-      if (isBrandScreenOpen() || isM3dFsOpen() || touchInViewer || touchInBar) return;
+      if (isBrandScreenOpen() || isM3dFsOpen() || isGestureScreenOpen() || touchInViewer || touchInBar) return;
       const dx = e.changedTouches[0].clientX - touchX;
       const dy = e.changedTouches[0].clientY - touchY;
       if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) {
@@ -3858,6 +4114,7 @@
         // respaldo de movimiento+piel DESACTIVADO: solo se interpreta la mano (MediaPipe)
       }
 
+      if (gxOpen) refreshGxState();
       requestAnimationFrame(analyze);
     }
 
@@ -4307,13 +4564,133 @@
     const fsCamBtn = document.getElementById('fsCam');
     if (fsCamBtn) fsCamBtn.addEventListener('click', toggleCamera);
 
+    /* ================= MODO GESTOS (tecla B) ================= */
+    const gestureScreenEl = document.getElementById('gestureScreen');
+    const gxCamStage = document.getElementById('gxCamStage');
+    const gx3dStage = document.getElementById('gx3dStage');
+    const gxState = document.getElementById('gx-state');
+    const gxCloseBtn = document.getElementById('gx-close');
+    let gxOpen = false, gxWasTracking = false, gxPrevSlide = 0, gxPrevDebug = true, gxCamAskedAt = 0;
+
+    function isGestureScreenOpen() {return gxOpen;}
+
+    function setGxState(text, on) {
+      if (!gxState) return;
+      if (gxState.textContent !== text) gxState.textContent = text;
+      gxState.classList.toggle('on', !!on);
+    }
+
+    function refreshGxState() {
+      if (!gxOpen) return;
+      if (!tracking) {
+        const waiting = gxCamAskedAt && performance.now() - gxCamAskedAt < 6000;
+        setGxState(waiting ? 'ACTIVANDO CÁMARA…' : 'CÁMARA NO DISPONIBLE', false);
+      } else if (mode !== 'mp' || !handLandmarker) setGxState('CARGANDO IA…', false);
+      else if (!handTracked) setGxState('ACERCA LA MANO', false);
+      else {
+        const g = gesture.info.gesture;
+        setGxState(g && g !== 'NONE' ? g : 'MANO DETECTADA', true);
+      }
+    }
+
+    // la camara mantiene su proporcion 4:3 para que el esqueleto coincida
+    function fitGxCam() {
+      if (!gxOpen || !gxCamStage) return;
+      const pane = gxCamStage.parentElement;
+      const w = pane ? pane.clientWidth : 0, h = pane ? pane.clientHeight : 0;
+      if (!w || !h) return;
+      let W = w, H = W * 0.75;
+      if (H > h) {H = h; W = H * 4 / 3;}
+      gxCamStage.style.width = W + 'px';
+      gxCamStage.style.height = H + 'px';
+      gxCamStage.style.left = ((w - W) / 2) + 'px';
+      gxCamStage.style.top = ((h - H) / 2) + 'px';
+      gxCamStage.style.right = 'auto';
+      gxCamStage.style.bottom = 'auto';
+      fitOverlay();
+    }
+
+    function openGestureScreen() {
+      if (gxOpen) return;
+      if (isEditVideoOpen()) closeEditVideo();
+      if (isBrandScreenOpen()) closeBrandScreen();
+      if (isM3dFsOpen()) closeM3dFullscreen();
+
+      gxOpen = true;
+      gxWasTracking = tracking;
+      gxPrevDebug = debugSkin;
+      gxPrevSlide = current;
+
+      // la diapositiva 3D queda activa para que la mano controle el modelo
+      if (!is3DSlide(current)) goTo(5, 'gesture');
+
+      const v = document.getElementById('viewer');
+      if (v) gx3dStage.appendChild(v);
+      gxCamStage.appendChild(cam);
+      gxCamStage.appendChild(camOverlay);
+
+      gestureScreenEl.classList.add('open');
+      gestureScreenEl.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('gx-open');
+      debugSkin = true;
+      refreshGxState();
+      if (!tracking) {
+        gxCamAskedAt = performance.now();
+        toggleCamera();
+      }
+
+      if (typeof viewer3d !== 'undefined' && viewer3d.setWide) viewer3d.setWide(false);
+      requestAnimationFrame(() => {
+        fitGxCam();
+        window.dispatchEvent(new Event('resize'));
+      });
+      setTimeout(() => {
+        fitGxCam();
+        window.dispatchEvent(new Event('resize'));
+        refreshGxState();
+      }, 400);
+    }
+
+    function closeGestureScreen() {
+      if (!gxOpen) return;
+      gxOpen = false;
+      gestureScreenEl.classList.remove('open');
+      gestureScreenEl.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('gx-open');
+
+      // devolver camara y esqueleto al PIP
+      camPip.prepend(camOverlay);
+      camPip.prepend(cam);
+
+      // devolver el visor 3D a su hueco en la diapositiva
+      const slot = document.getElementById('m3dSlot');
+      const v = document.getElementById('viewer');
+      if (slot && v) slot.appendChild(v);
+
+      if (!gxWasTracking) stopCamera();
+      debugSkin = gxPrevDebug;
+      fitOverlay();
+      window.dispatchEvent(new Event('resize'));
+      if (gxPrevSlide !== current) goTo(gxPrevSlide, 'gesture');
+    }
+
+    function toggleGestureScreen() {
+      if (gxOpen) closeGestureScreen();
+      else openGestureScreen();
+    }
+
+    if (gxCloseBtn) gxCloseBtn.addEventListener('click', closeGestureScreen);
+
     // toggle de debug: oculta/muestra el esqueleto y el panel de estado
     document.getElementById('dbg-btn').addEventListener('click', () => {
       document.getElementById('hud-debug').classList.toggle('hidden');
       debugSkin = !debugSkin;
     });
 
-    window.addEventListener('resize', () => fitOverlay());
+    window.addEventListener('resize', () => {
+      fitOverlay();
+      if (gxOpen) fitGxCam();
+    });
     requestAnimationFrame(analyze);
 
     // ===== ANIMACION DE LA RED DE NODOS (canvas) =====
