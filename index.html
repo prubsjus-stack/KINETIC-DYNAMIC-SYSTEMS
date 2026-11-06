@@ -456,6 +456,12 @@
       box-shadow: 0 30px 90px rgba(0, 0, 0, 0.65), 0 0 70px rgba(90, 170, 255, 0.18);
     }
 
+    /* La captura de codigo es vertical: se aprovecha mas alto para que se lea */
+    .code-slide .big-img {
+      max-height: 84vh;
+      max-width: 62vw;
+    }
+
     /* ================= DIAPOSITIVA 7: SOSTENIBILIDAD ================= */
     /* fondo a todo el frame en la MISMA paleta azul del sitio */
     .slide.eco::before {
@@ -2843,7 +2849,17 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 8 : ¿COMO FUNCIONA? -->
+    <!-- DIAPOSITIVA 8 : CODIGO (ESP32) -->
+    <section class="slide img-slide code-slide" id="slideCodigo">
+      <div class="slide-inner img-only">
+        <img class="big-img"
+          src="codigo.jpeg"
+          alt="Código del sistema EcoTense — ESP32, sensores de lluvia y control de servos"
+          decoding="async">
+      </div>
+    </section>
+
+    <!-- DIAPOSITIVA 9 : ¿COMO FUNCIONA? -->
     <section class="slide compact">
       <div class="slide-inner">
         <div class="slide-label">¿Cómo funciona?</div>
@@ -2861,7 +2877,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 9 : SOSTENIBILIDAD -->
+    <!-- DIAPOSITIVA 10 : SOSTENIBILIDAD -->
     <section class="slide compact eco">
       <span class="eco-dot d1" aria-hidden="true"></span>
       <span class="eco-dot d2" aria-hidden="true"></span>
@@ -2891,7 +2907,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 10 : COSTOS Y PRESUPUESTO -->
+    <!-- DIAPOSITIVA 11 : COSTOS Y PRESUPUESTO -->
     <section class="slide img-slide" id="slideCostos">
       <div class="slide-inner img-only">
         <img class="big-img" src="Costos y presupuesto.png"
@@ -2899,7 +2915,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 11 : FENOGE -->
+    <!-- DIAPOSITIVA 12 : FENOGE -->
     <section class="slide img-slide" id="slideFenoge">
       <div class="slide-inner img-only">
         <img class="big-img" src="fenoge.png"
@@ -2907,7 +2923,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 12 : ECOTENSE -->
+    <!-- DIAPOSITIVA 13 : ECOTENSE -->
     <section class="slide img-slide" id="slideEcoTense">
       <div class="slide-inner img-only">
         <img class="big-img" src="ecotense.png"
@@ -2915,7 +2931,7 @@
       </div>
     </section>
 
-    <!-- DIAPOSITIVA 13 : CIERRE (con animacion de despedida) -->
+    <!-- DIAPOSITIVA 14 : CIERRE (con animacion de despedida) -->
     <section class="slide compact" id="slideEnd">
       <div class="slide-inner">
         <div class="slide-label">Cierre</div>
