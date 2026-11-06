@@ -3614,9 +3614,18 @@
       if (e.repeat) return;   // una pulsacion sostenida NO repite diapositivas
       if (e.ctrlKey || e.metaKey || e.altKey) return;
 
-      // La nueva pantalla V controla el teclado mientras esta abierta.
+      // V y B son modos alternativos: cambiar entre ellos conserva la misma
+      // sesión de cámara para evitar detener/reabrir el dispositivo.
       if (isVHandScreenOpen()) {
-        if (e.key === 'Escape' || e.key === 'v' || e.key === 'V') {e.preventDefault(); closeVHandScreen();}
+        if (e.key === 'Escape' || e.key === 'v' || e.key === 'V') {
+          e.preventDefault(); closeVHandScreen(); return;
+        }
+        if (e.key === 'b' || e.key === 'B') {
+          e.preventDefault();
+          vWasTracking = true; // transferir la cámara al modo B sin apagarla
+          closeVHandScreen();
+          openGestureScreen();
+        }
         return;
       }
 
@@ -3724,6 +3733,9 @@
     let bg = null;          // modelo de fondo (se adapta lento)
     let videoReady = false;
     let tracking = false;
+    // Un solo getUserMedia a la vez; evita streams duplicados al cambiar V/B.
+    let cameraStartPromise = null;
+    let cameraStartVersion = 0;
     let gestureLock = false;
     let mpLock = false;     // bloqueo extra en modo IA
     let lastFingerCmd = -1; // ultimo conteo de dedos ejecutado (diapositiva 3D)
@@ -4072,7 +4084,7 @@
         })
         .catch((e) => {
           mpBusy = false;
-          mpAttempt++;
+          // mpAttempt ya se incrementa al comenzar initMediaPipe(); no duplicarlo aquí.
           aiHint.textContent = 'IA: mano offline, modo respaldo';
           if (mpAttempt === 1) showToast('IA de mano no disponible — usa barrido lateral para navegar');
           console.warn('Detector de mano no pudo iniciar, se reintenta:', e);
@@ -4650,6 +4662,9 @@
     }
 
     function stopCamera() {
+      // Invalida cualquier permiso getUserMedia que siga pendiente. Si termina
+      // después, toggleCamera detendrá ese stream en vez de dejarlo huérfano.
+      cameraStartVersion++;
       tracking = false;
       if (cam.srcObject) cam.srcObject.getTracks().forEach(t => t.stop());
       cam.srcObject = null;
@@ -4703,51 +4718,85 @@
         return;
       }
 
-      try {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-          throw new Error('El navegador no ofrece acceso a la cámara. Abre KINETIX desde una dirección HTTPS o desde localhost.');
-        }
-        let stream;
+      // Si otra pantalla ya está solicitando la cámara, compartir esa misma
+      // operación. Si fue cancelada mientras esperaba permiso, reintentar una
+      // sola vez cuando termine; nunca abrir dos streams en paralelo.
+      if (cameraStartPromise) {
+        await cameraStartPromise;
+        if (tracking) return;
+        return toggleCamera();
+      }
+
+      const startVersion = cameraStartVersion;
+      const startTask = (async () => {
+        let stream = null;
         try {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: {facingMode: 'user', width: {ideal: 640}, height: {ideal: 480}},
-            audio: false
-          });
-        } catch (firstError) {
-          // Si el navegador no acepta las preferencias de cámara, probar sin restricciones.
-          if (firstError && firstError.name === 'OverconstrainedError') {
-            stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
-          } else {
-            throw firstError;
+          if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            throw new Error('El navegador no ofrece acceso a la cámara. Abre KINETIX desde una dirección HTTPS o desde localhost.');
           }
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({
+              video: {facingMode: 'user', width: {ideal: 640}, height: {ideal: 480}},
+              audio: false
+            });
+          } catch (firstError) {
+            // Si el navegador no acepta las preferencias de cámara, probar sin restricciones.
+            if (firstError && firstError.name === 'OverconstrainedError') {
+              stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
+            } else {
+              throw firstError;
+            }
+          }
+
+          // La pantalla pudo cerrarse mientras el usuario aceptaba el permiso.
+          if (startVersion !== cameraStartVersion) {
+            stream.getTracks().forEach(t => t.stop());
+            return;
+          }
+
+          cam.srcObject = stream;
+          await cam.play();
+          if (startVersion !== cameraStartVersion) {
+            stream.getTracks().forEach(t => t.stop());
+            if (cam.srcObject === stream) cam.srcObject = null;
+            return;
+          }
+
+          camPip.classList.remove('hidden');
+          camBadge.classList.remove('off');
+          camStatus.textContent = 'Gestos activos';
+          tracking = true;
+          videoReady = true;
+          mode = 'motion';              // respaldo arranca al instante
+          mpFailed = false;             // permitir reintentar MediaPipe
+          mpAttempt = 0;                // reiniciar intentos de IA
+          aiHint.textContent = 'IA: cargando…';
+          showToast('Cámara activada — mueve la mano');
+          syncCamUI();
+          initMediaPipe();              // si carga, pasa a modo IA
+        } catch (err) {
+          if (stream) stream.getTracks().forEach(t => t.stop());
+          if (stream && cam.srcObject === stream) cam.srcObject = null;
+          console.error('KINETIX camera error:', err);
+          const reason = err && err.name ? err.name : 'Error desconocido';
+          const details = err && err.message ? err.message : 'El navegador no dio más detalles.';
+          let friendly = details;
+          if (reason === 'NotAllowedError' || reason === 'PermissionDeniedError') friendly = 'El navegador bloqueó el permiso. Revisa el permiso de cámara para este sitio.';
+          else if (reason === 'NotFoundError' || reason === 'DevicesNotFoundError') friendly = 'No se encontró ninguna cámara conectada.';
+          else if (reason === 'NotReadableError' || reason === 'TrackStartError') friendly = 'La cámara está ocupada por otra aplicación o no pudo iniciarse. Cierra otras aplicaciones que la estén usando.';
+          else if (reason === 'SecurityError') friendly = 'El navegador bloqueó la cámara por seguridad. Abre la página mediante HTTPS.';
+          else if (reason === 'OverconstrainedError') friendly = 'La cámara no acepta la configuración solicitada.';
+          const message = 'CÁMARA: ' + reason + ' — ' + friendly;
+          showToast(message);
+          if (typeof vOpen !== 'undefined' && vOpen) setVStatus(message);
         }
-        cam.srcObject = stream;
-        await cam.play();
-        camPip.classList.remove('hidden');
-        camBadge.classList.remove('off');
-        camStatus.textContent = 'Gestos activos';
-        tracking = true;
-        videoReady = true;
-        mode = 'motion';              // respaldo arranca al instante
-        mpFailed = false;             // permitir reintentar MediaPipe
-        mpAttempt = 0;                // reiniciar intentos de IA
-        aiHint.textContent = 'IA: cargando…';
-        showToast('Cámara activada — mueve la mano');
-        syncCamUI();
-        initMediaPipe();              // si carga, pasa a modo IA
-      } catch (err) {
-        console.error('KINETIX camera error:', err);
-        const reason = err && err.name ? err.name : 'Error desconocido';
-        const details = err && err.message ? err.message : 'El navegador no dio más detalles.';
-        let friendly = details;
-        if (reason === 'NotAllowedError' || reason === 'PermissionDeniedError') friendly = 'El navegador bloqueó el permiso. Revisa el permiso de cámara para este sitio.';
-        else if (reason === 'NotFoundError' || reason === 'DevicesNotFoundError') friendly = 'No se encontró ninguna cámara conectada.';
-        else if (reason === 'NotReadableError' || reason === 'TrackStartError') friendly = 'La cámara está ocupada por otra aplicación o no pudo iniciarse. Cierra otras aplicaciones que la estén usando.';
-        else if (reason === 'SecurityError') friendly = 'El navegador bloqueó la cámara por seguridad. Abre la página mediante HTTPS.';
-        else if (reason === 'OverconstrainedError') friendly = 'La cámara no acepta la configuración solicitada.';
-        const message = 'CÁMARA: ' + reason + ' — ' + friendly;
-        showToast(message);
-        if (typeof vOpen !== 'undefined' && vOpen) setVStatus(message);
+      })();
+
+      cameraStartPromise = startTask;
+      try {
+        await startTask;
+      } finally {
+        if (cameraStartPromise === startTask) cameraStartPromise = null;
       }
     }
 
@@ -4961,7 +5010,9 @@
       if(isEditVideoOpen())closeEditVideo();
       if(isBrandScreenOpen())closeBrandScreen();
       if(isM3dFsOpen())closeM3dFullscreen();
-      if(gxOpen)closeGestureScreen();
+      // Si venimos de B, la cámara pasa a V; no debe apagarse en el cierre
+      // intermedio de la pantalla anterior.
+      if(gxOpen) { gxWasTracking=true; closeGestureScreen(); }
       vOpen=true; vWasTracking=tracking; vFrozen=false; vAnchor=null; vStableSince=0;
       vPhotoCanvas=null; vPhotoReady=false; vFrozenLandmarks=null;
       vScreen.classList.remove('frozen');
@@ -4969,6 +5020,12 @@
       vCamStage.appendChild(cam); vCamStage.appendChild(camOverlay);
       setVStatus('ACTIVANDO CÁMARA');
       if(!tracking) await toggleCamera();
+      // La pantalla pudo cerrarse mientras el navegador solicitaba permiso.
+      // En ese caso no dejamos una cámara encendida en segundo plano.
+      if(!vOpen) {
+        if(!vWasTracking && !gxOpen) stopCamera();
+        return;
+      }
       if(!tracking) setVStatus('NO SE PUDO ACCEDER A LA CÁMARA');
       else if(mode==='mp') setVStatus('MUESTRA LA MANO');
       else setVStatus('CARGANDO MEDIAPIPE…');
@@ -5131,6 +5188,9 @@
 
     function openGestureScreen() {
       if (gxOpen) return;
+      // Cambio directo V -> B: conserva el stream y evita una carrera entre
+      // stopCamera() y getUserMedia().
+      if (vOpen) { vWasTracking=true; closeVHandScreen(); }
       if (isEditVideoOpen()) closeEditVideo();
       if (isBrandScreenOpen()) closeBrandScreen();
       if (isM3dFsOpen()) closeM3dFullscreen();
