@@ -4016,7 +4016,18 @@
     }
 
     function initMediaPipe() {
-      if (handLandmarker) return;   // ya cargado
+      // El detector se conserva entre cambios de pantalla/cámara. Si ya existe,
+      // reactivar el modo IA en vez de salir dejando el sistema en modo motion.
+      if (handLandmarker) {
+        mode = 'mp';
+        mpFailed = false;
+        if (tracking) {
+          camStatus.textContent = 'Gestos activos (IA)';
+          aiHint.textContent = 'IA: mano OK';
+          syncCamUI();
+        }
+        return;
+      }
       if (mpAttempt >= 15) {        // maximo 15 intentos persistentes
         mpFailed = true;
         mode = 'motion';
@@ -4767,10 +4778,12 @@
           camStatus.textContent = 'Gestos activos';
           tracking = true;
           videoReady = true;
-          mode = 'motion';              // respaldo arranca al instante
+          // Reutiliza el detector si ya se creó en una sesión anterior.
+          // No volver a 'motion' cuando MediaPipe ya está listo.
+          mode = handLandmarker ? 'mp' : 'motion';
           mpFailed = false;             // permitir reintentar MediaPipe
           mpAttempt = 0;                // reiniciar intentos de IA
-          aiHint.textContent = 'IA: cargando…';
+          aiHint.textContent = handLandmarker ? 'IA: mano OK' : 'IA: cargando…';
           showToast('Cámara activada — mueve la mano');
           syncCamUI();
           initMediaPipe();              // si carga, pasa a modo IA
